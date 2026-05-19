@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PDF Editor</title>
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+<style>
+body {
+  margin: 0;
+  background: #111827;
+  color: white;
+  font-family: sans-serif;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  background: #1f2937;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid #374151;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.danger {
+  background: #dc2626;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.page {
+  background: #1f2937;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 3px solid transparent;
+}
+
+.page.selected {
+  border-color: #2563eb;
+}
+
+.page-header {
+  background: #374151;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-body {
+  padding: 10px;
+}
+
+canvas {
+  width: 100%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="toolbar">
+  <input type="file" id="fileInput" accept="application/pdf">
+  <button class="danger" onclick="deleteSelected()">削除</button>
+  <button onclick="savePdf()">保存</button>
+  <button onclick="selectAll()">全選択</button>
+  <button onclick="clearSelection()">解除</button>
+</div>
+
+<div class="grid" id="pages"></div>
+
+<script>
+
+const { PDFDocument } = PDFLib;
+
+let pdfDoc = null;
+let pdfBytes = null;
+let pages = [];
+
+const pagesEl = document.getElementById('pages');
+
+document.getElementById('fileInput').addEventListener('change', async (e) => {
+
+  const file = e.target.files[0];
+
+  pdfBytes = await file.arrayBuffer();
+
+  pdfDoc = await PDFDocument.load(pdfBytes);
+
+  pages = [];
+
+  const totalPages = pdfDoc.getPageCount();
+
+  for (let i = 0; i < totalPages; i++) {
+
+    pages.push({
+      index: i,
+      selected: false
+    });
+
+  }
+
+  renderPages();
+
+});
+
+function renderPages() {
+
+  pagesEl.innerHTML = '';
+
+  pages.forEach((p, index) => {
+
+    const page = document.createElement('div');
+    page.className = 'page';
+
+    if (p.selected) {
+      page.classList.add('selected');
+    }
+
+    const header = document.createElement('div');
+    header.className = 'page-header';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = p.selected;
+
+    checkbox.addEventListener('change', () => {
+
+      p.selected = checkbox.checked;
+
+      if (p.selected) {
+        page.classList.add('selected');
+      } else {
+        page.classList.remove('selected');
+      }
+
+    });
+
+    const label = document.createElement('span');
+    label.textContent = 'ページ ' + (index + 1);
+
+    header.appendChild(checkbox);
+    header.appendChild(label);
+
+    const body = document.createElement('div');
+    body.className = 'page-body';
+
+    const canvas = document.createElement('canvas');
+    canvas.height = 300;
+
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#222';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = 'white';
+    ctx.font = '24px sans-serif';
+    ctx.fillText('Page ' + (p.index + 1), 20, 40);
+
+    body.appendChild(canvas);
+
+    page.appendChild(header);
+    page.appendChild(body);
+
+    pagesEl.appendChild(page);
+
+  });
+
+  Sortable.create(pagesEl, {
+    animation: 150,
+
+    onEnd: (evt) => {
+
+      const moved = pages.splice(evt.oldIndex, 1)[0];
+
+      pages.splice(evt.newIndex, 0, moved);
+
+      renderPages();
+
+    }
+
+  });
+
+}
+function deleteSelected() {
+
+  pages = pages.filter(p => !p.selected);
+
+  renderPages();
+
+}
+
+function selectAll() {
+
+  pages.forEach(p => p.selected = true);
+
+  renderPages();
+
+}
+
+function clearSelection() {
+
+  pages.forEach(p => p.selected = false);
+
+  renderPages();
+
+}
+
+async function savePdf() {
+
+  const newPdf = await PDFDocument.create();
+
+  const srcPdf = await PDFDocument.load(pdfBytes);
+
+  for (const p of pages) {
+
+    const [copiedPage] = await newPdf.copyPages(srcPdf, [p.index]);
+
+    newPdf.addPage(copiedPage);
+
+  }
+
+  const bytes = await newPdf.save();
+
+  const blob = new Blob([bytes], {
+    type: 'application/pdf'
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+
+  a.href = url;
+
+  a.download = 'edited.pdf';
+
+  a.click();
+
+}
+
+</script>
+
+</body>
+</html>
