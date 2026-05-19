@@ -2,464 +2,437 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor</title>
+<title>PDF Editor Pro</title>
 
+<!-- PDF.js, pdf-lib, SortableJS の読み込み -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <style>
+    body {
+        margin: 0;
+        background: #111827;
+        color: white;
+        font-family: sans-serif;
+    }
 
-body{
-    margin:0;
-    background:#111827;
-    color:white;
-    font-family:sans-serif;
-}
+    .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        background: #1f2937;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #374151;
+    }
 
-.toolbar{
-    position:sticky;
-    top:0;
-    z-index:9999;
-    background:#1f2937;
-    padding:10px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    border-bottom:1px solid #374151;
-}
+    button, .btn-file {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        display: inline-block;
+    }
 
-button{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:10px 16px;
-    border-radius:8px;
-    cursor:pointer;
-}
+    button:hover, .btn-file:hover {
+        background: #1d4ed8;
+    }
 
-button:hover{
-    background:#1d4ed8;
-}
+    .danger { background: #dc2626; }
+    .danger:hover { background: #b91c1c; }
+    .secondary { background: #4b5563; }
+    .secondary:hover { background: #374151; }
 
-.danger{
-    background:#dc2626;
-}
+    input[type="file"] {
+        display: none;
+    }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-    gap:16px;
-    padding:20px;
-}
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+        padding: 20px;
+    }
 
-.page{
-    background:#1f2937;
-    border-radius:12px;
-    overflow:hidden;
-    border:3px solid transparent;
-}
+    .page {
+        background: #1f2937;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 3px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.2s, background-color 0.2s;
+        user-select: none;
+    }
 
-.page.selected{
-    border-color:#2563eb;
-}
+    .page:hover {
+        border-color: #60a5fa;
+    }
 
-.page-header{
-    background:#374151;
-    padding:10px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
+    .page.selected {
+        border-color: #3b82f6;
+        background: #1e3a8a;
+    }
 
-.page-body{
-    padding:10px;
-}
+    .page-header {
+        background: rgba(0,0,0,0.2);
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+    }
 
-canvas{
-    width:100%;
-    background:white;
-}
+    .page-body {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 
-.info{
-    padding:8px;
-    font-size:12px;
-    color:#d1d5db;
-}
+    .page-body img {
+        width: 100%;
+        background: white;
+        border-radius: 4px;
+        min-height: 140px;
+        object-fit: contain;
+        pointer-events: none; /* ドラッグ時の誤作動防止 */
+    }
 
+    .bookmark-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #4b5563;
+        background: #374151;
+        color: white;
+    }
+    
+    .bookmark-input:focus {
+        outline: 2px solid #3b82f6;
+        border-color: transparent;
+    }
 </style>
 </head>
 
 <body>
 
 <div class="toolbar">
+    <label class="btn-file">
+        新規読み込み
+        <input type="file" id="fileInput" accept="application/pdf">
+    </label>
+    <label class="btn-file">
+        PDF追加
+        <input type="file" id="addInput" accept="application/pdf">
+    </label>
 
-<input type="file" id="fileInput" accept="application/pdf">
+    <button class="secondary" onclick="undo()">元に戻す (Undo)</button>
+    
+    <div style="width: 2px; background: #4b5563; margin: 0 5px;"></div>
 
-<input type="file" id="addInput" accept="application/pdf">
+    <button onclick="selectAll()">全選択</button>
+    <button onclick="clearSelection()">全解除</button>
+    <button class="danger" onclick="deleteSelected()">削除</button>
+    
+    <div style="width: 2px; background: #4b5563; margin: 0 5px;"></div>
 
-<button class="danger" onclick="deleteSelected()">
-削除
-</button>
-
-<button onclick="extractSelected()">
-抽出保存
-</button>
-
-<button onclick="savePdf()">
-保存
-</button>
-
-<button onclick="selectAll()">
-全選択
-</button>
-
-<button onclick="clearSelection()">
-選択解除
-</button>
-
+    <button onclick="exportPdf(true)">抽出保存</button>
+    <button onclick="exportPdf(false)">保存 (名前を付けて保存)</button>
 </div>
 
 <div class="grid" id="pages"></div>
 
 <script type="module">
+    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+    
+    const { PDFDocument, PDFHexString } = PDFLib;
 
-import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';
+    // データ管理
+    let fileSources = {}; // 高速化のため読み込んだPDFインスタンスをキャッシュ
+    let pagesData = [];
+    let stateHistory = [];
+    let lastSelectedIndex = -1;
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+    const pagesEl = document.getElementById('pages');
 
-const { PDFDocument } = PDFLib;
+    // グローバル関数として登録
+    window.undo = undo;
+    window.selectAll = selectAll;
+    window.clearSelection = clearSelection;
+    window.deleteSelected = deleteSelected;
+    window.exportPdf = exportPdf;
 
-let originalPdfBytes = null;
-
-let pagesData = [];
-
-const pagesEl = document.getElementById('pages');
-
-document.getElementById('fileInput')
-.addEventListener('change', async(e)=>{
-
-    const file = e.target.files[0];
-
-    if(!file) return;
-
-    originalPdfBytes = await file.arrayBuffer();
-
-    await loadPdf(originalPdfBytes);
-
-});
-
-document.getElementById('addInput')
-.addEventListener('change', async(e)=>{
-
-    const file = e.target.files[0];
-
-    if(!file) return;
-
-    const addBytes = await file.arrayBuffer();
-
-    const addPdf = await PDFDocument.load(addBytes);
-
-    const pageCount = addPdf.getPageCount();
-
-    for(let i=0;i<pageCount;i++){
-
-        pagesData.push({
-            sourceBytes:addBytes,
-            sourcePageIndex:i,
-            selected:false,
-            id:crypto.randomUUID()
-        });
-
+    // 履歴管理
+    function saveHistory() {
+        stateHistory.push(JSON.parse(JSON.stringify(pagesData)));
+        if (stateHistory.length > 30) stateHistory.shift(); // 最大30回まで
     }
 
-    renderPages();
-
-});
-
-async function loadPdf(bytes){
-
-    pagesData = [];
-
-    const pdf = await PDFDocument.load(bytes);
-
-    const total = pdf.getPageCount();
-
-    for(let i=0;i<total;i++){
-
-        pagesData.push({
-            sourceBytes:bytes,
-            sourcePageIndex:i,
-            selected:false,
-            id:crypto.randomUUID()
-        });
-
+    function undo() {
+        if (stateHistory.length > 0) {
+            pagesData = stateHistory.pop();
+            renderPages();
+        } else {
+            alert('これ以上元に戻せません。');
+        }
     }
 
-    renderPages();
+    // ファイル読み込み処理
+    document.getElementById('fileInput').addEventListener('change', (e) => handleFileLoad(e, false));
+    document.getElementById('addInput').addEventListener('change', (e) => handleFileLoad(e, true));
 
-}
+    async function handleFileLoad(e, isAdd) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-async function renderPages(){
+        if (isAdd) saveHistory();
 
-    pagesEl.innerHTML='';
+        const bytes = await file.arrayBuffer();
+        const sourceId = crypto.randomUUID();
 
-    for(let i=0;i<pagesData.length;i++){
+        // PDF.js(プレビュー用) と PDF-lib(編集・保存用) をキャッシュ
+        const pdfjsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+        const pdflibDoc = await PDFDocument.load(bytes);
+        fileSources[sourceId] = { pdfjsDoc, pdflibDoc };
 
-        const p = pagesData[i];
+        const pageCount = pdflibDoc.getPageCount();
 
-        const pageDiv = document.createElement('div');
-
-        pageDiv.className='page';
-
-        if(p.selected){
-            pageDiv.classList.add('selected');
+        if (!isAdd) {
+            pagesData = [];
+            stateHistory = [];
         }
 
-        pageDiv.dataset.id=p.id;
+        for (let i = 0; i < pageCount; i++) {
+            pagesData.push({
+                id: crypto.randomUUID(),
+                sourceId: sourceId,
+                sourcePageIndex: i,
+                selected: false,
+                bookmark: '',
+                thumbnailUrl: null
+            });
+        }
 
-        const header=document.createElement('div');
+        renderPages();
+        generateThumbnails(sourceId); // 非同期でサムネイル生成
+        e.target.value = ''; // 連続で同じファイルを読み込めるようにリセット
+    }
 
-        header.className='page-header';
+    // サムネイル画像の非同期生成 (大幅な高速化)
+    async function generateThumbnails(sourceId) {
+        const src = fileSources[sourceId];
+        if (!src) return;
+        
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
 
-        const checkbox=document.createElement('input');
-
-        checkbox.type='checkbox';
-
-        checkbox.checked=p.selected;
-
-        checkbox.addEventListener('change',()=>{
-
-            p.selected=checkbox.checked;
-
-            if(p.selected){
-                pageDiv.classList.add('selected');
-            }else{
-                pageDiv.classList.remove('selected');
+        for (let p of pagesData) {
+            if (p.sourceId === sourceId && !p.thumbnailUrl) {
+                const page = await src.pdfjsDoc.getPage(p.sourcePageIndex + 1);
+                const viewport = page.getViewport({ scale: 0.3 }); // サムネイル用縮小
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                await page.render({ canvasContext: context, viewport }).promise;
+                
+                p.thumbnailUrl = canvas.toDataURL();
+                
+                const imgEl = document.getElementById(`thumb-${p.id}`);
+                if (imgEl) imgEl.src = p.thumbnailUrl;
             }
+        }
+    }
 
+    // UIの描画
+    function renderPages() {
+        pagesEl.innerHTML = '';
+
+        pagesData.forEach((p, index) => {
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page' + (p.selected ? ' selected' : '');
+            pageDiv.dataset.id = p.id;
+
+            // ページクリックでの選択トグル (入力欄クリック時は除外)
+            pageDiv.onclick = (e) => {
+                if (e.target.tagName === 'INPUT') return;
+                handlePageClick(e, index);
+            };
+
+            const header = document.createElement('div');
+            header.className = 'page-header';
+            header.innerHTML = `<span>Page ${index + 1}</span>`;
+
+            const body = document.createElement('div');
+            body.className = 'page-body';
+
+            const img = document.createElement('img');
+            img.id = `thumb-${p.id}`;
+            if (p.thumbnailUrl) img.src = p.thumbnailUrl;
+
+            const bkmkInput = document.createElement('input');
+            bkmkInput.className = 'bookmark-input';
+            bkmkInput.type = 'text';
+            bkmkInput.placeholder = 'しおり名を追加...';
+            bkmkInput.value = p.bookmark;
+            
+            // しおり編集時
+            bkmkInput.onchange = (e) => {
+                saveHistory();
+                p.bookmark = e.target.value;
+            };
+
+            body.appendChild(img);
+            body.appendChild(bkmkInput);
+            
+            pageDiv.appendChild(header);
+            pageDiv.appendChild(body);
+            pagesEl.appendChild(pageDiv);
         });
 
-        const label=document.createElement('span');
-
-        label.textContent='ページ '+(i+1);
-
-        header.appendChild(checkbox);
-
-        header.appendChild(label);
-
-        const body=document.createElement('div');
-
-        body.className='page-body';
-
-        const canvas=document.createElement('canvas');
-
-        body.appendChild(canvas);
-
-        const info=document.createElement('div');
-
-        info.className='info';
-
-        info.textContent=
-            '元ページ: '+
-            (p.sourcePageIndex+1);
-
-        body.appendChild(info);
-
-        pageDiv.appendChild(header);
-
-        pageDiv.appendChild(body);
-
-        pagesEl.appendChild(pageDiv);
-
-        await renderPdfPage(
-            p.sourceBytes,
-            p.sourcePageIndex,
-            canvas
-        );
-
-    }
-
-    Sortable.create(pagesEl,{
-        animation:150,
-
-        onEnd:(evt)=>{
-
-            const moved=
-                pagesData.splice(evt.oldIndex,1)[0];
-
-            pagesData.splice(
-                evt.newIndex,
-                0,
-                moved
-            );
-
-        }
-    });
-
-}
-async function renderPdfPage(bytes,pageIndex,canvas){
-
-    const pdf=await pdfjsLib.getDocument({
-        data:bytes
-    }).promise;
-
-    const page=await pdf.getPage(pageIndex+1);
-
-    const viewport=page.getViewport({
-        scale:0.5
-    });
-
-    const context=canvas.getContext('2d');
-
-    canvas.width=viewport.width;
-
-    canvas.height=viewport.height;
-
-    await page.render({
-        canvasContext:context,
-        viewport:viewport
-    }).promise;
-
-}
-
-function selectAll(){
-
-    pagesData.forEach(p=>{
-        p.selected=true;
-    });
-
-    renderPages();
-
-}
-
-function clearSelection(){
-
-    pagesData.forEach(p=>{
-        p.selected=false;
-    });
-
-    renderPages();
-
-}
-
-function deleteSelected(){
-
-    pagesData=
-        pagesData.filter(p=>!p.selected);
-
-    renderPages();
-
-}
-
-async function savePdf(){
-
-    if(pagesData.length===0){
-        alert('ページがありません');
-        return;
-    }
-
-    const newPdf=
-        await PDFDocument.create();
-
-    for(const p of pagesData){
-
-        const srcPdf=
-            await PDFDocument.load(
-                p.sourceBytes
-            );
-
-        const copied=
-            await newPdf.copyPages(
-                srcPdf,
-                [p.sourcePageIndex]
-            );
-
-        newPdf.addPage(copied[0]);
-
-    }
-
-    const pdfBytes=
-        await newPdf.save();
-
-    downloadPdf(
-        pdfBytes,
-        'edited.pdf'
-    );
-
-}
-
-async function extractSelected(){
-
-    const selected=
-        pagesData.filter(p=>p.selected);
-
-    if(selected.length===0){
-
-        alert('選択してください');
-
-        return;
-
-    }
-
-    const newPdf=
-        await PDFDocument.create();
-
-    for(const p of selected){
-
-        const srcPdf=
-            await PDFDocument.load(
-                p.sourceBytes
-            );
-
-        const copied=
-            await newPdf.copyPages(
-                srcPdf,
-                [p.sourcePageIndex]
-            );
-
-        newPdf.addPage(copied[0]);
-
-    }
-
-    const pdfBytes=
-        await newPdf.save();
-
-    downloadPdf(
-        pdfBytes,
-        'extracted.pdf'
-    );
-
-}
-
-function downloadPdf(bytes,fileName){
-
-    const blob=
-        new Blob(
-            [bytes],
-            {
-                type:'application/pdf'
+        // ドラッグ＆ドロップの有効化
+        Sortable.create(pagesEl, {
+            animation: 150,
+            delay: 100,
+            delayOnTouchOnly: true,
+            onStart: () => saveHistory(),
+            onEnd: (evt) => {
+                const moved = pagesData.splice(evt.oldIndex, 1)[0];
+                pagesData.splice(evt.newIndex, 0, moved);
+                renderPages(); // 並び順が変わったのでページ番号更新のため再描画
             }
-        );
+        });
+    }
 
-    const url=
-        URL.createObjectURL(blob);
+    // 選択の処理 (Shiftキー対応)
+    function handlePageClick(e, index) {
+        if (e.shiftKey && lastSelectedIndex !== -1) {
+            const start = Math.min(lastSelectedIndex, index);
+            const end = Math.max(lastSelectedIndex, index);
+            for (let i = start; i <= end; i++) {
+                pagesData[i].selected = true;
+            }
+        } else {
+            pagesData[index].selected = !pagesData[index].selected;
+            if (pagesData[index].selected) lastSelectedIndex = index;
+        }
+        updateSelectionUI();
+    }
 
-    const a=
-        document.createElement('a');
+    // 選択状態の見た目だけを更新（再描画コスト削減）
+    function updateSelectionUI() {
+        const pageDivs = pagesEl.getElementsByClassName('page');
+        for (let i = 0; i < pagesData.length; i++) {
+            if (pagesData[i].selected) {
+                pageDivs[i].classList.add('selected');
+            } else {
+                pageDivs[i].classList.remove('selected');
+            }
+        }
+    }
 
-    a.href=url;
+    function selectAll() {
+        pagesData.forEach(p => p.selected = true);
+        updateSelectionUI();
+    }
 
-    a.download=fileName;
+    function clearSelection() {
+        pagesData.forEach(p => p.selected = false);
+        updateSelectionUI();
+        lastSelectedIndex = -1;
+    }
 
-    a.click();
+    function deleteSelected() {
+        if (!pagesData.some(p => p.selected)) return;
+        saveHistory();
+        pagesData = pagesData.filter(p => !p.selected);
+        renderPages();
+    }
 
-    URL.revokeObjectURL(url);
+    // PDFの保存・抽出処理
+    async function exportPdf(isExtract) {
+        const targetPages = isExtract ? pagesData.filter(p => p.selected) : pagesData;
 
-}
+        if (targetPages.length === 0) {
+            alert('対象のページがありません。');
+            return;
+        }
 
+        const defaultName = isExtract ? 'extracted.pdf' : 'edited.pdf';
+        const fileName = prompt('保存するファイル名を入力してください:', defaultName);
+        if (!fileName) return; // キャンセル時
+
+        const newPdf = await PDFDocument.create();
+        const bookmarks = [];
+
+        // ページのコピーと追加
+        for (const p of targetPages) {
+            const srcDoc = fileSources[p.sourceId].pdflibDoc;
+            const [copiedPage] = await newPdf.copyPages(srcDoc, [p.sourcePageIndex]);
+            newPdf.addPage(copiedPage);
+
+            if (p.bookmark && p.bookmark.trim() !== '') {
+                bookmarks.push({
+                    title: p.bookmark.trim(),
+                    pageRef: copiedPage.ref
+                });
+            }
+        }
+
+        // しおり(アウトライン)の追加
+        if (bookmarks.length > 0) {
+            addBookmarks(newPdf, bookmarks);
+        }
+
+        const pdfBytes = await newPdf.save();
+        downloadPdf(pdfBytes, fileName.endsWith('.pdf') ? fileName : fileName + '.pdf');
+    }
+
+    // PDFにしおりを埋め込む関数
+    function addBookmarks(pdfDoc, bookmarks) {
+        const context = pdfDoc.context;
+        const outlinesDictRef = context.nextRef();
+        const outlineItemRefs = bookmarks.map(() => context.nextRef());
+
+        const outlinesDict = context.obj({
+            Type: 'Outlines',
+            First: outlineItemRefs[0],
+            Last: outlineItemRefs[outlineItemRefs.length - 1],
+            Count: outlineItemRefs.length,
+        });
+        context.assign(outlinesDictRef, outlinesDict);
+
+        bookmarks.forEach((bm, i) => {
+            const destArray = context.obj([bm.pageRef, context.name('Fit')]);
+            const itemDict = {
+                Title: PDFHexString.fromText(bm.title), // 日本語対応エンコーディング
+                Parent: outlinesDictRef,
+                Dest: destArray,
+            };
+            if (i > 0) itemDict.Prev = outlineItemRefs[i - 1];
+            if (i < bookmarks.length - 1) itemDict.Next = outlineItemRefs[i + 1];
+
+            context.assign(outlineItemRefs[i], context.obj(itemDict));
+        });
+
+        pdfDoc.catalog.set(context.name('Outlines'), outlinesDictRef);
+    }
+
+    function downloadPdf(bytes, fileName) {
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 </script>
-
 </body>
 </html>
