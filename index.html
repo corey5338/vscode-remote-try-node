@@ -83,12 +83,47 @@
 
     document.getElementById('fileInput').onchange = (e) => processFile(e.target.files[0], true);
 
-    async function addPdf() {
-        const input = document.createElement('input');
-        input.type = 'file'; input.accept = 'application/pdf';
-        input.onchange = (e) => processFile(e.target.files[0], false);
-        input.click();
+   async function addPdf() {
+    const input = document.createElement('input');
+    input.type = 'file'; 
+    input.accept = 'application/pdf';
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        
+        // 選択中のページを探す
+        const container = document.getElementById('pages');
+        const selectedElements = Array.from(container.children).filter(d => d.classList.contains('selected'));
+        // 最後に選択された要素のインデックスを取得（なければ最後尾）
+        const insertAfter = selectedElements.length > 0 
+            ? parseInt(selectedElements[selectedElements.length - 1].dataset.index) 
+            : pageList.length - 1;
+
+        // 読み込み処理（ページ分割用）
+        const tempPages = await getPagesFromPdf(file);
+        
+        saveHistory();
+        // 指定位置（直後）に挿入
+        pageList.splice(insertAfter + 1, 0, ...tempPages);
+        render();
+    };
+    input.click();
+}
+
+// 読み込み部分を独立させて再利用可能にしました
+async function getPagesFromPdf(file) {
+    const statusEl = document.getElementById('status');
+    const newPages = [];
+    const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
+    for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+        statusEl.textContent = `挿入中: ${i + 1}/${pdfDoc.getPageCount()}`;
+        const tempDoc = await PDFLib.PDFDocument.create();
+        const [p] = await tempDoc.copyPages(pdfDoc, [i]);
+        tempDoc.addPage(p);
+        const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
+        newPages.push({ doc: pdfDoc, pageIndex: i, thumb });
     }
+    return newPages;
+}
 
     function undo() {
         if (historyStack.length === 0) return;
