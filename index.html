@@ -31,7 +31,6 @@
 <div class="toolbar">
     <label class="file-label">新規読み込み<input type="file" id="fileInput" accept="application/pdf"></label>
     <label class="file-label" style="background:#64748b">PDF追加<input type="file" id="addInput" accept="application/pdf"></label>
-    <button onclick="undo()" style="background:#8b5cf6">Undo</button>
     <button onclick="deleteSelected()" style="background:#ef4444">削除</button>
     <button onclick="exportPdf()">保存</button>
 </div>
@@ -41,26 +40,11 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
     let originalPdfDoc = null; 
-    let pagesData = []; 
-    let history = []; 
+    let pagesData = []; // { canvas, originalIndex, selected }
     const loader = document.getElementById('loader');
-
-    function saveState() {
-        // 現在の状態を履歴に保存（深層コピー）
-        history.push(JSON.stringify(pagesData.map(p => ({ originalIndex: p.originalIndex, selected: false }))));
-        if (history.length > 20) history.shift();
-    }
-
-    function undo() {
-        if (history.length === 0) return;
-        const lastState = JSON.parse(history.pop());
-        // 以前の state を反映して再レンダリングするロジックが必要
-        alert("元に戻しました（ページデータの復元が必要です）");
-    }
 
     async function loadPdfFile(file, isAppend = false) {
         loader.style.display = 'flex';
-        saveState();
         try {
             const bytes = await file.arrayBuffer();
             const newDoc = await PDFLib.PDFDocument.load(new Uint8Array(bytes));
@@ -70,8 +54,7 @@
                 originalPdfDoc = newDoc;
                 pagesData = [];
             } else {
-                // PDFLib上のインデックスを管理するため、新しく追加したページを登録
-                const offset = originalPdfDoc.getPageCount();
+                // 追加ページを originalPdfDoc に統合
                 for (let i = 0; i < newDoc.getPageCount(); i++) {
                     const [page] = await originalPdfDoc.copyPages(newDoc, [i]);
                     originalPdfDoc.addPage(page);
@@ -85,7 +68,10 @@
                 const vp = page.getViewport({ scale: 0.3 });
                 canvas.width = vp.width; canvas.height = vp.height;
                 await page.render({ canvasContext: ctx, viewport: vp }).promise;
-                pagesData.push({ originalIndex: (isAppend ? originalPdfDoc.getPageCount() - pdf.numPages : 0) + i, canvas, selected: false });
+                
+                // 新規追加分は新しいインデックスを割り当て
+                const globalIndex = isAppend ? (originalPdfDoc.getPageCount() - pdf.numPages + i) : i;
+                pagesData.push({ canvas, originalIndex: globalIndex, selected: false });
             }
             render();
         } catch (e) { alert("エラー: " + e.message); }
@@ -98,36 +84,54 @@
         pagesData.forEach((p, i) => {
             const div = document.createElement('div');
             div.className = `page ${p.selected ? 'selected' : ''}`;
-            div.onclick = () => { p.selected = !p.selected; div.className = `page ${p.selected ? 'selected' : ''}`; };
+            div.onclick = () => { 
+                p.selected = !p.selected; 
+                div.className = `page ${p.selected ? 'selected' : ''}`; 
+            };
+            
+            // Canvasとラベルを別々に追加
             div.appendChild(p.canvas);
-            div.innerHTML += `<div class="page-label">P.${i + 1}</div>`;
+            const label = document.createElement('div');
+            label.className = 'page-label';
+            label.textContent = `P.${i + 1}`;
+            div.appendChild(label);
+            
             pagesEl.appendChild(div);
         });
     }
 
-    new Sortable(document.getElementById('pages'), { animation: 150, onEnd: () => {
-        saveState();
-        // SortableによってDOM順が変わった後に、pagesDataの順序を同期する
-        const children = [...document.getElementById('pages').children];
-        const newPagesData = children.map((el, i) => {
-            return pagesData.find((_, index) => document.getElementById('pages').children[i] === document.getElementById('pages').children[index]);
-            // ※簡易的な同期のため、ドラッグ完了時に配列を再生成する実装を推奨
-        });
-    }});
+    new Sortable(document.getElementById('pages'), { 
+        animation: 150, 
+        onEnd: () => {
+            // DOM順に基づいて pagesData を再構築
+            const newPagesData = [];
+            const pageDivs = document.querySelectorAll('.page');
+            pageDivs.forEach((div) => {
+                const canvas = div.querySelector('canvas');
+                const match = pagesData.find(p => p.canvas === canvas);
+                if (match) newPagesData.push(match);
+            });
+            pagesData = newPagesData;
+            render();
+        }
+    });
 
-    function deleteSelected() { saveState(); pagesData = pagesData.filter(p => !p.selected); render(); }
+    function deleteSelected() { 
+        pagesData = pagesData.filter(p => !p.selected); 
+        render(); 
+    }
 
     async function exportPdf() {
         const finalPdf = await PDFLib.PDFDocument.create();
         for (const p of pagesData) {
-            // ここがポイント: 常に「現在の並び順」に合わせて originalPdfDoc からページを抽出する
             const [page] = await finalPdf.copyPages(originalPdfDoc, [p.originalIndex]);
             finalPdf.addPage(page);
         }
         const bytes = await finalPdf.save();
+        const fileName = prompt("保存ファイル名:", "edited.pdf") || "edited.pdf";
         const a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-        a.download = prompt("ファイル名", "edited.pdf") || "edited.pdf";
+        a.download = fileName.endsWith('.pdf') ? fileName : fileName + '.pdf';
         a.click();
     }
 
