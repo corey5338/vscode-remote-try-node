@@ -28,7 +28,6 @@
 }
 
 body{
-
     margin:0;
     padding:20px;
 
@@ -42,7 +41,6 @@ body{
         "Segoe UI",
         system-ui,
         sans-serif;
-
 }
 
 .toolbar{
@@ -474,6 +472,8 @@ new Sortable(pagesContainer,{
 
         rebuildDOM();
 
+        updateSelectionUI();
+
     }
 
 });
@@ -759,8 +759,12 @@ function createPageElement(p,index){
         const currentIndex =
             Number(div.dataset.index);
 
-        const currentPage =
-            pageList[currentIndex];
+        if(
+            currentIndex < 0 ||
+            currentIndex >= pageList.length
+        ){
+            return;
+        }
 
         if(
             e.shiftKey &&
@@ -791,8 +795,8 @@ function createPageElement(p,index){
 
         }else{
 
-            currentPage.selected =
-                !currentPage.selected;
+            pageList[currentIndex].selected =
+                !pageList[currentIndex].selected;
 
         }
 
@@ -922,9 +926,13 @@ function updateSelectionUI(){
         pagesContainer.children
     ).forEach((div,i)=>{
 
+        const page = pageList[i];
+
+        if(!page) return;
+
         div.classList.toggle(
             'selected',
-            pageList[i].selected
+            page.selected
         );
 
     });
@@ -937,18 +945,20 @@ function clearSelection(){
         p=>p.selected=false
     );
 
+    lastSelectedIndex = -1;
+
     updateSelectionUI();
 
 }
 
 function deleteSelected(){
 
-    const count =
+    const selectedPages =
         pageList.filter(
-            p=>p.selected
-        ).length;
+            p => p.selected
+        );
 
-    if(count===0){
+    if(selectedPages.length === 0){
 
         alert(
             '削除ページを選択してください'
@@ -962,13 +972,17 @@ function deleteSelected(){
 
     pageList =
         pageList.filter(
-            p=>!p.selected
+            p => !p.selected
         );
+
+    lastSelectedIndex = -1;
 
     rebuildDOM();
 
+    updateSelectionUI();
+
     setStatus(
-        `${count}ページ削除`
+        `${selectedPages.length}ページ削除`
     );
 
 }
@@ -984,6 +998,8 @@ function undo(){
     pageList = historyStack.pop();
 
     rebuildDOM();
+
+    updateSelectionUI();
 
     setStatus('Undo');
 
