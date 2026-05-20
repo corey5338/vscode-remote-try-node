@@ -231,42 +231,50 @@ let pageList = [];
 let historyStack = [];
 let lastSelectedIndex = -1;
 
-const observer =
+const visibleObserver =
     new IntersectionObserver(onVisible,{
-        rootMargin:'300px'
+        rootMargin:'500px'
     });
 
 const renderQueue = [];
-let rendering = false;
 
-/* =========================
+let renderRunning = false;
+
+/* =========================================
    Status
-========================= */
+========================================= */
 
 function setStatus(text){
 
-    document.getElementById('status')
+    document
+    .getElementById('status')
     .textContent = text;
 
 }
 
-/* =========================
+/* =========================================
    History
-========================= */
+========================================= */
 
 function saveHistory(){
 
     historyStack.push([...pageList]);
 
+    if(historyStack.length > 30){
+
+        historyStack.shift();
+
+    }
+
 }
 
-/* =========================
+/* =========================================
    Sortable
-========================= */
+========================================= */
 
 new Sortable(pagesContainer,{
 
-    animation:200,
+    animation:180,
 
     ghostClass:'selected',
 
@@ -294,11 +302,12 @@ new Sortable(pagesContainer,{
 
 });
 
-/* =========================
+/* =========================================
    Load PDF
-========================= */
+========================================= */
 
-document.getElementById('fileInput')
+document
+.getElementById('fileInput')
 .onchange = e => {
 
     processFile(
@@ -314,8 +323,11 @@ async function processFile(file,isReset){
 
         if(isReset){
 
+            cleanupAllPages();
+
             pageList = [];
             historyStack = [];
+
             pagesContainer.innerHTML = '';
 
         }
@@ -326,10 +338,13 @@ async function processFile(file,isReset){
             await file.arrayBuffer();
 
         const pdfDoc =
-            await PDFLib.PDFDocument.load(pdfBytes);
+            await PDFLib
+            .PDFDocument
+            .load(pdfBytes);
 
         const pdfjsDoc =
-            await pdfjsLib.getDocument({
+            await pdfjsLib
+            .getDocument({
                 data:pdfBytes.slice(0)
             }).promise;
 
@@ -343,17 +358,35 @@ async function processFile(file,isReset){
 
             const pageData = {
 
-                doc:pdfDoc,
+                id:
+                    crypto.randomUUID(),
 
-                pdfjsDoc:pdfjsDoc,
+                doc:
+                    pdfDoc,
 
-                pageIndex:i,
+                pdfjsDoc:
+                    pdfjsDoc,
 
-                selected:false,
+                pageIndex:
+                    i,
 
-                thumb:null,
+                selected:
+                    false,
 
-                rendering:false
+                thumb:
+                    null,
+
+                rendered:
+                    false,
+
+                rendering:
+                    false,
+
+                renderTask:
+                    null,
+
+                element:
+                    null
 
             };
 
@@ -371,7 +404,9 @@ async function processFile(file,isReset){
 
         pagesContainer.appendChild(fragment);
 
-        setStatus(`読込完了 (${total}ページ)`);
+        setStatus(
+            `${total}ページ読込完了`
+        );
 
     }catch(err){
 
@@ -383,9 +418,9 @@ async function processFile(file,isReset){
 
 }
 
-/* =========================
+/* =========================================
    Create Page
-========================= */
+========================================= */
 
 function createPageElement(p,index){
 
@@ -394,7 +429,11 @@ function createPageElement(p,index){
 
     div.className = 'page-item';
 
+    div.dataset.id = p.id;
+
     div.pageData = p;
+
+    p.element = div;
 
     div.innerHTML = `
 
@@ -425,23 +464,34 @@ function createPageElement(p,index){
 
     setupSelection(div,p,index);
 
-    observer.observe(div);
+    visibleObserver.observe(div);
+
+    if(p.thumb){
+
+        restoreThumbnail(p);
+
+    }
 
     return div;
 
 }
 
-/* =========================
+/* =========================================
    Selection
-========================= */
+========================================= */
 
 function setupSelection(div,p,index){
 
     const checkbox =
         div.querySelector('.page-check');
 
-    checkbox.checked =
-        p.selected;
+    checkbox.checked = p.selected;
+
+    if(p.selected){
+
+        div.classList.add('selected');
+
+    }
 
     checkbox.addEventListener(
         'click',
@@ -523,16 +573,16 @@ function setupSelection(div,p,index){
 
 }
 
-/* =========================
-   Lazy Render
-========================= */
+/* =========================================
+   Visible Observer
+========================================= */
 
 function onVisible(entries){
 
-    entries.forEach(entry=>{
+    for(const entry of entries){
 
         if(!entry.isIntersecting)
-            return;
+            continue;
 
         const el =
             entry.target;
@@ -541,50 +591,94 @@ function onVisible(entries){
             el.pageData;
 
         if(
-            p.thumb ||
+            p.rendered ||
             p.rendering
-        ) return;
+        ) continue;
 
-        renderQueue.push({
-            page:p,
-            element:el
-        });
+        renderQueue.push(p);
 
-        processRenderQueue();
+    }
+
+    processRenderQueue();
+
+}
+
+/* =========================================
+   Render Queue
+========================================= */
+
+async function processRenderQueue(){
+
+    if(renderRunning) return;
+
+    renderRunning = true;
+
+    while(renderQueue.length){
+
+        const p =
+            renderQueue.shift();
+
+        if(
+            !p ||
+            p.rendered ||
+            p.rendering
+        ){
+            continue;
+        }
+
+        if(
+            !p.element ||
+            !document.body.contains(
+                p.element
+            )
+        ){
+            continue;
+        }
+
+        await renderThumbnail(p);
+
+        await idle();
+
+    }
+
+    renderRunning = false;
+
+}
+
+function idle(){
+
+    return new Promise(resolve=>{
+
+        requestIdleCallback(
+            ()=>resolve(),
+            {
+                timeout:100
+            }
+        );
 
     });
 
 }
 
-async function processRenderQueue(){
+/* =========================================
+   Thumbnail Render
+========================================= */
 
-    if(rendering) return;
+async function renderThumbnail(p){
 
-    rendering = true;
+    if(
+        p.rendered ||
+        p.rendering
+    ) return;
 
-    while(renderQueue.length){
-
-        const item =
-            renderQueue.shift();
-
-        await renderThumbnail(
-            item.page,
-            item.element
-        );
-
-        await new Promise(r=>
-            requestIdleCallback(r)
-        );
-
+    if(
+        !p.element ||
+        !document.body.contains(
+            p.element
+        )
+    ){
+        return;
     }
-
-    rendering = false;
-
-}
-
-async function renderThumbnail(p,el){
-
-    if(p.thumb) return;
 
     p.rendering = true;
 
@@ -595,13 +689,34 @@ async function renderThumbnail(p,el){
                 p.pageIndex + 1
             );
 
+        if(
+            !p.element ||
+            !document.body.contains(
+                p.element
+            )
+        ){
+
+            p.rendering = false;
+
+            return;
+
+        }
+
         const viewport =
             page.getViewport({
-                scale:0.18
+                scale:0.17
             });
 
         const canvas =
-            el.querySelector('canvas');
+            p.element.querySelector('canvas');
+
+        const ctx =
+            canvas.getContext(
+                '2d',
+                {
+                    alpha:false
+                }
+            );
 
         canvas.width =
             viewport.width;
@@ -609,51 +724,123 @@ async function renderThumbnail(p,el){
         canvas.height =
             viewport.height;
 
-        await page.render({
+        p.renderTask =
+            page.render({
 
-            canvasContext:
-                canvas.getContext('2d'),
+                canvasContext:ctx,
 
-            viewport
+                viewport
 
-        }).promise;
+            });
+
+        await p.renderTask.promise;
 
         p.thumb =
             canvas.toDataURL(
                 'image/webp',
-                0.55
+                0.5
             );
 
-        el.querySelector('.placeholder')
-        .remove();
+        p.rendered = true;
+
+        const placeholder =
+            p.element.querySelector(
+                '.placeholder'
+            );
+
+        if(placeholder){
+
+            placeholder.remove();
+
+        }
 
         canvas.style.display =
             'block';
 
     }catch(err){
 
-        console.error(err);
+        if(
+            err?.name !==
+            'RenderingCancelledException'
+        ){
+
+            console.error(err);
+
+        }
 
     }
+
+    p.renderTask = null;
 
     p.rendering = false;
 
 }
 
-/* =========================
+/* =========================================
+   Restore Thumbnail
+========================================= */
+
+function restoreThumbnail(p){
+
+    if(
+        !p.thumb ||
+        !p.element
+    ) return;
+
+    const canvas =
+        p.element.querySelector('canvas');
+
+    const img =
+        new Image();
+
+    img.src = p.thumb;
+
+    img.onload = ()=>{
+
+        canvas.width =
+            img.width;
+
+        canvas.height =
+            img.height;
+
+        canvas
+        .getContext('2d')
+        .drawImage(img,0,0);
+
+    };
+
+    const placeholder =
+        p.element.querySelector(
+            '.placeholder'
+        );
+
+    if(placeholder){
+
+        placeholder.remove();
+
+    }
+
+    canvas.style.display =
+        'block';
+
+}
+
+/* =========================================
    Delete
-========================= */
+========================================= */
 
 function deleteSelected(){
 
-    const count =
+    const targets =
         pageList.filter(
             p=>p.selected
-        ).length;
+        );
 
-    if(count === 0){
+    if(targets.length === 0){
 
-        alert('削除ページを選択してください');
+        alert(
+            '削除ページを選択してください'
+        );
 
         return;
 
@@ -661,13 +848,13 @@ function deleteSelected(){
 
     saveHistory();
 
-    document
-    .querySelectorAll('.page-item')
-    .forEach(el=>{
+    targets.forEach(p=>{
 
-        if(el.pageData.selected){
+        cleanupPage(p);
 
-            el.remove();
+        if(p.element){
+
+            p.element.remove();
 
         }
 
@@ -680,18 +867,51 @@ function deleteSelected(){
 
     updatePageNumbers();
 
-    setStatus(`${count}ページ削除`);
+    setStatus(
+        `${targets.length}ページ削除`
+    );
 
 }
 
-/* =========================
+/* =========================================
+   Cleanup
+========================================= */
+
+function cleanupPage(p){
+
+    if(
+        p.renderTask &&
+        p.renderTask.cancel
+    ){
+
+        try{
+
+            p.renderTask.cancel();
+
+        }catch{}
+
+    }
+
+    p.rendering = false;
+
+}
+
+function cleanupAllPages(){
+
+    pageList.forEach(cleanupPage);
+
+}
+
+/* =========================================
    Undo
-========================= */
+========================================= */
 
 function undo(){
 
     if(historyStack.length === 0)
         return;
+
+    cleanupAllPages();
 
     pageList =
         historyStack.pop();
@@ -700,9 +920,9 @@ function undo(){
 
 }
 
-/* =========================
+/* =========================================
    Render
-========================= */
+========================================= */
 
 function render(){
 
@@ -713,38 +933,28 @@ function render(){
 
     pageList.forEach((p,index)=>{
 
-        const el =
-            createPageElement(p,index);
+        let el =
+            p.element;
 
-        if(p.thumb){
+        if(!el){
 
-            const canvas =
-                el.querySelector('canvas');
-
-            const img =
-                new Image();
-
-            img.src = p.thumb;
-
-            img.onload = ()=>{
-
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-                canvas.getContext('2d')
-                .drawImage(img,0,0);
-
-            };
-
-            el.querySelector('.placeholder')
-            .remove();
-
-            canvas.style.display =
-                'block';
+            el =
+                createPageElement(
+                    p,
+                    index
+                );
 
         }
 
+        p.element = el;
+
+        el.querySelector('.page-num')
+        .textContent =
+            `Page ${index + 1}`;
+
         fragment.appendChild(el);
+
+        visibleObserver.observe(el);
 
     });
 
@@ -752,9 +962,9 @@ function render(){
 
 }
 
-/* =========================
+/* =========================================
    Utils
-========================= */
+========================================= */
 
 function updatePageNumbers(){
 
@@ -781,7 +991,9 @@ function clearSelection(){
     .querySelectorAll('.page-item')
     .forEach(el=>{
 
-        el.classList.remove('selected');
+        el.classList.remove(
+            'selected'
+        );
 
         el.querySelector('.page-check')
         .checked = false;
@@ -790,9 +1002,9 @@ function clearSelection(){
 
 }
 
-/* =========================
+/* =========================================
    Export
-========================= */
+========================================= */
 
 async function exportPdf(){
 
@@ -811,7 +1023,7 @@ async function exportPdf(){
         .PDFDocument
         .create();
 
-    for(let p of pageList){
+    for(const p of pageList){
 
         const [page] =
             await newPdf.copyPages(
@@ -839,7 +1051,9 @@ async function exportSelected(){
 
     if(selected.length === 0){
 
-        alert('ページ選択してください');
+        alert(
+            'ページを選択してください'
+        );
 
         return;
 
@@ -858,7 +1072,7 @@ async function exportSelected(){
         .PDFDocument
         .create();
 
-    for(let p of selected){
+    for(const p of selected){
 
         const [page] =
             await newPdf.copyPages(
@@ -904,9 +1118,9 @@ function downloadPdf(bytes,name){
 
 }
 
-/* =========================
+/* =========================================
    Add PDF
-========================= */
+========================================= */
 
 async function addPdf(){
 
@@ -915,7 +1129,8 @@ async function addPdf(){
 
     input.type = 'file';
 
-    input.accept = 'application/pdf';
+    input.accept =
+        'application/pdf';
 
     input.onchange = async(e)=>{
 
@@ -964,30 +1179,55 @@ async function getPagesFromPdf(file){
         await file.arrayBuffer();
 
     const pdfDoc =
-        await PDFLib.PDFDocument.load(pdfBytes);
+        await PDFLib
+        .PDFDocument
+        .load(pdfBytes);
 
     const pdfjsDoc =
-        await pdfjsLib.getDocument({
+        await pdfjsLib
+        .getDocument({
             data:pdfBytes.slice(0)
         }).promise;
 
     const pages = [];
 
-    for(let i=0;i<pdfDoc.getPageCount();i++){
+    for(
+        let i=0;
+        i<pdfDoc.getPageCount();
+        i++
+    ){
 
         pages.push({
 
-            doc:pdfDoc,
+            id:
+                crypto.randomUUID(),
 
-            pdfjsDoc:pdfjsDoc,
+            doc:
+                pdfDoc,
 
-            pageIndex:i,
+            pdfjsDoc:
+                pdfjsDoc,
 
-            selected:false,
+            pageIndex:
+                i,
 
-            thumb:null,
+            selected:
+                false,
 
-            rendering:false
+            thumb:
+                null,
+
+            rendered:
+                false,
+
+            rendering:
+                false,
+
+            renderTask:
+                null,
+
+            element:
+                null
 
         });
 
