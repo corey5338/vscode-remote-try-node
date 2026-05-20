@@ -35,7 +35,6 @@
     <div style="width: 1px; height: 20px; background: #475569;"></div>
     <button onclick="undo()">Undo</button>
     <button class="danger" onclick="deleteSelected()">削除</button>
-    <!-- ここに抽出機能ボタンを追加 -->
     <button class="primary" onclick="exportSelected()" style="background:#8b5cf6;">抽出して保存</button>
     <button class="primary" onclick="exportPdf()">全保存</button>
     <div id="status">Ready</div>
@@ -48,6 +47,7 @@
     
     let pageList = []; 
     let historyStack = [];
+    let lastSelectedIndex = -1; // SHIFTキー選択用に記憶する変数
 
     function saveHistory() { historyStack.push([...pageList]); }
 
@@ -66,7 +66,6 @@
     async function processFile(file, isReset) {
         const statusEl = document.getElementById('status');
         if (isReset) { pageList = []; historyStack = []; }
-        
         try {
             statusEl.textContent = "処理中...";
             const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
@@ -85,47 +84,36 @@
 
     document.getElementById('fileInput').onchange = (e) => processFile(e.target.files[0], true);
 
-   async function addPdf() {
-    const input = document.createElement('input');
-    input.type = 'file'; 
-    input.accept = 'application/pdf';
-    input.onchange = async (e) => {
-        const file = e.target.files[0];
-        
-        // 選択中のページを探す
-        const container = document.getElementById('pages');
-        const selectedElements = Array.from(container.children).filter(d => d.classList.contains('selected'));
-        // 最後に選択された要素のインデックスを取得（なければ最後尾）
-        const insertAfter = selectedElements.length > 0 
-            ? parseInt(selectedElements[selectedElements.length - 1].dataset.index) 
-            : pageList.length - 1;
-
-        // 読み込み処理（ページ分割用）
-        const tempPages = await getPagesFromPdf(file);
-        
-        saveHistory();
-        // 指定位置（直後）に挿入
-        pageList.splice(insertAfter + 1, 0, ...tempPages);
-        render();
-    };
-    input.click();
-}
-
-// 読み込み部分を独立させて再利用可能にしました
-async function getPagesFromPdf(file) {
-    const statusEl = document.getElementById('status');
-    const newPages = [];
-    const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
-    for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-        statusEl.textContent = `挿入中: ${i + 1}/${pdfDoc.getPageCount()}`;
-        const tempDoc = await PDFLib.PDFDocument.create();
-        const [p] = await tempDoc.copyPages(pdfDoc, [i]);
-        tempDoc.addPage(p);
-        const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
-        newPages.push({ doc: pdfDoc, pageIndex: i, thumb });
+    async function addPdf() {
+        const input = document.createElement('input');
+        input.type = 'file'; input.accept = 'application/pdf';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            const container = document.getElementById('pages');
+            const selectedElements = Array.from(container.children).filter(d => d.classList.contains('selected'));
+            const insertAfter = selectedElements.length > 0 ? parseInt(selectedElements[selectedElements.length - 1].dataset.index) : pageList.length - 1;
+            const tempPages = await getPagesFromPdf(file);
+            saveHistory();
+            pageList.splice(insertAfter + 1, 0, ...tempPages);
+            render();
+        };
+        input.click();
     }
-    return newPages;
-}
+
+    async function getPagesFromPdf(file) {
+        const statusEl = document.getElementById('status');
+        const newPages = [];
+        const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
+        for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+            statusEl.textContent = `挿入中: ${i + 1}/${pdfDoc.getPageCount()}`;
+            const tempDoc = await PDFLib.PDFDocument.create();
+            const [p] = await tempDoc.copyPages(pdfDoc, [i]);
+            tempDoc.addPage(p);
+            const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
+            newPages.push({ doc: pdfDoc, pageIndex: i, thumb });
+        }
+        return newPages;
+    }
 
     function undo() {
         if (historyStack.length === 0) return;
@@ -166,7 +154,18 @@ async function getPagesFromPdf(file) {
                 canvas.width = img.width; canvas.height = img.height;
                 canvas.getContext('2d').drawImage(img, 0, 0);
             };
-            div.onclick = () => div.classList.toggle('selected');
+            // SHIFTキー対応クリックイベント
+            div.onclick = (e) => {
+                if (e.shiftKey && lastSelectedIndex !== -1) {
+                    const start = Math.min(lastSelectedIndex, i);
+                    const end = Math.max(lastSelectedIndex, i);
+                    const items = Array.from(container.children);
+                    for (let j = start; j <= end; j++) items[j].classList.add('selected');
+                } else {
+                    div.classList.toggle('selected');
+                }
+                lastSelectedIndex = i;
+            };
             container.appendChild(div);
         });
     }
@@ -183,33 +182,26 @@ async function getPagesFromPdf(file) {
         a.href = URL.createObjectURL(new Blob([await newPdf.save()], {type: 'application/pdf'}));
         a.download = name; a.click();
     }
-    // 選択したページのみを抽出して保存する機能
+
     async function exportSelected() {
-    const container = document.getElementById('pages');
-    const selectedIndices = Array.from(container.children)
-        .map((div, i) => div.classList.contains('selected') ? i : -1)
-        .filter(i => i !== -1);
-
-    if (selectedIndices.length === 0) {
-        alert("抽出したいページを選択してください");
-        return;
+        const container = document.getElementById('pages');
+        const selectedIndices = Array.from(container.children)
+            .map((div, i) => div.classList.contains('selected') ? i : -1)
+            .filter(i => i !== -1);
+        if (selectedIndices.length === 0) { alert("抽出したいページを選択してください"); return; }
+        const name = prompt("抽出するファイル名:", "extracted.pdf");
+        if (!name) return;
+        const newPdf = await PDFLib.PDFDocument.create();
+        for (let idx of selectedIndices) {
+            const p = pageList[idx];
+            const [page] = await newPdf.copyPages(p.doc, [p.pageIndex]);
+            newPdf.addPage(page);
+        }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([await newPdf.save()], {type: 'application/pdf'}));
+        a.download = name.endsWith('.pdf') ? name : name + '.pdf';
+        a.click();
     }
-
-    const name = prompt("抽出するファイル名:", "extracted.pdf");
-    if (!name) return;
-
-    const newPdf = await PDFLib.PDFDocument.create();
-    for (let idx of selectedIndices) {
-        const p = pageList[idx];
-        const [page] = await newPdf.copyPages(p.doc, [p.pageIndex]);
-        newPdf.addPage(page);
-    }
-    
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([await newPdf.save()], {type: 'application/pdf'}));
-    a.download = name.endsWith('.pdf') ? name : name + '.pdf';
-    a.click();
-}
 </script>
 </body>
 </html>
