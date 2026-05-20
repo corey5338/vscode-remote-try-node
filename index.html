@@ -2,111 +2,106 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor Pro</title>
+<title>PDF Editor Simple</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
-    :root { --bg: #0f172a; --accent: #3b82f6; }
-    body { background: var(--bg); color: #f8fafc; font-family: sans-serif; margin: 0; }
-    .toolbar { background: #1e293b; padding: 15px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 1000; }
-    button, .file-label { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
-    .page-card { background: #334155; padding: 10px; border-radius: 8px; text-align: center; }
-    canvas { width: 100%; border-radius: 4px; background: white; margin-bottom: 5px; }
-    .del-btn { background: #ef4444; width: 100%; padding: 5px; cursor: pointer; border: none; color: white; border-radius: 4px; }
-    #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
+    body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; }
+    .toolbar { background: #1e293b; padding: 15px; display: flex; gap: 10px; position: sticky; top: 0; }
+    .page-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
+    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; }
+    canvas { width: 100%; border-radius: 4px; background: white; }
+    button { cursor: pointer; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 4px; }
+    .del { background: #ef4444; margin-top: 5px; width: 100%; }
 </style>
 </head>
 <body>
 
-<div id="loader">処理中...</div>
 <div class="toolbar">
-    <label class="file-label">読込<input type="file" id="fileInput" accept="application/pdf"></label>
-    <label class="file-label">追加<input type="file" id="addInput" accept="application/pdf"></label>
-    <button onclick="undo()" style="background:#8b5cf6">Undo</button>
+    <input type="file" id="fileInput" accept="application/pdf">
+    <button onclick="undo()">Undo</button>
+    <button onclick="exportPdf()">保存</button>
 </div>
-<div id="pages"></div>
+<div id="pages" class="page-list"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    
-    let pagesData = []; // { bytes: Uint8Array }
+    let pages = []; // {bytes: Uint8Array, id: number}
     let history = [];
 
+    async function addFile(file) {
+        history.push([...pages]);
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const pdf = await PDFLib.PDFDocument.load(bytes);
+        const count = pdf.getPageCount();
+        for (let i = 0; i < count; i++) {
+            const temp = await PDFLib.PDFDocument.create();
+            const [p] = await temp.copyPages(pdf, [i]);
+            temp.addPage(p);
+            pages.push({ bytes: await temp.save(), id: Date.now() + i });
+        }
+        render();
+    }
+
     async function render() {
-        const pagesEl = document.getElementById('pages');
-        pagesEl.innerHTML = '';
-        
-        // ページを並列でレンダリング
-        const renderTasks = pagesData.map(async (p, i) => {
-            const card = document.createElement('div');
-            card.className = 'page-card';
+        const container = document.getElementById('pages');
+        container.innerHTML = '';
+        for (let i = 0; i < pages.length; i++) {
+            const p = pages[i];
+            const div = document.createElement('div');
+            div.className = 'page-item';
             
             const canvas = document.createElement('canvas');
             const doc = await pdfjsLib.getDocument({ data: p.bytes }).promise;
             const page = await doc.getPage(1);
-            const vp = page.getViewport({ scale: 0.25 });
+            const vp = page.getViewport({ scale: 0.2 });
             canvas.width = vp.width; canvas.height = vp.height;
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
             
-            card.appendChild(canvas);
-            card.innerHTML += `<div style="font-size:12px">P.${i+1}</div>`;
-            const delBtn = document.createElement('button');
-            delBtn.className = 'del-btn';
-            delBtn.textContent = '削除';
-            delBtn.onclick = () => deletePage(i);
-            card.appendChild(delBtn);
-            return card;
-        });
-
-        const cards = await Promise.all(renderTasks);
-        cards.forEach(card => pagesEl.appendChild(card));
-    }
-
-    async function loadPdf(file, isAppend = false) {
-        document.getElementById('loader').style.display = 'flex';
-        history.push([...pagesData]);
-        
-        const buffer = await file.arrayBuffer();
-        const sourceDoc = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-        const newPages = [];
-        for (let i = 0; i < sourceDoc.getPageCount(); i++) {
-            const temp = await PDFLib.PDFDocument.create();
-            const [p] = await temp.copyPages(sourceDoc, [i]);
-            temp.addPage(p);
-            newPages.push({ bytes: await temp.save() });
+            div.appendChild(canvas);
+            div.innerHTML += `<button class="del" onclick="deletePage(${i})">削除</button>`;
+            container.appendChild(div);
         }
-        if (!isAppend) pagesData = newPages;
-        else pagesData.push(...newPages);
-        
-        await render();
-        document.getElementById('loader').style.display = 'none';
     }
 
-    function deletePage(idx) {
-        history.push([...pagesData]);
-        pagesData.splice(idx, 1);
+    function deletePage(i) {
+        history.push([...pages]);
+        pages.splice(i, 1);
         render();
     }
 
     function undo() {
-        if (history.length === 0) return;
-        pagesData = history.pop();
+        if(history.length === 0) return;
+        pages = history.pop();
         render();
     }
 
+    async function exportPdf() {
+        const out = await PDFLib.PDFDocument.create();
+        for (const p of pages) {
+            const doc = await PDFLib.PDFDocument.load(p.bytes);
+            const [page] = await out.copyPages(doc, [0]);
+            out.addPage(page);
+        }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([await out.save()]));
+        a.download = "output.pdf";
+        a.click();
+    }
+
     new Sortable(document.getElementById('pages'), {
-        onStart: () => history.push([...pagesData]),
-        onEnd: (e) => {
-            const item = pagesData.splice(e.oldIndex, 1)[0];
-            pagesData.splice(e.newIndex, 0, item);
-            render();
+        onEnd: () => {
+            const newPages = [];
+            document.querySelectorAll('.page-item').forEach(el => {
+                const idx = Array.from(el.parentNode.children).indexOf(el);
+                newPages.push(pages[idx]);
+            });
+            pages = newPages;
         }
     });
 
-    document.getElementById('fileInput').addEventListener('change', (e) => loadPdf(e.target.files[0], false));
-    document.getElementById('addInput').addEventListener('change', (e) => loadPdf(e.target.files[0], true));
+    document.getElementById('fileInput').addEventListener('change', (e) => addFile(e.target.files[0]));
 </script>
 </body>
 </html>
