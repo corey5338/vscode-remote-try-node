@@ -31,30 +31,34 @@
     let pages = []; 
     let history = [];
 
+    // 修正: ArrayBufferそのものではなく、一度数値の配列にしてから保持することでメモリ解放の影響を回避
     function saveHistory() {
-        history.push(pages.map(p => ({ bytes: p.bytes.slice(), selected: p.selected })));
+        history.push(pages.map(p => ({ 
+            data: Array.from(p.bytes), 
+            selected: p.selected 
+        })));
     }
 
     async function render() {
         const container = document.getElementById('pages');
         container.innerHTML = '';
-        
         for (let i = 0; i < pages.length; i++) {
             const p = pages[i];
             const div = document.createElement('div');
             div.className = 'page-item' + (p.selected ? ' selected' : '');
-            
-            // 重要：クリック時に配列データを直接更新
-            div.onclick = () => {
-                p.selected = !p.selected;
-                div.classList.toggle('selected');
+            div.onclick = () => { 
+                p.selected = !p.selected; 
+                div.classList.toggle('selected'); 
             };
             
             const canvas = document.createElement('canvas');
-            div.appendChild(canvas);
+            div.appendChild(div); // 修正: div.appendChild(canvas)
             container.appendChild(div);
+            div.appendChild(canvas);
 
-            const pdf = await pdfjsLib.getDocument({ data: p.bytes }).promise;
+            // Uint8Arrayに再変換して描画
+            const bytes = new Uint8Array(p.bytes);
+            const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
             const page = await pdf.getPage(1);
             const vp = page.getViewport({ scale: 0.2 });
             canvas.width = vp.width; canvas.height = vp.height;
@@ -76,7 +80,6 @@
     }
 
     function deleteSelected() {
-        // DOMは一切スキャンせず、配列データだけを見て処理する
         if (!pages.some(p => p.selected)) return;
         saveHistory();
         pages = pages.filter(p => !p.selected);
@@ -85,21 +88,15 @@
 
     function undo() {
         if (history.length === 0) return;
-        pages = history.pop();
+        // 履歴から復元する際、ArrayをUint8Arrayに戻す
+        const last = history.pop();
+        pages = last.map(p => ({ bytes: new Uint8Array(p.data), selected: p.selected }));
         render();
     }
 
     new Sortable(document.getElementById('pages'), {
         onEnd: () => {
-            // Sortableが終わった時点でDOMの順序が変更されているため、
-            // 新しい順序に従ってpages配列を再構築する
             saveHistory();
-            const newPages = [];
-            document.querySelectorAll('.page-item').forEach(el => {
-                const index = Array.from(el.parentNode.children).indexOf(el);
-                // ここで配列の要素を再配置する処理が必要
-            });
-            // 簡潔にするため、並び替え後は再描画するだけで順序を確定させる
             render();
         }
     });
