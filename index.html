@@ -15,11 +15,11 @@
 :root{
     --bg:#0f172a;
     --panel:#1e293b;
+    --panel2:#273549;
     --accent:#3b82f6;
-    --text:#f8fafc;
     --danger:#ef4444;
+    --text:#f8fafc;
     --muted:#94a3b8;
-    --border:#334155;
 }
 
 *{
@@ -27,7 +27,13 @@
 }
 
 body{
-    background:var(--bg);
+
+    margin:0;
+    padding:20px;
+
+    background:
+        radial-gradient(circle at top left,#1e293b,#0f172a 45%);
+
     color:var(--text);
 
     font-family:
@@ -35,55 +41,57 @@ body{
         system-ui,
         sans-serif;
 
-    margin:0;
-    padding:20px;
 }
 
-/* =========================
+/* ======================
    Toolbar
-========================= */
+====================== */
 
 .toolbar{
 
     position:sticky;
-    top:20px;
-    z-index:100;
+    top:12px;
+    z-index:1000;
 
-    background:rgba(30,41,59,.95);
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+
+    padding:18px 22px;
+
+    background:
+        rgba(30,41,59,.92);
 
     backdrop-filter:blur(12px);
 
-    padding:16px 24px;
+    border:
+        1px solid rgba(255,255,255,.08);
 
-    border-radius:16px;
-
-    display:flex;
-    gap:12px;
-    align-items:center;
-    flex-wrap:wrap;
+    border-radius:18px;
 
     box-shadow:
-        0 10px 30px rgba(0,0,0,.35);
-
-    border:1px solid rgba(255,255,255,.05);
+        0 12px 32px rgba(0,0,0,.35);
 
 }
 
 button{
 
-    background:#334155;
     border:none;
-    color:white;
 
     padding:10px 16px;
 
     border-radius:10px;
 
-    cursor:pointer;
+    background:#334155;
 
-    transition:.2s;
+    color:white;
 
     font-weight:600;
+
+    cursor:pointer;
+
+    transition:.18s;
 
 }
 
@@ -96,25 +104,36 @@ button:hover{
 }
 
 button.primary{
+
     background:var(--accent);
+
 }
 
 button.primary:hover{
+
     background:#2563eb;
+
 }
 
 button.danger{
+
     background:var(--danger);
+
 }
 
 button.danger:hover{
+
     background:#dc2626;
+
 }
 
 .divider{
+
     width:1px;
-    height:24px;
+    height:22px;
+
     background:#475569;
+
 }
 
 #status{
@@ -127,9 +146,9 @@ button.danger:hover{
 
 }
 
-/* =========================
-   Pages
-========================= */
+/* ======================
+   Grid
+====================== */
 
 #pages{
 
@@ -138,34 +157,38 @@ button.danger:hover{
     grid-template-columns:
         repeat(auto-fill,minmax(170px,1fr));
 
-    gap:20px;
+    gap:22px;
 
     margin-top:24px;
 
 }
 
+/* ======================
+   Page Item
+====================== */
+
 .page-item{
 
     background:var(--panel);
 
-    border-radius:14px;
+    border-radius:16px;
 
     overflow:hidden;
 
     border:2px solid transparent;
 
-    transition:.2s;
-
     cursor:move;
 
+    transition:.18s;
+
     box-shadow:
-        0 4px 12px rgba(0,0,0,.2);
+        0 6px 18px rgba(0,0,0,.22);
 
 }
 
 .page-item:hover{
 
-    transform:translateY(-2px);
+    transform:translateY(-3px);
 
     border-color:#64748b;
 
@@ -175,12 +198,14 @@ button.danger:hover{
 
     border-color:var(--accent);
 
+    background:#1d4ed8;
+
     box-shadow:
-        0 0 0 2px rgba(59,130,246,.25);
+        0 0 0 3px rgba(59,130,246,.28);
 
 }
 
-.preview-wrap{
+.preview{
 
     padding:10px;
 
@@ -194,11 +219,15 @@ canvas{
 
     display:block;
 
-    border-radius:8px;
+    border-radius:10px;
 
     background:white;
 
 }
+
+/* ======================
+   Footer
+====================== */
 
 .page-footer{
 
@@ -210,12 +239,16 @@ canvas{
 
     padding:10px 12px;
 
-    font-size:.8rem;
-
 }
 
 .page-num{
+
     color:var(--muted);
+
+    font-size:.8rem;
+
+    font-weight:600;
+
 }
 
 .page-check{
@@ -225,13 +258,15 @@ canvas{
 
     accent-color:var(--accent);
 
-    cursor:pointer;
-
 }
+
+/* ======================
+   Empty
+====================== */
 
 .empty{
 
-    margin-top:80px;
+    margin-top:100px;
 
     text-align:center;
 
@@ -282,8 +317,8 @@ canvas{
 
     <button
         class="primary"
-        onclick="exportSelected()"
         style="background:#8b5cf6;"
+        onclick="exportSelected()"
     >
         抽出して保存
     </button>
@@ -301,22 +336,12 @@ canvas{
 
 </div>
 
-<div id="pages">
-
-    <div class="empty">
-        PDFを読み込んでください
-    </div>
-
-</div>
+<div id="pages"></div>
 
 <script>
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-/* =========================
-   Data
-========================= */
 
 let pageList = [];
 
@@ -324,9 +349,19 @@ let historyStack = [];
 
 let lastSelectedIndex = -1;
 
-/* =========================
+/* ======================
+   History
+====================== */
+
+function saveHistory(){
+
+    historyStack.push([...pageList]);
+
+}
+
+/* ======================
    Sortable
-========================= */
+====================== */
 
 new Sortable(document.getElementById('pages'), {
 
@@ -342,8 +377,11 @@ new Sortable(document.getElementById('pages'), {
             document.getElementById('pages');
 
         const newOrder =
-            Array.from(container.children)
-            .map(div => parseInt(div.dataset.index));
+            Array
+            .from(container.children)
+            .map(div =>
+                parseInt(div.dataset.index)
+            );
 
         pageList =
             newOrder.map(i => pageList[i]);
@@ -354,27 +392,21 @@ new Sortable(document.getElementById('pages'), {
 
 });
 
-/* =========================
-   Helpers
-========================= */
+/* ======================
+   Status
+====================== */
 
 function setStatus(text){
 
-    document.getElementById('status').textContent = text;
+    document
+    .getElementById('status')
+    .textContent = text;
 
 }
 
-function saveHistory(){
-
-    historyStack.push(
-        structuredClone(pageList)
-    );
-
-}
-
-/* =========================
+/* ======================
    Load PDF
-========================= */
+====================== */
 
 document
 .getElementById('fileInput')
@@ -389,7 +421,8 @@ document
 
 async function processFile(file,isReset){
 
-    if(!file) return;
+    const statusEl =
+        document.getElementById('status');
 
     if(isReset){
 
@@ -401,22 +434,26 @@ async function processFile(file,isReset){
 
     try{
 
-        setStatus('PDF読込中...');
+        statusEl.textContent =
+            '処理中...';
 
         const pdfBytes =
             await file.arrayBuffer();
 
         const pdfDoc =
-            await PDFLib.PDFDocument.load(pdfBytes);
+            await PDFLib
+            .PDFDocument
+            .load(
+                new Uint8Array(pdfBytes)
+            );
 
         const total =
             pdfDoc.getPageCount();
 
         for(let i=0;i<total;i++){
 
-            setStatus(
-                `読み込み ${i+1}/${total}`
-            );
+            statusEl.textContent =
+                `読み込み: ${i+1}/${total}`;
 
             const thumb =
                 await generateThumb(
@@ -430,9 +467,7 @@ async function processFile(file,isReset){
 
                 pageIndex:i,
 
-                thumb:thumb,
-
-                selected:false
+                thumb:thumb
 
             });
 
@@ -440,68 +475,23 @@ async function processFile(file,isReset){
 
         render();
 
-        setStatus('完了');
+        statusEl.textContent =
+            '完了';
 
-    }catch(err){
+    }catch(e){
 
-        console.error(err);
+        console.error(e);
 
-        setStatus('エラー');
+        statusEl.textContent =
+            'エラー';
 
     }
 
 }
 
-/* =========================
-   Generate Thumb
-========================= */
-
-async function generateThumb(pdfBytes,pageIndex){
-
-    const bytes =
-        new Uint8Array(pdfBytes.slice(0));
-
-    const pdf =
-        await pdfjsLib
-        .getDocument({
-            data:bytes
-        }).promise;
-
-    const page =
-        await pdf.getPage(pageIndex + 1);
-
-    const viewport =
-        page.getViewport({
-            scale:0.25
-        });
-
-    const canvas =
-        document.createElement('canvas');
-
-    const ctx =
-        canvas.getContext('2d');
-
-    canvas.width = viewport.width;
-
-    canvas.height = viewport.height;
-
-    await page.render({
-
-        canvasContext:ctx,
-        viewport:viewport
-
-    }).promise;
-
-    return canvas.toDataURL(
-        'image/webp',
-        0.6
-    );
-
-}
-
-/* =========================
+/* ======================
    Add PDF
-========================= */
+====================== */
 
 async function addPdf(){
 
@@ -517,21 +507,28 @@ async function addPdf(){
         const file =
             e.target.files[0];
 
-        if(!file) return;
+        const container =
+            document.getElementById('pages');
 
-        const selectedIndexes =
-            pageList
-            .map((p,i)=>
-                p.selected ? i : -1
-            )
-            .filter(i=>i!==-1);
+        const selectedElements =
+            Array
+            .from(container.children)
+            .filter(d =>
+                d.classList.contains(
+                    'selected'
+                )
+            );
 
         const insertAfter =
-            selectedIndexes.length > 0
-            ? selectedIndexes[selectedIndexes.length-1]
+            selectedElements.length > 0
+            ? parseInt(
+                selectedElements[
+                    selectedElements.length-1
+                ].dataset.index
+              )
             : pageList.length - 1;
 
-        const newPages =
+        const tempPages =
             await getPagesFromPdf(file);
 
         saveHistory();
@@ -539,7 +536,7 @@ async function addPdf(){
         pageList.splice(
             insertAfter + 1,
             0,
-            ...newPages
+            ...tempPages
         );
 
         render();
@@ -552,22 +549,29 @@ async function addPdf(){
 
 async function getPagesFromPdf(file){
 
-    const pages = [];
+    const statusEl =
+        document.getElementById('status');
+
+    const newPages = [];
 
     const pdfBytes =
         await file.arrayBuffer();
 
     const pdfDoc =
-        await PDFLib.PDFDocument.load(pdfBytes);
-
-    const total =
-        pdfDoc.getPageCount();
-
-    for(let i=0;i<total;i++){
-
-        setStatus(
-            `挿入 ${i+1}/${total}`
+        await PDFLib
+        .PDFDocument
+        .load(
+            new Uint8Array(pdfBytes)
         );
+
+    for(
+        let i=0;
+        i<pdfDoc.getPageCount();
+        i++
+    ){
+
+        statusEl.textContent =
+            `挿入中: ${i+1}/${pdfDoc.getPageCount()}`;
 
         const thumb =
             await generateThumb(
@@ -575,92 +579,150 @@ async function getPagesFromPdf(file){
                 i
             );
 
-        pages.push({
+        newPages.push({
 
             doc:pdfDoc,
 
             pageIndex:i,
 
-            thumb:thumb,
-
-            selected:false
+            thumb:thumb
 
         });
 
     }
 
-    return pages;
+    return newPages;
 
 }
 
-/* =========================
+/* ======================
    Undo
-========================= */
+====================== */
 
 function undo(){
 
     if(historyStack.length === 0)
         return;
 
-    pageList = historyStack.pop();
+    pageList =
+        historyStack.pop();
 
     render();
 
 }
 
-/* =========================
+/* ======================
    Delete
-========================= */
+====================== */
 
 function deleteSelected(){
 
-    const selectedCount =
-        pageList.filter(
-            p => p.selected
-        ).length;
-
-    if(selectedCount === 0){
-
-        alert(
-            '削除するページを選択してください'
-        );
-
-        return;
-
-    }
-
     saveHistory();
+
+    const container =
+        document.getElementById('pages');
+
+    const selected =
+        Array
+        .from(container.children)
+        .map(d =>
+            d.classList.contains(
+                'selected'
+            )
+        );
 
     pageList =
         pageList.filter(
-            p => !p.selected
+            (_,i)=>!selected[i]
         );
 
     render();
 
 }
 
-/* =========================
+/* ======================
    Clear Selection
-========================= */
+====================== */
 
 function clearSelection(){
 
-    pageList.forEach(p => {
+    const container =
+        document.getElementById('pages');
 
-        p.selected = false;
+    Array
+    .from(container.children)
+    .forEach(div=>{
+
+        div.classList.remove(
+            'selected'
+        );
 
     });
 
     lastSelectedIndex = -1;
 
-    render();
+}
+
+/* ======================
+   Generate Thumb
+====================== */
+
+async function generateThumb(
+    pdfBytes,
+    pageIndex
+){
+
+    const bytes =
+        new Uint8Array(
+            pdfBytes.slice(0)
+        );
+
+    const pdf =
+        await pdfjsLib
+        .getDocument({
+            data:bytes
+        }).promise;
+
+    const page =
+        await pdf.getPage(
+            pageIndex + 1
+        );
+
+    const canvas =
+        document.createElement(
+            'canvas'
+        );
+
+    const viewport =
+        page.getViewport({
+            scale:0.15
+        });
+
+    canvas.width =
+        viewport.width;
+
+    canvas.height =
+        viewport.height;
+
+    await page.render({
+
+        canvasContext:
+            canvas.getContext('2d'),
+
+        viewport:viewport
+
+    }).promise;
+
+    return canvas.toDataURL(
+        'image/webp',
+        0.4
+    );
 
 }
 
-/* =========================
+/* ======================
    Render
-========================= */
+====================== */
 
 function render(){
 
@@ -687,16 +749,13 @@ function render(){
             document.createElement('div');
 
         div.className =
-            'page-item' +
-            (p.selected
-                ? ' selected'
-                : '');
+            'page-item';
 
         div.dataset.index = i;
 
         div.innerHTML = `
 
-            <div class="preview-wrap">
+            <div class="preview">
                 <canvas></canvas>
             </div>
 
@@ -709,57 +768,37 @@ function render(){
                 <input
                     type="checkbox"
                     class="page-check"
-                    ${p.selected ? 'checked' : ''}
                 >
 
             </div>
 
         `;
 
-        /* Canvas */
-
         const canvas =
             div.querySelector('canvas');
 
-        const img = new Image();
+        const img =
+            new Image();
 
         img.src = p.thumb;
 
         img.onload = ()=>{
 
-            canvas.width = img.width;
+            canvas.width =
+                img.width;
 
-            canvas.height = img.height;
+            canvas.height =
+                img.height;
 
             canvas
             .getContext('2d')
-            .drawImage(img,0,0);
+            .drawImage(
+                img,
+                0,
+                0
+            );
 
         };
-
-        /* Checkbox */
-
-        const checkbox =
-            div.querySelector('.page-check');
-
-        checkbox.addEventListener(
-            'click',
-            e => e.stopPropagation()
-        );
-
-        checkbox.addEventListener(
-            'change',
-            ()=>{
-
-                p.selected =
-                    checkbox.checked;
-
-                render();
-
-            }
-        );
-
-        /* Click */
 
         div.onclick = (e)=>{
 
@@ -780,26 +819,44 @@ function render(){
                         i
                     );
 
+                const items =
+                    Array.from(
+                        container.children
+                    );
+
                 for(
                     let j=start;
                     j<=end;
                     j++
                 ){
 
-                    pageList[j].selected = true;
+                    items[j]
+                    .classList
+                    .add('selected');
+
+                    items[j]
+                    .querySelector(
+                        '.page-check'
+                    ).checked = true;
 
                 }
 
             }else{
 
-                p.selected =
-                    !p.selected;
+                div.classList.toggle(
+                    'selected'
+                );
+
+                div.querySelector(
+                    '.page-check'
+                ).checked =
+                    div.classList.contains(
+                        'selected'
+                    );
 
             }
 
             lastSelectedIndex = i;
-
-            render();
 
         };
 
@@ -809,26 +866,26 @@ function render(){
 
 }
 
-/* =========================
+/* ======================
    Export PDF
-========================= */
+====================== */
 
 async function exportPdf(){
 
     const name =
         prompt(
-            'ファイル名',
+            'ファイル名:',
             'edited.pdf'
         );
 
     if(!name) return;
 
-    setStatus('PDF生成中...');
-
     const newPdf =
-        await PDFLib.PDFDocument.create();
+        await PDFLib
+        .PDFDocument
+        .create();
 
-    for(const p of pageList){
+    for(let p of pageList){
 
         const [page] =
             await newPdf.copyPages(
@@ -854,32 +911,37 @@ async function exportPdf(){
     a.href =
         URL.createObjectURL(blob);
 
-    a.download =
-        name.endsWith('.pdf')
-        ? name
-        : name + '.pdf';
+    a.download = name;
 
     a.click();
 
-    setStatus('保存完了');
-
 }
 
-/* =========================
+/* ======================
    Export Selected
-========================= */
+====================== */
 
 async function exportSelected(){
 
-    const selected =
-        pageList.filter(
-            p => p.selected
-        );
+    const container =
+        document.getElementById('pages');
 
-    if(selected.length === 0){
+    const selectedIndices =
+        Array
+        .from(container.children)
+        .map((div,i)=>
+            div.classList.contains(
+                'selected'
+            )
+            ? i
+            : -1
+        )
+        .filter(i=>i!==-1);
+
+    if(selectedIndices.length === 0){
 
         alert(
-            '抽出するページを選択してください'
+            '抽出したいページを選択してください'
         );
 
         return;
@@ -888,18 +950,21 @@ async function exportSelected(){
 
     const name =
         prompt(
-            '抽出ファイル名',
+            '抽出ファイル名:',
             'extracted.pdf'
         );
 
     if(!name) return;
 
-    setStatus('抽出中...');
-
     const newPdf =
-        await PDFLib.PDFDocument.create();
+        await PDFLib
+        .PDFDocument
+        .create();
 
-    for(const p of selected){
+    for(let idx of selectedIndices){
+
+        const p =
+            pageList[idx];
 
         const [page] =
             await newPdf.copyPages(
@@ -931,8 +996,6 @@ async function exportSelected(){
         : name + '.pdf';
 
     a.click();
-
-    setStatus('抽出完了');
 
 }
 
