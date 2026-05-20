@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <title>PDF Editor Pro</title>
 
-<!-- PDF.js, pdf-lib, SortableJS の読み込み -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<!-- ライブラリの読み込み（より環境に依存しにくい安定版に変更） -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
@@ -149,31 +149,29 @@
 
 <div class="grid" id="pages"></div>
 
-<script type="module">
-    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+<script>
+    // PDF.jsのワーカー設定（安定版）
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
     const { PDFDocument, PDFHexString } = PDFLib;
 
     // データ管理
-    let fileSources = {}; // 高速化のため読み込んだPDFインスタンスをキャッシュ
+    let fileSources = {};
     let pagesData = [];
     let stateHistory = [];
     let lastSelectedIndex = -1;
 
     const pagesEl = document.getElementById('pages');
 
-    // グローバル関数として登録
-    window.undo = undo;
-    window.selectAll = selectAll;
-    window.clearSelection = clearSelection;
-    window.deleteSelected = deleteSelected;
-    window.exportPdf = exportPdf;
+    // セキュリティ環境に依存しないID生成関数
+    function generateId() {
+        return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+    }
 
     // 履歴管理
     function saveHistory() {
         stateHistory.push(JSON.parse(JSON.stringify(pagesData)));
-        if (stateHistory.length > 30) stateHistory.shift(); // 最大30回まで
+        if (stateHistory.length > 30) stateHistory.shift();
     }
 
     function undo() {
@@ -193,60 +191,71 @@
         const file = e.target.files[0];
         if (!file) return;
 
-        if (isAdd) saveHistory();
+        try {
+            if (isAdd) saveHistory();
 
-        const bytes = await file.arrayBuffer();
-        const sourceId = crypto.randomUUID();
+            const bytes = await file.arrayBuffer();
+            const sourceId = generateId();
 
-        // PDF.js(プレビュー用) と PDF-lib(編集・保存用) をキャッシュ
-        const pdfjsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
-        const pdflibDoc = await PDFDocument.load(bytes);
-        fileSources[sourceId] = { pdfjsDoc, pdflibDoc };
+            // PDFの読み込み
+            const pdfjsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+            const pdflibDoc = await PDFDocument.load(bytes);
+            fileSources[sourceId] = { pdfjsDoc, pdflibDoc };
 
-        const pageCount = pdflibDoc.getPageCount();
+            const pageCount = pdflibDoc.getPageCount();
 
-        if (!isAdd) {
-            pagesData = [];
-            stateHistory = [];
+            if (!isAdd) {
+                pagesData = [];
+                stateHistory = [];
+            }
+
+            for (let i = 0; i < pageCount; i++) {
+                pagesData.push({
+                    id: generateId(),
+                    sourceId: sourceId,
+                    sourcePageIndex: i,
+                    selected: false,
+                    bookmark: '',
+                    thumbnailUrl: null
+                });
+            }
+
+            renderPages();
+            generateThumbnails(sourceId);
+            
+        } catch (error) {
+            console.error(error);
+            alert("読み込みエラーが発生しました。\n詳細: " + error.message);
+        } finally {
+            e.target.value = ''; // リセット
         }
-
-        for (let i = 0; i < pageCount; i++) {
-            pagesData.push({
-                id: crypto.randomUUID(),
-                sourceId: sourceId,
-                sourcePageIndex: i,
-                selected: false,
-                bookmark: '',
-                thumbnailUrl: null
-            });
-        }
-
-        renderPages();
-        generateThumbnails(sourceId); // 非同期でサムネイル生成
-        e.target.value = ''; // 連続で同じファイルを読み込めるようにリセット
     }
 
-    // サムネイル画像の非同期生成 (大幅な高速化)
+    // サムネイル画像の非同期生成
     async function generateThumbnails(sourceId) {
-        const src = fileSources[sourceId];
-        if (!src) return;
-        
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        try {
+            const src = fileSources[sourceId];
+            if (!src) return;
+            
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
 
-        for (let p of pagesData) {
-            if (p.sourceId === sourceId && !p.thumbnailUrl) {
-                const page = await src.pdfjsDoc.getPage(p.sourcePageIndex + 1);
-                const viewport = page.getViewport({ scale: 0.3 }); // サムネイル用縮小
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-                await page.render({ canvasContext: context, viewport }).promise;
-                
-                p.thumbnailUrl = canvas.toDataURL();
-                
-                const imgEl = document.getElementById(`thumb-${p.id}`);
-                if (imgEl) imgEl.src = p.thumbnailUrl;
+            for (let p of pagesData) {
+                if (p.sourceId === sourceId && !p.thumbnailUrl) {
+                    const page = await src.pdfjsDoc.getPage(p.sourcePageIndex + 1);
+                    const viewport = page.getViewport({ scale: 0.3 });
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    await page.render({ canvasContext: context, viewport }).promise;
+                    
+                    p.thumbnailUrl = canvas.toDataURL();
+                    
+                    const imgEl = document.getElementById(`thumb-${p.id}`);
+                    if (imgEl) imgEl.src = p.thumbnailUrl;
+                }
             }
+        } catch (error) {
+            console.error("サムネイル生成エラー:", error);
         }
     }
 
@@ -259,7 +268,6 @@
             pageDiv.className = 'page' + (p.selected ? ' selected' : '');
             pageDiv.dataset.id = p.id;
 
-            // ページクリックでの選択トグル (入力欄クリック時は除外)
             pageDiv.onclick = (e) => {
                 if (e.target.tagName === 'INPUT') return;
                 handlePageClick(e, index);
@@ -282,7 +290,6 @@
             bkmkInput.placeholder = 'しおり名を追加...';
             bkmkInput.value = p.bookmark;
             
-            // しおり編集時
             bkmkInput.onchange = (e) => {
                 saveHistory();
                 p.bookmark = e.target.value;
@@ -296,7 +303,6 @@
             pagesEl.appendChild(pageDiv);
         });
 
-        // ドラッグ＆ドロップの有効化
         Sortable.create(pagesEl, {
             animation: 150,
             delay: 100,
@@ -305,12 +311,12 @@
             onEnd: (evt) => {
                 const moved = pagesData.splice(evt.oldIndex, 1)[0];
                 pagesData.splice(evt.newIndex, 0, moved);
-                renderPages(); // 並び順が変わったのでページ番号更新のため再描画
+                renderPages();
             }
         });
     }
 
-    // 選択の処理 (Shiftキー対応)
+    // 選択処理
     function handlePageClick(e, index) {
         if (e.shiftKey && lastSelectedIndex !== -1) {
             const start = Math.min(lastSelectedIndex, index);
@@ -325,7 +331,6 @@
         updateSelectionUI();
     }
 
-    // 選択状態の見た目だけを更新（再描画コスト削減）
     function updateSelectionUI() {
         const pageDivs = pagesEl.getElementsByClassName('page');
         for (let i = 0; i < pagesData.length; i++) {
@@ -355,46 +360,50 @@
         renderPages();
     }
 
-    // PDFの保存・抽出処理
+    // 保存処理
     async function exportPdf(isExtract) {
-        const targetPages = isExtract ? pagesData.filter(p => p.selected) : pagesData;
+        try {
+            const targetPages = isExtract ? pagesData.filter(p => p.selected) : pagesData;
 
-        if (targetPages.length === 0) {
-            alert('対象のページがありません。');
-            return;
-        }
-
-        const defaultName = isExtract ? 'extracted.pdf' : 'edited.pdf';
-        const fileName = prompt('保存するファイル名を入力してください:', defaultName);
-        if (!fileName) return; // キャンセル時
-
-        const newPdf = await PDFDocument.create();
-        const bookmarks = [];
-
-        // ページのコピーと追加
-        for (const p of targetPages) {
-            const srcDoc = fileSources[p.sourceId].pdflibDoc;
-            const [copiedPage] = await newPdf.copyPages(srcDoc, [p.sourcePageIndex]);
-            newPdf.addPage(copiedPage);
-
-            if (p.bookmark && p.bookmark.trim() !== '') {
-                bookmarks.push({
-                    title: p.bookmark.trim(),
-                    pageRef: copiedPage.ref
-                });
+            if (targetPages.length === 0) {
+                alert('対象のページがありません。');
+                return;
             }
-        }
 
-        // しおり(アウトライン)の追加
-        if (bookmarks.length > 0) {
-            addBookmarks(newPdf, bookmarks);
-        }
+            const defaultName = isExtract ? 'extracted.pdf' : 'edited.pdf';
+            const fileName = prompt('保存するファイル名を入力してください:', defaultName);
+            if (!fileName) return;
 
-        const pdfBytes = await newPdf.save();
-        downloadPdf(pdfBytes, fileName.endsWith('.pdf') ? fileName : fileName + '.pdf');
+            const newPdf = await PDFDocument.create();
+            const bookmarks = [];
+
+            for (const p of targetPages) {
+                const srcDoc = fileSources[p.sourceId].pdflibDoc;
+                const [copiedPage] = await newPdf.copyPages(srcDoc, [p.sourcePageIndex]);
+                newPdf.addPage(copiedPage);
+
+                if (p.bookmark && p.bookmark.trim() !== '') {
+                    bookmarks.push({
+                        title: p.bookmark.trim(),
+                        pageRef: copiedPage.ref
+                    });
+                }
+            }
+
+            if (bookmarks.length > 0) {
+                addBookmarks(newPdf, bookmarks);
+            }
+
+            const pdfBytes = await newPdf.save();
+            downloadPdf(pdfBytes, fileName.endsWith('.pdf') ? fileName : fileName + '.pdf');
+            
+        } catch (error) {
+            console.error(error);
+            alert("保存中にエラーが発生しました。\n詳細: " + error.message);
+        }
     }
 
-    // PDFにしおりを埋め込む関数
+    // しおり作成
     function addBookmarks(pdfDoc, bookmarks) {
         const context = pdfDoc.context;
         const outlinesDictRef = context.nextRef();
@@ -411,7 +420,7 @@
         bookmarks.forEach((bm, i) => {
             const destArray = context.obj([bm.pageRef, context.name('Fit')]);
             const itemDict = {
-                Title: PDFHexString.fromText(bm.title), // 日本語対応エンコーディング
+                Title: PDFHexString.fromText(bm.title),
                 Parent: outlinesDictRef,
                 Dest: destArray,
             };
