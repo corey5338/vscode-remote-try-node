@@ -13,7 +13,7 @@
 <style>
 
 :root{
-    --bg:#0f172a;
+    --bg:#020617;
     --panel:#1e293b;
     --panel2:#334155;
     --accent:#3b82f6;
@@ -28,16 +28,21 @@
 }
 
 body{
+
     margin:0;
     padding:20px;
+
     background:
         radial-gradient(circle at top left,#1e293b 0%,#020617 45%),
         #020617;
+
     color:var(--text);
+
     font-family:
         "Segoe UI",
         system-ui,
         sans-serif;
+
 }
 
 .toolbar{
@@ -52,8 +57,6 @@ body{
     gap:10px;
 
     padding:16px 20px;
-
-    border:1px solid rgba(255,255,255,.06);
 
     border-radius:18px;
 
@@ -95,20 +98,28 @@ button:hover{
 }
 
 button.primary{
+
     background:var(--accent);
+
 }
 
 button.primary:hover{
+
     background:var(--accent2);
+
 }
 
 button.danger{
+
     background:var(--danger);
+
 }
 
 .zoom-group{
+
     display:flex;
     gap:6px;
+
 }
 
 #status{
@@ -190,7 +201,6 @@ button.danger{
 canvas{
 
     width:100%;
-
     height:100%;
 
     display:block;
@@ -204,20 +214,18 @@ canvas{
 .loading{
 
     position:absolute;
-
     inset:0;
 
     display:flex;
 
     align-items:center;
-
     justify-content:center;
 
-    font-size:.85rem;
+    background:rgba(15,23,42,.55);
 
     color:#cbd5e1;
 
-    background:rgba(15,23,42,.5);
+    font-size:.85rem;
 
 }
 
@@ -237,15 +245,15 @@ canvas{
 
     margin-top:40px;
 
-    text-align:center;
-
-    color:#94a3b8;
-
     padding:40px;
 
     border-radius:20px;
 
     background:rgba(30,41,59,.5);
+
+    text-align:center;
+
+    color:#94a3b8;
 
 }
 
@@ -351,29 +359,6 @@ function setStatus(text){
 
 }
 
-function saveHistory(){
-
-    historyStack.push(
-
-        structuredClone(
-
-            pageList.map(p=>({
-
-                id:p.id,
-                pageIndex:p.pageIndex,
-                selected:p.selected,
-                thumb:p.thumb,
-                loading:p.loading,
-                pdfBytes:p.pdfBytes
-
-            }))
-
-        )
-
-    );
-
-}
-
 function openFileDialog(){
 
     document
@@ -396,6 +381,32 @@ document
     }
 
 };
+
+function saveHistory(){
+
+    historyStack.push(
+
+        pageList.map(p => ({
+
+            id:p.id,
+
+            doc:p.doc,
+
+            pdfBytes:p.pdfBytes,
+
+            pageIndex:p.pageIndex,
+
+            thumb:p.thumb,
+
+            selected:p.selected,
+
+            loading:p.loading
+
+        }))
+
+    );
+
+}
 
 new Sortable(pagesContainer,{
 
@@ -610,7 +621,13 @@ async function processThumbQueue(){
 
         const p = pageList[index];
 
-        if(!p || p.thumb){
+        if(!p){
+
+            continue;
+
+        }
+
+        if(p.thumb){
 
             continue;
 
@@ -729,8 +746,10 @@ function createPageElement(p,index){
 
     div.onclick = e => {
 
-        if(e.shiftKey &&
-            lastSelectedIndex !== -1){
+        if(
+            e.shiftKey &&
+            lastSelectedIndex !== -1
+        ){
 
             const start =
                 Math.min(
@@ -786,7 +805,11 @@ function updateThumbnail(index){
         pageList[index].thumb
     );
 
-    loading.remove();
+    if(loading){
+
+        loading.remove();
+
+    }
 
 }
 
@@ -848,6 +871,8 @@ function rebuildDOM(){
 
     });
 
+    updateSelectionUI();
+
 }
 
 function clearSelection(){
@@ -894,25 +919,17 @@ function deleteSelected(){
 
 function undo(){
 
-    if(historyStack.length===0){
+    if(historyStack.length === 0){
 
         return;
 
     }
 
-    const prev =
-        historyStack.pop();
-
-    pageList = pageList.map((p,i)=>({
-
-        ...p,
-
-        selected:
-            prev[i]?.selected || false
-
-    }));
+    pageList = historyStack.pop();
 
     rebuildDOM();
+
+    setStatus('Undo');
 
 }
 
@@ -920,7 +937,9 @@ function setZoom(scale){
 
     thumbScale = scale;
 
-    pageList.forEach(p=>{
+    thumbQueue.length = 0;
+
+    pageList.forEach((p,i)=>{
 
         p.thumb = null;
 
@@ -935,6 +954,8 @@ function setZoom(scale){
         queueThumbRender(i);
 
     });
+
+    setStatus(`Zoom ${scale}`);
 
 }
 
