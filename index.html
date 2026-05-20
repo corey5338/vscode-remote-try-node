@@ -36,6 +36,7 @@
     let history = [];
 
     function saveHistory() {
+        // 現在のpages状態を独立したデータとして履歴に保存
         history.push(pages.map(p => ({ bytes: p.bytes.slice(), selected: p.selected })));
     }
 
@@ -79,11 +80,17 @@
     }
 
     function deleteSelected() {
-        // 削除する前に現在の状態を履歴へ保存
+        // 選択されたページが存在するか確認
+        if (!pages.some(p => p.selected)) return alert("削除するページを選択してください");
+        
         saveHistory();
-        // 選択されていないものだけを抽出してページ配列を更新
-        pages = pages.filter(p => !p.selected);
-        // 再描画
+        
+        // 後ろからループして削除することでインデックスのズレを防ぐ
+        for (let i = pages.length - 1; i >= 0; i--) {
+            if (pages[i].selected) {
+                pages.splice(i, 1);
+            }
+        }
         render();
     }
 
@@ -111,7 +118,6 @@
         onEnd: (evt) => {
             const item = pages.splice(evt.oldIndex, 1)[0];
             pages.splice(evt.newIndex, 0, item);
-            // 並び替え後はrenderが必ずDOMを再生成するため整合性が保たれます
             render();
         }
     });
