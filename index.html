@@ -8,47 +8,64 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
     body { background: #1e293b; color: white; padding: 20px; font-family: sans-serif; }
+    .toolbar { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-    .page-item { background: #334155; padding: 5px; border-radius: 4px; cursor: move; border: 3px solid transparent; text-align: center; }
+    .page-item { background: #475569; padding: 5px; border-radius: 4px; cursor: move; border: 3px solid transparent; text-align: center; }
     .page-item.selected { border-color: #3b82f6; }
     canvas { width: 100%; pointer-events: none; }
 </style>
 </head>
 <body>
+
+<div class="toolbar">
+    <!-- 最初の一括読み込み用 -->
+    <input type="file" id="fileInput" accept="application/pdf">
+    <!-- 途中追加用 -->
     <button onclick="addPdf()">PDF追加</button>
-    <button onclick="deleteSelected()" style="background:#ef4444; border:none; color:white; padding:5px 10px;">選択を削除</button>
-    <button onclick="exportPdf()" style="background:#10b981; border:none; color:white; padding:5px 10px;">名前を付けて保存</button>
-    <div id="pages"></div>
+    <button onclick="deleteSelected()" style="background:#ef4444; border:none; color:white; padding:5px 10px; cursor:pointer;">選択を削除</button>
+    <button onclick="exportPdf()" style="background:#10b981; border:none; color:white; padding:5px 10px; cursor:pointer;">名前を付けて保存</button>
+</div>
+<div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     let pageList = []; 
 
+    // Sortable初期化
     new Sortable(document.getElementById('pages'), {
         animation: 150,
         onEnd: () => {
             const container = document.getElementById('pages');
-            const newOrder = Array.from(container.children).map(div => div.dataset.index);
+            const newOrder = Array.from(container.children).map(div => parseInt(div.dataset.index));
             pageList = newOrder.map(i => pageList[i]);
             render();
         }
     });
 
+    // ファイル処理ロジック
+    async function processFile(file) {
+        const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
+        for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+            const tempDoc = await PDFLib.PDFDocument.create();
+            const [p] = await tempDoc.copyPages(pdfDoc, [i]);
+            tempDoc.addPage(p);
+            const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
+            pageList.push({ doc: pdfDoc, pageIndex: i, thumb });
+        }
+        render();
+    }
+
+    // 最初の読み込み
+    document.getElementById('fileInput').onchange = (e) => {
+        pageList = []; // リセット
+        processFile(e.target.files[0]);
+    };
+
+    // 追加読み込み
     async function addPdf() {
         const input = document.createElement('input');
         input.type = 'file'; input.accept = 'application/pdf';
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
-            for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-                const tempDoc = await PDFLib.PDFDocument.create();
-                const [p] = await tempDoc.copyPages(pdfDoc, [i]);
-                tempDoc.addPage(p);
-                const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
-                pageList.push({ doc: pdfDoc, pageIndex: i, thumb });
-            }
-            render();
-        };
+        input.onchange = (e) => processFile(e.target.files[0]);
         input.click();
     }
 
