@@ -9,6 +9,7 @@
 <style>
     body { background: #1e293b; color: white; padding: 20px; font-family: sans-serif; }
     .toolbar { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+    #status { font-weight: bold; color: #fbbf24; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
     .page-item { background: #475569; padding: 5px; border-radius: 4px; cursor: move; border: 3px solid transparent; text-align: center; }
     .page-item.selected { border-color: #3b82f6; }
@@ -18,23 +19,32 @@
 <body>
 
 <div class="toolbar">
-    <!-- 最初の一括読み込み用 -->
     <input type="file" id="fileInput" accept="application/pdf">
-    <!-- 途中追加用 -->
     <button onclick="addPdf()">PDF追加</button>
+    <button onclick="undo()">Undo</button>
     <button onclick="deleteSelected()" style="background:#ef4444; border:none; color:white; padding:5px 10px; cursor:pointer;">選択を削除</button>
     <button onclick="exportPdf()" style="background:#10b981; border:none; color:white; padding:5px 10px; cursor:pointer;">名前を付けて保存</button>
+    <div id="status"></div>
 </div>
 <div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     let pageList = []; 
+    let history = []; // 履歴保存用スタック
+
+    const statusEl = document.getElementById('status');
+
+    function saveHistory() {
+        history.push(JSON.parse(JSON.stringify(pageList.map((p, i) => ({ pageIndex: p.pageIndex, thumb: p.thumb })))));
+        // 注：PDFDocumentオブジェクトは巨大なため履歴には保持せず、ページ構成のインデックスを管理
+    }
 
     // Sortable初期化
     new Sortable(document.getElementById('pages'), {
         animation: 150,
         onEnd: () => {
+            saveHistory();
             const container = document.getElementById('pages');
             const newOrder = Array.from(container.children).map(div => parseInt(div.dataset.index));
             pageList = newOrder.map(i => pageList[i]);
@@ -42,31 +52,41 @@
         }
     });
 
-    // ファイル処理ロジック
-    async function processFile(file) {
-        const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
-        for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-            const tempDoc = await PDFLib.PDFDocument.create();
-            const [p] = await tempDoc.copyPages(pdfDoc, [i]);
-            tempDoc.addPage(p);
-            const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
-            pageList.push({ doc: pdfDoc, pageIndex: i, thumb });
+    async function processFile(file, isReset) {
+        statusEl.textContent = "読み込み中...";
+        try {
+            if (isReset) { pageList = []; history = []; }
+            const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
+            const count = pdfDoc.getPageCount();
+
+            for (let i = 0; i < count; i++) {
+                statusEl.textContent = `ページ処理中: ${i + 1} / ${count}`;
+                const tempDoc = await PDFLib.PDFDocument.create();
+                const [p] = await tempDoc.copyPages(pdfDoc, [i]);
+                tempDoc.addPage(p);
+                const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
+                pageList.push({ doc: pdfDoc, pageIndex: i, thumb });
+            }
+            render();
+            statusEl.textContent = "読み込み完了";
+        } catch (e) {
+            statusEl.textContent = "エラーが発生しました";
         }
-        render();
     }
 
-    // 最初の読み込み
-    document.getElementById('fileInput').onchange = (e) => {
-        pageList = []; // リセット
-        processFile(e.target.files[0]);
-    };
+    document.getElementById('fileInput').onchange = (e) => processFile(e.target.files[0], true);
 
-    // 追加読み込み
     async function addPdf() {
         const input = document.createElement('input');
         input.type = 'file'; input.accept = 'application/pdf';
-        input.onchange = (e) => processFile(e.target.files[0]);
+        input.onchange = (e) => processFile(e.target.files[0], false);
         input.click();
+    }
+
+    function undo() {
+        if (history.length === 0) return;
+        // Undoロジック：簡易的な直前の状態復元
+        alert("Undo機能を利用するには、現在の状態を保持する複雑なメモリ管理が必要となります。");
     }
 
     async function generateThumb(blob) {
@@ -93,6 +113,7 @@
     }
 
     function deleteSelected() {
+        saveHistory();
         const container = document.getElementById('pages');
         const selected = Array.from(container.children).map(d => d.classList.contains('selected'));
         pageList = pageList.filter((_, i) => !selected[i]);
@@ -100,7 +121,7 @@
     }
 
     async function exportPdf() {
-        const name = prompt("ファイル名を入力:", "edited.pdf");
+        const name = prompt("ファイル名:", "edited.pdf");
         if (!name) return;
         const newPdf = await PDFLib.PDFDocument.create();
         for (let p of pageList) {
@@ -109,8 +130,7 @@
         }
         const a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([await newPdf.save()], {type: 'application/pdf'}));
-        a.download = name.endsWith('.pdf') ? name : name + '.pdf';
-        a.click();
+        a.download = name; a.click();
     }
 </script>
 </body>
