@@ -28,22 +28,12 @@
 body{
     margin:0;
     padding:20px;
-
-    background:
-        radial-gradient(circle at top left,#1e293b,#0f172a 45%);
-
+    background:linear-gradient(to bottom,#0f172a,#020617);
     color:var(--text);
-
-    font-family:
-        "Segoe UI",
-        system-ui,
-        sans-serif;
+    font-family:"Segoe UI",system-ui,sans-serif;
 }
 
-/* Toolbar */
-
 .toolbar{
-
     position:sticky;
     top:12px;
     z-index:1000;
@@ -55,184 +45,122 @@ body{
 
     padding:18px 22px;
 
-    background:
-        rgba(30,41,59,.92);
+    background:rgba(30,41,59,.9);
 
     backdrop-filter:blur(12px);
 
     border-radius:18px;
 
-    box-shadow:
-        0 12px 32px rgba(0,0,0,.35);
-
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
 }
 
 button{
-
     border:none;
-
     padding:10px 16px;
-
     border-radius:10px;
-
     background:#334155;
-
     color:white;
-
     font-weight:600;
-
     cursor:pointer;
-
-    transition:.18s;
-
+    transition:.15s;
 }
 
 button:hover{
-
-    transform:translateY(-1px);
-
     background:#475569;
-
+    transform:translateY(-1px);
 }
 
 button.primary{
-
     background:var(--accent);
-
 }
 
 button.danger{
-
     background:var(--danger);
-
 }
 
 .divider{
-
     width:1px;
     height:22px;
-
     background:#475569;
-
 }
 
 #status{
-
     margin-left:auto;
-
     color:var(--muted);
-
 }
 
-/* Pages */
-
 #pages{
-
     display:grid;
-
-    grid-template-columns:
-        repeat(auto-fill,minmax(180px,1fr));
-
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
     gap:22px;
-
     margin-top:24px;
-
 }
 
 .page-item{
-
     background:var(--panel);
-
     border-radius:16px;
-
     overflow:hidden;
-
     border:2px solid transparent;
-
-    transition:.18s;
-
+    transition:.15s;
     cursor:move;
-
-    box-shadow:
-        0 6px 18px rgba(0,0,0,.22);
-
 }
 
 .page-item:hover{
-
-    transform:translateY(-3px);
-
-    border-color:#64748b;
-
+    transform:translateY(-2px);
 }
 
 .page-item.selected{
-
     border-color:var(--accent);
-
     background:#1d4ed8;
-
 }
 
 .preview{
-
     background:#0b1220;
-
     padding:10px;
-
 }
 
 canvas{
-
     width:100%;
-
     display:block;
-
     border-radius:10px;
-
     background:white;
-
 }
 
 .page-footer{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     padding:10px 12px;
-
 }
 
 .page-num{
-
-    color:var(--muted);
-
     font-size:.82rem;
-
-    font-weight:600;
-
+    color:var(--muted);
 }
 
 .page-check{
-
     width:18px;
     height:18px;
-
     accent-color:var(--accent);
+}
 
+.placeholder{
+    aspect-ratio:0.7;
+    background:#111827;
+    border-radius:10px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:#64748b;
+    font-size:.8rem;
 }
 
 .empty{
-
     margin-top:120px;
-
     text-align:center;
-
     color:var(--muted);
-
 }
 
 </style>
@@ -263,10 +191,7 @@ canvas{
         Undo
     </button>
 
-    <button
-        class="danger"
-        onclick="deleteSelected()"
-    >
+    <button class="danger" onclick="deleteSelected()">
         削除
     </button>
 
@@ -279,13 +204,10 @@ canvas{
         style="background:#8b5cf6;"
         onclick="exportSelected()"
     >
-        抽出して保存
+        抽出保存
     </button>
 
-    <button
-        class="primary"
-        onclick="exportPdf()"
-    >
+    <button class="primary" onclick="exportPdf()">
         全保存
     </button>
 
@@ -308,6 +230,35 @@ const pagesContainer =
 let pageList = [];
 let historyStack = [];
 let lastSelectedIndex = -1;
+
+const observer =
+    new IntersectionObserver(onVisible,{
+        rootMargin:'300px'
+    });
+
+const renderQueue = [];
+let rendering = false;
+
+/* =========================
+   Status
+========================= */
+
+function setStatus(text){
+
+    document.getElementById('status')
+    .textContent = text;
+
+}
+
+/* =========================
+   History
+========================= */
+
+function saveHistory(){
+
+    historyStack.push([...pageList]);
+
+}
 
 /* =========================
    Sortable
@@ -344,34 +295,11 @@ new Sortable(pagesContainer,{
 });
 
 /* =========================
-   Status
-========================= */
-
-function setStatus(text){
-
-    document
-    .getElementById('status')
-    .textContent = text;
-
-}
-
-/* =========================
-   History
-========================= */
-
-function saveHistory(){
-
-    historyStack.push([...pageList]);
-
-}
-
-/* =========================
    Load PDF
 ========================= */
 
-document
-.getElementById('fileInput')
-.onchange = (e)=>{
+document.getElementById('fileInput')
+.onchange = e => {
 
     processFile(
         e.target.files[0],
@@ -387,9 +315,7 @@ async function processFile(file,isReset){
         if(isReset){
 
             pageList = [];
-
             historyStack = [];
-
             pagesContainer.innerHTML = '';
 
         }
@@ -400,24 +326,20 @@ async function processFile(file,isReset){
             await file.arrayBuffer();
 
         const pdfDoc =
-            await PDFLib
-            .PDFDocument
-            .load(pdfBytes);
+            await PDFLib.PDFDocument.load(pdfBytes);
 
         const pdfjsDoc =
-            await pdfjsLib
-            .getDocument({
+            await pdfjsLib.getDocument({
                 data:pdfBytes.slice(0)
             }).promise;
 
         const total =
             pdfDoc.getPageCount();
 
-        for(let i=0;i<total;i++){
+        const fragment =
+            document.createDocumentFragment();
 
-            setStatus(
-                `読み込み ${i+1}/${total}`
-            );
+        for(let i=0;i<total;i++){
 
             const pageData = {
 
@@ -427,7 +349,11 @@ async function processFile(file,isReset){
 
                 pageIndex:i,
 
-                selected:false
+                selected:false,
+
+                thumb:null,
+
+                rendering:false
 
             };
 
@@ -439,11 +365,13 @@ async function processFile(file,isReset){
                     pageList.length - 1
                 );
 
-            pagesContainer.appendChild(el);
+            fragment.appendChild(el);
 
         }
 
-        setStatus('完了');
+        pagesContainer.appendChild(fragment);
+
+        setStatus(`読込完了 (${total}ページ)`);
 
     }catch(err){
 
@@ -452,6 +380,527 @@ async function processFile(file,isReset){
         setStatus('エラー');
 
     }
+
+}
+
+/* =========================
+   Create Page
+========================= */
+
+function createPageElement(p,index){
+
+    const div =
+        document.createElement('div');
+
+    div.className = 'page-item';
+
+    div.pageData = p;
+
+    div.innerHTML = `
+
+        <div class="preview">
+
+            <div class="placeholder">
+                Loading...
+            </div>
+
+            <canvas style="display:none;"></canvas>
+
+        </div>
+
+        <div class="page-footer">
+
+            <div class="page-num">
+                Page ${index + 1}
+            </div>
+
+            <input
+                type="checkbox"
+                class="page-check"
+            >
+
+        </div>
+
+    `;
+
+    setupSelection(div,p,index);
+
+    observer.observe(div);
+
+    return div;
+
+}
+
+/* =========================
+   Selection
+========================= */
+
+function setupSelection(div,p,index){
+
+    const checkbox =
+        div.querySelector('.page-check');
+
+    checkbox.checked =
+        p.selected;
+
+    checkbox.addEventListener(
+        'click',
+        e=>e.stopPropagation()
+    );
+
+    checkbox.addEventListener(
+        'change',
+        ()=>{
+
+            p.selected =
+                checkbox.checked;
+
+            div.classList.toggle(
+                'selected',
+                p.selected
+            );
+
+        }
+    );
+
+    div.onclick = e => {
+
+        if(
+            e.shiftKey &&
+            lastSelectedIndex !== -1
+        ){
+
+            const start =
+                Math.min(
+                    lastSelectedIndex,
+                    index
+                );
+
+            const end =
+                Math.max(
+                    lastSelectedIndex,
+                    index
+                );
+
+            const items =
+                Array.from(
+                    pagesContainer.children
+                );
+
+            for(let i=start;i<=end;i++){
+
+                items[i]
+                .pageData
+                .selected = true;
+
+                items[i]
+                .classList
+                .add('selected');
+
+                items[i]
+                .querySelector('.page-check')
+                .checked = true;
+
+            }
+
+        }else{
+
+            p.selected = !p.selected;
+
+            div.classList.toggle(
+                'selected',
+                p.selected
+            );
+
+            checkbox.checked =
+                p.selected;
+
+        }
+
+        lastSelectedIndex = index;
+
+    };
+
+}
+
+/* =========================
+   Lazy Render
+========================= */
+
+function onVisible(entries){
+
+    entries.forEach(entry=>{
+
+        if(!entry.isIntersecting)
+            return;
+
+        const el =
+            entry.target;
+
+        const p =
+            el.pageData;
+
+        if(
+            p.thumb ||
+            p.rendering
+        ) return;
+
+        renderQueue.push({
+            page:p,
+            element:el
+        });
+
+        processRenderQueue();
+
+    });
+
+}
+
+async function processRenderQueue(){
+
+    if(rendering) return;
+
+    rendering = true;
+
+    while(renderQueue.length){
+
+        const item =
+            renderQueue.shift();
+
+        await renderThumbnail(
+            item.page,
+            item.element
+        );
+
+        await new Promise(r=>
+            requestIdleCallback(r)
+        );
+
+    }
+
+    rendering = false;
+
+}
+
+async function renderThumbnail(p,el){
+
+    if(p.thumb) return;
+
+    p.rendering = true;
+
+    try{
+
+        const page =
+            await p.pdfjsDoc.getPage(
+                p.pageIndex + 1
+            );
+
+        const viewport =
+            page.getViewport({
+                scale:0.18
+            });
+
+        const canvas =
+            el.querySelector('canvas');
+
+        canvas.width =
+            viewport.width;
+
+        canvas.height =
+            viewport.height;
+
+        await page.render({
+
+            canvasContext:
+                canvas.getContext('2d'),
+
+            viewport
+
+        }).promise;
+
+        p.thumb =
+            canvas.toDataURL(
+                'image/webp',
+                0.55
+            );
+
+        el.querySelector('.placeholder')
+        .remove();
+
+        canvas.style.display =
+            'block';
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+    p.rendering = false;
+
+}
+
+/* =========================
+   Delete
+========================= */
+
+function deleteSelected(){
+
+    const count =
+        pageList.filter(
+            p=>p.selected
+        ).length;
+
+    if(count === 0){
+
+        alert('削除ページを選択してください');
+
+        return;
+
+    }
+
+    saveHistory();
+
+    document
+    .querySelectorAll('.page-item')
+    .forEach(el=>{
+
+        if(el.pageData.selected){
+
+            el.remove();
+
+        }
+
+    });
+
+    pageList =
+        pageList.filter(
+            p=>!p.selected
+        );
+
+    updatePageNumbers();
+
+    setStatus(`${count}ページ削除`);
+
+}
+
+/* =========================
+   Undo
+========================= */
+
+function undo(){
+
+    if(historyStack.length === 0)
+        return;
+
+    pageList =
+        historyStack.pop();
+
+    render();
+
+}
+
+/* =========================
+   Render
+========================= */
+
+function render(){
+
+    pagesContainer.innerHTML = '';
+
+    const fragment =
+        document.createDocumentFragment();
+
+    pageList.forEach((p,index)=>{
+
+        const el =
+            createPageElement(p,index);
+
+        if(p.thumb){
+
+            const canvas =
+                el.querySelector('canvas');
+
+            const img =
+                new Image();
+
+            img.src = p.thumb;
+
+            img.onload = ()=>{
+
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                canvas.getContext('2d')
+                .drawImage(img,0,0);
+
+            };
+
+            el.querySelector('.placeholder')
+            .remove();
+
+            canvas.style.display =
+                'block';
+
+        }
+
+        fragment.appendChild(el);
+
+    });
+
+    pagesContainer.appendChild(fragment);
+
+}
+
+/* =========================
+   Utils
+========================= */
+
+function updatePageNumbers(){
+
+    document
+    .querySelectorAll('.page-num')
+    .forEach((el,index)=>{
+
+        el.textContent =
+            `Page ${index + 1}`;
+
+    });
+
+}
+
+function clearSelection(){
+
+    pageList.forEach(p=>{
+
+        p.selected = false;
+
+    });
+
+    document
+    .querySelectorAll('.page-item')
+    .forEach(el=>{
+
+        el.classList.remove('selected');
+
+        el.querySelector('.page-check')
+        .checked = false;
+
+    });
+
+}
+
+/* =========================
+   Export
+========================= */
+
+async function exportPdf(){
+
+    const name =
+        prompt(
+            'ファイル名',
+            'edited.pdf'
+        );
+
+    if(!name) return;
+
+    setStatus('PDF生成中...');
+
+    const newPdf =
+        await PDFLib
+        .PDFDocument
+        .create();
+
+    for(let p of pageList){
+
+        const [page] =
+            await newPdf.copyPages(
+                p.doc,
+                [p.pageIndex]
+            );
+
+        newPdf.addPage(page);
+
+    }
+
+    downloadPdf(
+        await newPdf.save(),
+        name
+    );
+
+}
+
+async function exportSelected(){
+
+    const selected =
+        pageList.filter(
+            p=>p.selected
+        );
+
+    if(selected.length === 0){
+
+        alert('ページ選択してください');
+
+        return;
+
+    }
+
+    const name =
+        prompt(
+            '抽出ファイル名',
+            'extract.pdf'
+        );
+
+    if(!name) return;
+
+    const newPdf =
+        await PDFLib
+        .PDFDocument
+        .create();
+
+    for(let p of selected){
+
+        const [page] =
+            await newPdf.copyPages(
+                p.doc,
+                [p.pageIndex]
+            );
+
+        newPdf.addPage(page);
+
+    }
+
+    downloadPdf(
+        await newPdf.save(),
+        name
+    );
+
+}
+
+function downloadPdf(bytes,name){
+
+    const blob =
+        new Blob(
+            [bytes],
+            {
+                type:'application/pdf'
+            }
+        );
+
+    const a =
+        document.createElement('a');
+
+    a.href =
+        URL.createObjectURL(blob);
+
+    a.download =
+        name.endsWith('.pdf')
+        ? name
+        : name + '.pdf';
+
+    a.click();
+
+    setStatus('保存完了');
 
 }
 
@@ -515,23 +964,16 @@ async function getPagesFromPdf(file){
         await file.arrayBuffer();
 
     const pdfDoc =
-        await PDFLib
-        .PDFDocument
-        .load(pdfBytes);
+        await PDFLib.PDFDocument.load(pdfBytes);
 
     const pdfjsDoc =
-        await pdfjsLib
-        .getDocument({
+        await pdfjsLib.getDocument({
             data:pdfBytes.slice(0)
         }).promise;
 
     const pages = [];
 
-    for(
-        let i=0;
-        i<pdfDoc.getPageCount();
-        i++
-    ){
+    for(let i=0;i<pdfDoc.getPageCount();i++){
 
         pages.push({
 
@@ -541,516 +983,17 @@ async function getPagesFromPdf(file){
 
             pageIndex:i,
 
-            selected:false
+            selected:false,
+
+            thumb:null,
+
+            rendering:false
 
         });
 
     }
 
     return pages;
-
-}
-
-/* =========================
-   Create Page Element
-========================= */
-
-function createPageElement(
-    p,
-    index
-){
-
-    const div =
-        document.createElement('div');
-
-    div.className =
-        'page-item';
-
-    div.pageData = p;
-
-    div.innerHTML = `
-
-        <div class="preview">
-            <canvas></canvas>
-        </div>
-
-        <div class="page-footer">
-
-            <div class="page-num">
-                Page ${index + 1}
-            </div>
-
-            <input
-                type="checkbox"
-                class="page-check"
-            >
-
-        </div>
-
-    `;
-
-    const checkbox =
-        div.querySelector('.page-check');
-
-    checkbox.checked =
-        p.selected;
-
-    if(p.selected){
-
-        div.classList.add(
-            'selected'
-        );
-
-    }
-
-    checkbox.addEventListener(
-        'click',
-        e=>e.stopPropagation()
-    );
-
-    checkbox.addEventListener(
-        'change',
-        ()=>{
-
-            p.selected =
-                checkbox.checked;
-
-            div.classList.toggle(
-                'selected',
-                p.selected
-            );
-
-        }
-    );
-
-    div.addEventListener(
-        'click',
-        (e)=>{
-
-            if(
-                e.shiftKey &&
-                lastSelectedIndex !== -1
-            ){
-
-                const start =
-                    Math.min(
-                        lastSelectedIndex,
-                        index
-                    );
-
-                const end =
-                    Math.max(
-                        lastSelectedIndex,
-                        index
-                    );
-
-                const items =
-                    Array.from(
-                        pagesContainer.children
-                    );
-
-                for(
-                    let i=start;
-                    i<=end;
-                    i++
-                ){
-
-                    items[i]
-                    .pageData
-                    .selected = true;
-
-                    items[i]
-                    .classList
-                    .add('selected');
-
-                    items[i]
-                    .querySelector('.page-check')
-                    .checked = true;
-
-                }
-
-            }else{
-
-                p.selected =
-                    !p.selected;
-
-                div.classList.toggle(
-                    'selected',
-                    p.selected
-                );
-
-                checkbox.checked =
-                    p.selected;
-
-            }
-
-            lastSelectedIndex = index;
-
-        }
-    );
-
-    renderThumbnail(
-        p,
-        div.querySelector('canvas')
-    );
-
-    return div;
-
-}
-
-/* =========================
-   Thumbnail
-========================= */
-
-async function renderThumbnail(
-    p,
-    canvas
-){
-
-    if(p.rendered){
-
-        const img =
-            new Image();
-
-        img.src =
-            p.rendered;
-
-        img.onload = ()=>{
-
-            canvas.width =
-                img.width;
-
-            canvas.height =
-                img.height;
-
-            canvas
-            .getContext('2d')
-            .drawImage(
-                img,
-                0,
-                0
-            );
-
-        };
-
-        return;
-
-    }
-
-    const page =
-        await p.pdfjsDoc.getPage(
-            p.pageIndex + 1
-        );
-
-    const viewport =
-        page.getViewport({
-            scale:0.22
-        });
-
-    canvas.width =
-        viewport.width;
-
-    canvas.height =
-        viewport.height;
-
-    await page.render({
-
-        canvasContext:
-            canvas.getContext('2d'),
-
-        viewport:viewport
-
-    }).promise;
-
-    p.rendered =
-        canvas.toDataURL(
-            'image/webp',
-            0.6
-        );
-
-}
-
-/* =========================
-   Render
-========================= */
-
-function render(){
-
-    if(pageList.length === 0){
-
-        pagesContainer.innerHTML = `
-            <div class="empty">
-                PDFを読み込んでください
-            </div>
-        `;
-
-        return;
-
-    }
-
-    const existingMap = new Map();
-
-    document
-    .querySelectorAll('.page-item')
-    .forEach(el=>{
-
-        existingMap.set(
-            el.pageData,
-            el
-        );
-
-    });
-
-    pagesContainer.innerHTML = '';
-
-    pageList.forEach((p,index)=>{
-
-        let el =
-            existingMap.get(p);
-
-        if(!el){
-
-            el =
-                createPageElement(
-                    p,
-                    index
-                );
-
-        }
-
-        el.dataset.index = index;
-
-        el.querySelector('.page-num')
-        .textContent =
-            `Page ${index + 1}`;
-
-        const checkbox =
-            el.querySelector('.page-check');
-
-        checkbox.checked =
-            p.selected;
-
-        el.classList.toggle(
-            'selected',
-            p.selected
-        );
-
-        pagesContainer.appendChild(el);
-
-    });
-
-}
-
-/* =========================
-   Update Page Numbers
-========================= */
-
-function updatePageNumbers(){
-
-    document
-    .querySelectorAll('.page-num')
-    .forEach((el,index)=>{
-
-        el.textContent =
-            `Page ${index + 1}`;
-
-    });
-
-}
-
-/* =========================
-   Delete
-========================= */
-
-function deleteSelected(){
-
-    const selectedCount =
-        pageList.filter(
-            p=>p.selected
-        ).length;
-
-    if(selectedCount === 0){
-
-        alert(
-            '削除するページを選択してください'
-        );
-
-        return;
-
-    }
-
-    saveHistory();
-
-    pageList =
-        pageList.filter(
-            p=>!p.selected
-        );
-
-    render();
-
-    setStatus(
-        `${selectedCount}ページ削除`
-    );
-
-}
-
-/* =========================
-   Clear Selection
-========================= */
-
-function clearSelection(){
-
-    pageList.forEach(p=>{
-
-        p.selected = false;
-
-    });
-
-    render();
-
-}
-
-/* =========================
-   Undo
-========================= */
-
-function undo(){
-
-    if(historyStack.length === 0)
-        return;
-
-    pageList =
-        historyStack.pop();
-
-    render();
-
-}
-
-/* =========================
-   Export PDF
-========================= */
-
-async function exportPdf(){
-
-    const name =
-        prompt(
-            'ファイル名:',
-            'edited.pdf'
-        );
-
-    if(!name) return;
-
-    setStatus('PDF生成中...');
-
-    const newPdf =
-        await PDFLib
-        .PDFDocument
-        .create();
-
-    for(let p of pageList){
-
-        const [page] =
-            await newPdf.copyPages(
-                p.doc,
-                [p.pageIndex]
-            );
-
-        newPdf.addPage(page);
-
-    }
-
-    const blob =
-        new Blob(
-            [await newPdf.save()],
-            {
-                type:'application/pdf'
-            }
-        );
-
-    const a =
-        document.createElement('a');
-
-    a.href =
-        URL.createObjectURL(blob);
-
-    a.download = name;
-
-    a.click();
-
-    setStatus('保存完了');
-
-}
-
-/* =========================
-   Export Selected
-========================= */
-
-async function exportSelected(){
-
-    const selectedPages =
-        pageList.filter(
-            p=>p.selected
-        );
-
-    if(selectedPages.length === 0){
-
-        alert(
-            '抽出ページを選択してください'
-        );
-
-        return;
-
-    }
-
-    const name =
-        prompt(
-            '抽出ファイル名:',
-            'extracted.pdf'
-        );
-
-    if(!name) return;
-
-    setStatus('抽出中...');
-
-    const newPdf =
-        await PDFLib
-        .PDFDocument
-        .create();
-
-    for(let p of selectedPages){
-
-        const [page] =
-            await newPdf.copyPages(
-                p.doc,
-                [p.pageIndex]
-            );
-
-        newPdf.addPage(page);
-
-    }
-
-    const blob =
-        new Blob(
-            [await newPdf.save()],
-            {
-                type:'application/pdf'
-            }
-        );
-
-    const a =
-        document.createElement('a');
-
-    a.href =
-        URL.createObjectURL(blob);
-
-    a.download =
-        name.endsWith('.pdf')
-        ? name
-        : name + '.pdf';
-
-    a.click();
-
-    setStatus('抽出完了');
 
 }
 
