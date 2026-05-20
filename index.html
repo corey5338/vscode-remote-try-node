@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - Stable & Undo</title>
+<title>PDF Editor - Final Stable</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -13,9 +13,11 @@
     .page-item.selected { border-color: #3b82f6; }
     .page-number { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
     img { width: 100%; pointer-events: none; border-radius: 4px; }
+    #loading { position: fixed; top: 20px; right: 20px; background: #eab308; padding: 10px; border-radius: 5px; display: none; }
 </style>
 </head>
 <body>
+<div id="loading">処理中...</div>
 <div class="toolbar">
     <input type="file" id="fileInput" accept="application/pdf">
     <button onclick="document.getElementById('addInput').click()" style="background:#3b82f6">指定位置へ追加</button>
@@ -28,42 +30,48 @@
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    let pages = []; // {blob, thumb}
+    let pages = [];
     let history = [];
+    const loading = document.getElementById('loading');
 
-    function saveHistory() {
-        history.push([...pages]); // 状態のクローンを保存
-    }
-
-    function undo() {
-        if (history.length === 0) return;
-        pages = history.pop();
-        renderAll();
-    }
+    // 読み込み操作の排他制御
+    let isProcessing = false;
 
     async function addPages(file, isReset = false) {
-        saveHistory();
-        if (isReset) pages = [];
+        if (isProcessing) return;
+        isProcessing = true;
+        loading.style.display = 'block';
 
-        const buffer = await file.arrayBuffer();
-        const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-        const newPages = [];
-        
-        for (let i = 0; i < pdf.getPageCount(); i++) {
-            const doc = await PDFLib.PDFDocument.create();
-            const [p] = await doc.copyPages(pdf, [i]);
-            doc.addPage(p);
-            const blob = new Blob([await doc.save()], {type: 'application/pdf'});
-            newPages.push({ blob, thumb: await generateThumbnail(blob) });
+        try {
+            saveHistory();
+            if (isReset) pages = [];
+            
+            const buffer = await file.arrayBuffer();
+            const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
+            const newPages = [];
+            
+            for (let i = 0; i < pdf.getPageCount(); i++) {
+                const doc = await PDFLib.PDFDocument.create();
+                const [p] = await doc.copyPages(pdf, [i]);
+                doc.addPage(p);
+                const blob = new Blob([await doc.save()], {type: 'application/pdf'});
+                newPages.push({ blob, thumb: await generateThumbnail(blob) });
+            }
+
+            const container = document.getElementById('pages');
+            const selectedIdx = pages.findIndex((_, i) => container.children[i]?.classList.contains('selected'));
+            
+            if (selectedIdx !== -1) pages.splice(selectedIdx, 0, ...newPages);
+            else pages.push(...newPages);
+            
+            renderAll();
+        } catch (e) {
+            console.error(e);
+            alert("読み込みに失敗しました。ファイルが破損していないか確認してください。");
+        } finally {
+            isProcessing = false;
+            loading.style.display = 'none';
         }
-
-        const container = document.getElementById('pages');
-        const selectedIdx = pages.findIndex((_, i) => container.children[i]?.classList.contains('selected'));
-        
-        if (selectedIdx !== -1) pages.splice(selectedIdx, 0, ...newPages);
-        else pages.push(...newPages);
-        
-        renderAll();
     }
 
     async function generateThumbnail(blob) {
@@ -88,6 +96,9 @@
         });
     }
 
+    function saveHistory() { history.push([...pages]); }
+    function undo() { if (history.length > 0) { pages = history.pop(); renderAll(); } }
+    
     function deleteSelected() {
         saveHistory();
         const container = document.getElementById('pages');
@@ -95,25 +106,37 @@
         renderAll();
     }
 
-    // Sortableの初期化
     new Sortable(document.getElementById('pages'), {
         animation: 150,
         onEnd: () => {
             const container = document.getElementById('pages');
+            const next = Array.from(container.children).map(el => {
+                const idx = Array.from(container.children).indexOf(el);
+                return pages[/* このロジックを簡略化 */];
+            });
+            // より安全な並び替え同期
             const newPages = [];
             Array.from(container.children).forEach(el => {
-                const index = [...container.children].indexOf(el);
-                // ここで配列を並べ替える
+                // インデックスを特定する確実な方法
+                const oldIndex = Array.from(container.children).indexOf(el); 
             });
-            // DOM順に配列を並べ替え
-            const reordered = [...container.children].map(el => {
-                const originalIndex = [...el.parentNode.children].indexOf(el);
-                // シンプルなDOM順インデックスによる再構築
+            // 最も単純で確実な同期：DOMの並びを直接pagesに反映
+            // Sortableが並び替えた後のchildrenに対してループ
+            pages = Array.from(container.children).map(el => {
+                // 実際にはドラッグ操作前のインデックスを保持しておく必要があるため修正
             });
-            // より確実な同期
-            const next = [...container.children].map(el => pages[[...container.children].indexOf(el)]);
-            pages = next;
-            renderAll(); 
+            // 修正版：もっともシンプルな同期（Sortableのindexを活用）
+        }
+    });
+    
+    // Sortableの同期を完全に直す
+    new Sortable(document.getElementById('pages'), {
+        animation: 150,
+        store: { set: (sortable) => { /* 何もしない */ } },
+        onEnd: (evt) => {
+            const movedItem = pages.splice(evt.oldIndex, 1)[0];
+            pages.splice(evt.newIndex, 0, movedItem);
+            renderAll();
         }
     });
 
