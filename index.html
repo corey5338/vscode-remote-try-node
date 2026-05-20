@@ -10,10 +10,11 @@
     body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
     .toolbar { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: #0f172a; padding: 10px 0; z-index: 10; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: grab; }
+    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 3px solid transparent; }
+    .page-item.selected { border-color: #3b82f6; }
     canvas { width: 100%; height: auto; background: white; border-radius: 4px; pointer-events: none; }
     button { cursor: pointer; padding: 8px 15px; border-radius: 4px; border: none; font-weight: bold; }
-    .btn-del { background: #ef4444; color: white; margin-top: 5px; width: 100%; }
+    .btn-del { background: #ef4444; color: white; }
     .btn-save { background: #10b981; color: white; }
     .btn-undo { background: #8b5cf6; color: white; }
 </style>
@@ -23,6 +24,7 @@
 <div class="toolbar">
     <input type="file" id="fileInput" accept="application/pdf">
     <button class="btn-undo" onclick="undo()">Undo</button>
+    <button class="btn-del" onclick="deleteSelected()">選択ページ削除</button>
     <button class="btn-save" onclick="exportPdf()">保存</button>
 </div>
 <div id="pages"></div>
@@ -30,11 +32,11 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let pages = []; // {bytes: Uint8Array}
+    let pages = []; // {bytes: Uint8Array, selected: boolean}
     let history = [];
 
     async function loadPdf(file) {
-        history.push([...pages]); // 変更前に状態を記録
+        history.push(JSON.parse(JSON.stringify(pages))); // 状態保存
         const bytes = new Uint8Array(await file.arrayBuffer());
         const pdfDoc = await PDFLib.PDFDocument.load(bytes);
         const count = pdfDoc.getPageCount();
@@ -43,7 +45,7 @@
             const newDoc = await PDFLib.PDFDocument.create();
             const [page] = await newDoc.copyPages(pdfDoc, [i]);
             newDoc.addPage(page);
-            pages.push({ bytes: await newDoc.save() });
+            pages.push({ bytes: await newDoc.save(), selected: false });
         }
         render();
     }
@@ -54,17 +56,14 @@
         
         for (let i = 0; i < pages.length; i++) {
             const div = document.createElement('div');
-            div.className = 'page-item';
+            div.className = 'page-item' + (pages[i].selected ? ' selected' : '');
+            div.onclick = () => {
+                pages[i].selected = !pages[i].selected;
+                render(); // 再描画で選択状態を反映
+            };
+
             const canvas = document.createElement('canvas');
             div.appendChild(canvas);
-            
-            // 削除ボタン
-            const delBtn = document.createElement('button');
-            delBtn.className = 'btn-del';
-            delBtn.textContent = '削除';
-            delBtn.onclick = () => deletePage(i);
-            div.appendChild(delBtn);
-            
             container.appendChild(div);
 
             const pdf = await pdfjsLib.getDocument({ data: pages[i].bytes }).promise;
@@ -76,9 +75,10 @@
         }
     }
 
-    function deletePage(i) {
-        history.push([...pages]);
-        pages.splice(i, 1);
+    function deleteSelected() {
+        if (!pages.some(p => p.selected)) return alert("削除するページを選択してください");
+        history.push(JSON.parse(JSON.stringify(pages)));
+        pages = pages.filter(p => !p.selected);
         render();
     }
 
@@ -101,9 +101,8 @@
         a.click();
     }
 
-    // 並び替え処理
     new Sortable(document.getElementById('pages'), {
-        onStart: () => history.push([...pages]),
+        onStart: () => history.push(JSON.parse(JSON.stringify(pages))),
         onEnd: (evt) => {
             const item = pages.splice(evt.oldIndex, 1)[0];
             pages.splice(evt.newIndex, 0, item);
