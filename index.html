@@ -2,18 +2,17 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor Pro</title>
+<title>PDF Editor</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-
 <style>
     body { background: #111; color: white; font-family: sans-serif; }
-    .toolbar { background: #222; padding: 10px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 100; }
+    .toolbar { background: #222; padding: 10px; display: flex; gap: 10px; position: sticky; top: 0; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 20px; }
-    .page { background: #333; padding: 10px; border: 3px solid transparent; cursor: grab; }
+    .page { background: #333; border: 3px solid transparent; cursor: grab; padding: 5px; }
     .page.selected { border-color: #3b82f6; }
-    canvas { width: 100%; background: white; pointer-events: none; }
+    canvas { width: 100%; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -28,30 +27,40 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let originalPdfDoc = null; // 元のPDFデータ
-    let pagesData = []; // { originalIndex, canvas, selected }
+    let originalPdfDoc = null; 
+    let pagesData = [];
 
     document.getElementById('fileInput').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const bytes = await file.arrayBuffer();
-        // 編集用として読み込み
-        originalPdfDoc = await PDFLib.PDFDocument.load(bytes);
-        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-
+        // 読み込み直前にメモリをクリーンアップ
+        originalPdfDoc = null;
         pagesData = [];
-        for (let i = 0; i < pdf.numPages; i++) {
-            const page = await pdf.getPage(i + 1);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const vp = page.getViewport({ scale: 0.2 });
-            canvas.width = vp.width; canvas.height = vp.height;
-            await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        document.getElementById('pages').innerHTML = '';
+
+        try {
+            const bytes = await file.arrayBuffer();
             
-            pagesData.push({ originalIndex: i, canvas: canvas, selected: false });
+            // 読み込み用として明確に配列をコピーして使用
+            const uint8Array = new Uint8Array(bytes);
+            originalPdfDoc = await PDFLib.PDFDocument.load(uint8Array);
+            const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
+
+            for (let i = 0; i < pdf.numPages; i++) {
+                const page = await pdf.getPage(i + 1);
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const vp = page.getViewport({ scale: 0.2 });
+                canvas.width = vp.width; canvas.height = vp.height;
+                await page.render({ canvasContext: ctx, viewport: vp }).promise;
+                
+                pagesData.push({ originalIndex: i, canvas: canvas, selected: false });
+            }
+            render();
+        } catch (err) {
+            alert("読み込みエラー: " + err.message);
         }
-        render();
     });
 
     function render() {
@@ -80,8 +89,8 @@
     }
 
     async function exportPdf() {
+        if (!originalPdfDoc) return;
         const newPdf = await PDFLib.PDFDocument.create();
-        // 現在のpagesDataの並び順に基づいて、元のPDFからページを抽出・コピーする
         for (const p of pagesData) {
             const [copied] = await newPdf.copyPages(originalPdfDoc, [p.originalIndex]);
             newPdf.addPage(copied);
