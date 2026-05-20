@@ -2,13 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - Stable</title>
+<title>PDF Editor Stable</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
     body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
-    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; background: #0f172a; position: sticky; top: 0; padding: 10px 0; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; background: #0f172a; position: sticky; top: 0; z-index: 10; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
     .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 4px solid transparent; }
     .page-item.selected { border-color: #3b82f6; }
@@ -28,12 +28,15 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let pages = []; // {bytes: Uint8Array, selected: boolean}
-    let history = []; // pagesのコピーを保存（バイナリを損なわないよう工夫）
+    let pages = []; 
+    let history = [];
 
+    // 修正: bytes.slice() でバイナリの完全なコピーを作成して履歴に保存する
     function saveHistory() {
-        // Uint8Arrayを壊さずにコピーを作成
-        history.push(pages.map(p => ({ bytes: p.bytes, selected: p.selected })));
+        history.push(pages.map(p => ({ 
+            bytes: p.bytes.slice(), 
+            selected: p.selected 
+        })));
     }
 
     async function render() {
