@@ -31,6 +31,7 @@
 <div class="toolbar">
     <label class="file-label">新規読み込み<input type="file" id="fileInput" accept="application/pdf"></label>
     <label class="file-label" style="background:#64748b">PDF追加<input type="file" id="addInput" accept="application/pdf"></label>
+    <button onclick="undo()" style="background:#8b5cf6">Undo</button>
     <button onclick="deleteSelected()" style="background:#ef4444">削除</button>
     <button onclick="exportPdf()">保存</button>
 </div>
@@ -40,11 +41,25 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
     let originalPdfDoc = null; 
-    let pagesData = []; // { canvas, originalIndex, selected }
+    let pagesData = []; 
+    let history = [];
     const loader = document.getElementById('loader');
+
+    // 状態を保存（ページデータの配列構成のみを保存）
+    function saveState() {
+        history.push([...pagesData]);
+        if (history.length > 20) history.shift();
+    }
+
+    function undo() {
+        if (history.length === 0) return;
+        pagesData = history.pop();
+        render();
+    }
 
     async function loadPdfFile(file, isAppend = false) {
         loader.style.display = 'flex';
+        saveState();
         try {
             const bytes = await file.arrayBuffer();
             const newDoc = await PDFLib.PDFDocument.load(new Uint8Array(bytes));
@@ -54,7 +69,6 @@
                 originalPdfDoc = newDoc;
                 pagesData = [];
             } else {
-                // 追加ページを originalPdfDoc に統合
                 for (let i = 0; i < newDoc.getPageCount(); i++) {
                     const [page] = await originalPdfDoc.copyPages(newDoc, [i]);
                     originalPdfDoc.addPage(page);
@@ -69,7 +83,6 @@
                 canvas.width = vp.width; canvas.height = vp.height;
                 await page.render({ canvasContext: ctx, viewport: vp }).promise;
                 
-                // 新規追加分は新しいインデックスを割り当て
                 const globalIndex = isAppend ? (originalPdfDoc.getPageCount() - pdf.numPages + i) : i;
                 pagesData.push({ canvas, originalIndex: globalIndex, selected: false });
             }
@@ -84,32 +97,24 @@
         pagesData.forEach((p, i) => {
             const div = document.createElement('div');
             div.className = `page ${p.selected ? 'selected' : ''}`;
-            div.onclick = () => { 
-                p.selected = !p.selected; 
-                div.className = `page ${p.selected ? 'selected' : ''}`; 
-            };
-            
-            // Canvasとラベルを別々に追加
+            div.onclick = () => { p.selected = !p.selected; div.className = `page ${p.selected ? 'selected' : ''}`; };
             div.appendChild(p.canvas);
             const label = document.createElement('div');
             label.className = 'page-label';
             label.textContent = `P.${i + 1}`;
             div.appendChild(label);
-            
             pagesEl.appendChild(div);
         });
     }
 
     new Sortable(document.getElementById('pages'), { 
         animation: 150, 
+        onStart: () => saveState(),
         onEnd: () => {
-            // DOM順に基づいて pagesData を再構築
             const newPagesData = [];
-            const pageDivs = document.querySelectorAll('.page');
-            pageDivs.forEach((div) => {
+            document.querySelectorAll('.page').forEach((div) => {
                 const canvas = div.querySelector('canvas');
-                const match = pagesData.find(p => p.canvas === canvas);
-                if (match) newPagesData.push(match);
+                newPagesData.push(pagesData.find(p => p.canvas === canvas));
             });
             pagesData = newPagesData;
             render();
@@ -117,6 +122,7 @@
     });
 
     function deleteSelected() { 
+        saveState();
         pagesData = pagesData.filter(p => !p.selected); 
         render(); 
     }
