@@ -7,39 +7,36 @@
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
-    body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; }
-    .toolbar { background: #1e293b; padding: 15px; display: flex; gap: 10px; position: sticky; top: 0; }
-    .page-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
+    body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; }
+    #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
     .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; }
-    canvas { width: 100%; border-radius: 4px; background: white; }
-    button { cursor: pointer; background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 4px; }
-    .del { background: #ef4444; margin-top: 5px; width: 100%; }
+    canvas { width: 100%; height: auto; background: white; border-radius: 4px; }
+    button { cursor: pointer; padding: 8px 15px; border-radius: 4px; border: none; }
 </style>
 </head>
 <body>
 
 <div class="toolbar">
     <input type="file" id="fileInput" accept="application/pdf">
-    <button onclick="undo()">Undo</button>
-    <button onclick="exportPdf()">保存</button>
+    <button onclick="exportPdf()" style="background:#10b981">保存</button>
 </div>
-<div id="pages" class="page-list"></div>
+<div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    let pages = []; // {bytes: Uint8Array, id: number}
-    let history = [];
+    let pages = []; // {bytes: Uint8Array}
 
-    async function addFile(file) {
-        history.push([...pages]);
+    async function loadPdf(file) {
         const bytes = new Uint8Array(await file.arrayBuffer());
-        const pdf = await PDFLib.PDFDocument.load(bytes);
-        const count = pdf.getPageCount();
+        const pdfDoc = await PDFLib.PDFDocument.load(bytes);
+        const count = pdfDoc.getPageCount();
+        
         for (let i = 0; i < count; i++) {
-            const temp = await PDFLib.PDFDocument.create();
-            const [p] = await temp.copyPages(pdf, [i]);
-            temp.addPage(p);
-            pages.push({ bytes: await temp.save(), id: Date.now() + i });
+            const newDoc = await PDFLib.PDFDocument.create();
+            const [page] = await newDoc.copyPages(pdfDoc, [i]);
+            newDoc.addPage(page);
+            pages.push({ bytes: await newDoc.save() });
         }
         render();
     }
@@ -47,34 +44,27 @@
     async function render() {
         const container = document.getElementById('pages');
         container.innerHTML = '';
+        
         for (let i = 0; i < pages.length; i++) {
-            const p = pages[i];
             const div = document.createElement('div');
             div.className = 'page-item';
-            
             const canvas = document.createElement('canvas');
-            const doc = await pdfjsLib.getDocument({ data: p.bytes }).promise;
-            const page = await doc.getPage(1);
-            const vp = page.getViewport({ scale: 0.2 });
-            canvas.width = vp.width; canvas.height = vp.height;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-            
             div.appendChild(canvas);
-            div.innerHTML += `<button class="del" onclick="deletePage(${i})">削除</button>`;
             container.appendChild(div);
+
+            // PDF.jsで個別に描画
+            const loadingTask = pdfjsLib.getDocument({ data: pages[i].bytes });
+            const pdf = await loadingTask.promise;
+            const page = await pdf.getPage(1);
+            
+            // サイズを固定せず、ページ本来の比率を維持する
+            const scale = 0.5;
+            const viewport = page.getViewport({ scale: scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
         }
-    }
-
-    function deletePage(i) {
-        history.push([...pages]);
-        pages.splice(i, 1);
-        render();
-    }
-
-    function undo() {
-        if(history.length === 0) return;
-        pages = history.pop();
-        render();
     }
 
     async function exportPdf() {
@@ -90,18 +80,7 @@
         a.click();
     }
 
-    new Sortable(document.getElementById('pages'), {
-        onEnd: () => {
-            const newPages = [];
-            document.querySelectorAll('.page-item').forEach(el => {
-                const idx = Array.from(el.parentNode.children).indexOf(el);
-                newPages.push(pages[idx]);
-            });
-            pages = newPages;
-        }
-    });
-
-    document.getElementById('fileInput').addEventListener('change', (e) => addFile(e.target.files[0]));
+    document.getElementById('fileInput').addEventListener('change', (e) => loadPdf(e.target.files[0]));
 </script>
 </body>
 </html>
