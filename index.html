@@ -2,48 +2,56 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor Pro (Undo Ready)</title>
+<title>PDF Architect Pro</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
-    body { background: #1e293b; color: white; padding: 20px; font-family: sans-serif; }
-    .toolbar { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
-    #status { font-weight: bold; color: #fbbf24; }
-    #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-    .page-item { background: #475569; padding: 5px; border-radius: 4px; cursor: move; border: 3px solid transparent; text-align: center; }
-    .page-item.selected { border-color: #3b82f6; }
-    canvas { width: 100%; pointer-events: none; }
+    :root { --bg: #0f172a; --panel: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; }
+    
+    .toolbar { background: var(--panel); padding: 16px 24px; border-radius: 12px; display: flex; gap: 12px; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: sticky; top: 20px; z-index: 100; }
+    button { background: #334155; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: 500; }
+    button:hover { background: #475569; }
+    button.primary { background: var(--accent); }
+    button.danger { background: #ef4444; }
+    
+    #status { font-size: 0.85rem; color: #94a3b8; margin-left: auto; }
+    #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 20px; }
+    
+    .page-item { background: var(--panel); padding: 10px; border-radius: 8px; cursor: move; border: 2px solid transparent; transition: 0.2s; text-align: center; }
+    .page-item:hover { border-color: #64748b; }
+    .page-item.selected { border-color: var(--accent); background: #1e3a8a; }
+    canvas { width: 100%; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .page-num { margin-top: 8px; font-size: 0.75rem; color: #94a3b8; }
 </style>
 </head>
 <body>
 
 <div class="toolbar">
-    <input type="file" id="fileInput" accept="application/pdf">
+    <input type="file" id="fileInput" hidden accept="application/pdf">
+    <button onclick="document.getElementById('fileInput').click()">新規読み込み</button>
     <button onclick="addPdf()">PDF追加</button>
+    <div style="width: 1px; height: 20px; background: #475569;"></div>
     <button onclick="undo()">Undo</button>
-    <button onclick="deleteSelected()" style="background:#ef4444; border:none; color:white; padding:5px 10px; cursor:pointer;">削除</button>
-    <button onclick="exportPdf()" style="background:#10b981; border:none; color:white; padding:5px 10px; cursor:pointer;">保存</button>
-    <div id="status"></div>
+    <button class="danger" onclick="deleteSelected()">削除</button>
+    <button class="primary" onclick="exportPdf()">保存</button>
+    <div id="status">Ready</div>
 </div>
+
 <div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
     let pageList = []; 
-    let historyStack = []; // ページ構成の履歴（インデックスの配列のみを保存）
+    let historyStack = [];
 
-    const statusEl = document.getElementById('status');
+    function saveHistory() { historyStack.push([...pageList]); }
 
-    function saveHistory() {
-        // 現在のpageListのクローン（中身は参照のコピー）を作成して履歴に積む
-        historyStack.push([...pageList]);
-    }
-
-    // Sortable初期化
     new Sortable(document.getElementById('pages'), {
-        animation: 150,
+        animation: 200,
+        ghostClass: 'selected',
         onEnd: () => {
             saveHistory();
             const container = document.getElementById('pages');
@@ -54,15 +62,14 @@
     });
 
     async function processFile(file, isReset) {
-        statusEl.textContent = "読み込み中...";
+        const statusEl = document.getElementById('status');
         if (isReset) { pageList = []; historyStack = []; }
         
         try {
+            statusEl.textContent = "処理中...";
             const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
-            const count = pdfDoc.getPageCount();
-
-            for (let i = 0; i < count; i++) {
-                statusEl.textContent = `ページ処理: ${i + 1} / ${count}`;
+            for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+                statusEl.textContent = `読み込み: ${i + 1}/${pdfDoc.getPageCount()}`;
                 const tempDoc = await PDFLib.PDFDocument.create();
                 const [p] = await tempDoc.copyPages(pdfDoc, [i]);
                 tempDoc.addPage(p);
@@ -70,10 +77,8 @@
                 pageList.push({ doc: pdfDoc, pageIndex: i, thumb });
             }
             render();
-            statusEl.textContent = "読み込み完了";
-        } catch (e) {
-            statusEl.textContent = "読み込みエラー";
-        }
+            statusEl.textContent = "完了";
+        } catch (e) { statusEl.textContent = "エラー"; }
     }
 
     document.getElementById('fileInput').onchange = (e) => processFile(e.target.files[0], true);
@@ -86,24 +91,19 @@
     }
 
     function undo() {
-        if (historyStack.length === 0) {
-            alert("これ以上戻せません。");
-            return;
-        }
+        if (historyStack.length === 0) return;
         pageList = historyStack.pop();
         render();
-        statusEl.textContent = "Undoを実行しました";
     }
 
     function deleteSelected() {
-        saveHistory(); // 削除前に履歴保存
+        saveHistory();
         const container = document.getElementById('pages');
         const selected = Array.from(container.children).map(d => d.classList.contains('selected'));
         pageList = pageList.filter((_, i) => !selected[i]);
         render();
     }
 
-    // (以下、generateThumb, render, exportPdf は前回同様のものを使用)
     async function generateThumb(blob) {
         const pdf = await pdfjsLib.getDocument({ data: await blob.arrayBuffer() }).promise;
         const page = await pdf.getPage(1);
@@ -121,7 +121,14 @@
             const div = document.createElement('div');
             div.className = 'page-item';
             div.dataset.index = i;
-            div.innerHTML = `<img src="${p.thumb}"><div>${i + 1}</div>`;
+            div.innerHTML = `<canvas></canvas><div class="page-num">${i + 1}</div>`;
+            const canvas = div.querySelector('canvas');
+            const img = new Image();
+            img.src = p.thumb;
+            img.onload = () => {
+                canvas.width = img.width; canvas.height = img.height;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+            };
             div.onclick = () => div.classList.toggle('selected');
             container.appendChild(div);
         });
