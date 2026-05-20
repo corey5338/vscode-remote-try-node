@@ -11,12 +11,11 @@
     body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
     .toolbar { background: var(--card); padding: 15px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
     button, .file-label { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-    .file-label { display: inline-block; cursor: pointer; }
     input[type="file"] { display: none; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 25px; }
-    .page { background: var(--card); border-radius: 8px; padding: 10px; border: 3px solid transparent; text-align: center; position: relative; }
+    .page { background: var(--card); border-radius: 8px; padding: 10px; border: 3px solid transparent; text-align: center; cursor: grab; }
     .page.selected { border-color: var(--accent); }
-    canvas { width: 100%; border-radius: 4px; background: white; cursor: grab; }
+    canvas { width: 100%; border-radius: 4px; background: white; pointer-events: none; }
     .page-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; color: #94a3b8; font-size: 12px; }
     .move-btn { background: #475569; padding: 2px 8px; border-radius: 4px; cursor: pointer; color: white; }
     #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: white; }
@@ -41,18 +40,19 @@
     let history = [];
     const loader = document.getElementById('loader');
 
-    function saveState() { history.push(JSON.stringify(pagesData.map(p => ({pdfBytes: p.pdfBytes})))); }
+    function saveState() { 
+        history.push(JSON.stringify(pagesData.map(p => ({pdfBytes: p.pdfBytes})))); 
+    }
 
     async function undo() { 
         if(history.length === 0) return;
         loader.style.display = 'flex';
         const state = JSON.parse(history.pop());
-        const restoredPages = [];
+        pagesData = [];
         for(let item of state) {
             const canvas = await renderCanvas(item.pdfBytes);
-            restoredPages.push({ pdfBytes: item.pdfBytes, canvas, selected: false });
+            pagesData.push({ pdfBytes: item.pdfBytes, canvas, selected: false });
         }
-        pagesData = restoredPages; 
         render(); 
         loader.style.display = 'none';
     }
@@ -84,12 +84,11 @@
                 const [copiedPage] = await tempDoc.copyPages(sourceDoc, [i]);
                 tempDoc.addPage(copiedPage);
                 const bytes = await tempDoc.save();
-                const canvas = await renderCanvas(bytes);
-                newPages.push({ pdfBytes: bytes, canvas, selected: false });
+                newPages.push({ pdfBytes: bytes, canvas: await renderCanvas(bytes), selected: false });
             }
             pagesData.splice(insertPos, 0, ...newPages);
             render();
-        } catch(e) { console.error(e); alert("読み込み失敗"); }
+        } catch(e) { alert("読み込み失敗: " + e.message); }
         loader.style.display = 'none';
     }
 
@@ -99,8 +98,13 @@
         pagesData.forEach((p, i) => {
             const div = document.createElement('div');
             div.className = `page ${p.selected ? 'selected' : ''}`;
-            div.onclick = (e) => { if(e.target.tagName !== 'SPAN') { p.selected = !p.selected; div.className = `page ${p.selected ? 'selected' : ''}`; }};
-            div.appendChild(p.canvas);
+            div.onclick = (e) => { 
+                if(e.target.tagName !== 'SPAN') { 
+                    p.selected = !p.selected; 
+                    div.classList.toggle('selected', p.selected);
+                }
+            };
+            div.appendChild(p.canvas); // 毎回Canvasを付け直すことでDOM問題を回避
             div.innerHTML += `<div class="page-controls"><span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span></div>`;
             pagesEl.appendChild(div);
         });
@@ -120,12 +124,16 @@
         onStart: saveState,
         onEnd: () => {
             const newOrder = [];
-            document.querySelectorAll('.page').forEach(div => {
+            // DOMの現在の並び順を取得して、pagesDataを更新
+            const pageDivs = document.querySelectorAll('.page');
+            const newPagesData = [];
+            pageDivs.forEach(div => {
                 const canvas = div.querySelector('canvas');
-                newOrder.push(pagesData.find(p => p.canvas === canvas));
+                const p = pagesData.find(item => item.canvas === canvas);
+                newPagesData.push(p);
             });
-            pagesData = newOrder;
-            render();
+            pagesData = newPagesData;
+            render(); // 並び替えた後にCanvasを再描画・再配置
         }
     });
 
