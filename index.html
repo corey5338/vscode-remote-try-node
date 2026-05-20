@@ -136,28 +136,34 @@ button.danger{
 
     display:grid;
 
-    grid-template-columns:
-        repeat(auto-fill,minmax(170px,1fr));
-
     gap:18px;
 
     margin-top:22px;
 
+    grid-template-columns:
+        repeat(auto-fill,minmax(170px,1fr));
+
 }
 
 body[data-size="S"] #pages{
+
     grid-template-columns:
         repeat(auto-fill,minmax(110px,1fr));
+
 }
 
 body[data-size="M"] #pages{
+
     grid-template-columns:
         repeat(auto-fill,minmax(170px,1fr));
+
 }
 
 body[data-size="L"] #pages{
+
     grid-template-columns:
         repeat(auto-fill,minmax(260px,1fr));
+
 }
 
 .page-item{
@@ -222,8 +228,6 @@ canvas{
 
     border-radius:10px;
 
-    transition:opacity .2s;
-
 }
 
 .loading{
@@ -274,7 +278,7 @@ canvas{
 
 </style>
 </head>
-<body>
+<body data-size="M">
 
 <div class="toolbar">
 
@@ -325,9 +329,17 @@ canvas{
 
     <div class="zoom-group">
 
-       <button onclick="setZoom('S')">S</button>
-<button onclick="setZoom('M')">M</button>
-<button onclick="setZoom('L')">L</button>
+        <button onclick="setZoom('S')">
+            S
+        </button>
+
+        <button onclick="setZoom('M')">
+            M
+        </button>
+
+        <button onclick="setZoom('L')">
+            L
+        </button>
 
     </div>
 
@@ -338,8 +350,6 @@ canvas{
 </div>
 
 <div id="pages"></div>
-
-let currentSize = 'M';
 
 <script>
 
@@ -354,8 +364,6 @@ let pageList = [];
 let historyStack = [];
 
 let lastSelectedIndex = -1;
-
-let thumbScale = 0.18;
 
 const thumbQueue = [];
 
@@ -407,9 +415,7 @@ function saveHistory(){
 
             thumb:p.thumb,
 
-            selected:p.selected,
-
-            loading:p.loading
+            selected:p.selected
 
         }))
 
@@ -486,9 +492,7 @@ async function processFile(file,isReset){
 
                 thumb:null,
 
-                selected:false,
-
-                loading:true
+                selected:false
 
             };
 
@@ -579,9 +583,7 @@ async function addPdf(){
 
                 thumb:null,
 
-                selected:false,
-
-                loading:true
+                selected:false
 
             });
 
@@ -630,17 +632,9 @@ async function processThumbQueue(){
 
         const p = pageList[index];
 
-        if(!p){
+        if(!p) continue;
 
-            continue;
-
-        }
-
-        if(p.thumb){
-
-            continue;
-
-        }
+        if(p.thumb) continue;
 
         try{
 
@@ -652,15 +646,11 @@ async function processThumbQueue(){
 
             p.thumb = thumb;
 
-            p.loading = false;
-
             updateThumbnail(index);
 
         }catch(e){
 
             console.error(e);
-
-            p.loading = false;
 
         }
 
@@ -690,7 +680,7 @@ async function generateThumb(
 
     const viewport =
         page.getViewport({
-            scale:thumbScale
+            scale:0.18
         });
 
     const canvas =
@@ -840,8 +830,6 @@ function drawThumb(canvas,src){
             .getContext('2d')
             .drawImage(img,0,0);
 
-        canvas.style.opacity='1';
-
     };
 
 }
@@ -943,8 +931,6 @@ function undo(){
 }
 
 function setZoom(size){
-
-    currentSize = size;
 
     document.body.dataset.size = size;
 
