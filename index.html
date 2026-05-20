@@ -145,6 +145,21 @@ button.danger{
 
 }
 
+body[data-size="S"] #pages{
+    grid-template-columns:
+        repeat(auto-fill,minmax(110px,1fr));
+}
+
+body[data-size="M"] #pages{
+    grid-template-columns:
+        repeat(auto-fill,minmax(170px,1fr));
+}
+
+body[data-size="L"] #pages{
+    grid-template-columns:
+        repeat(auto-fill,minmax(260px,1fr));
+}
+
 .page-item{
 
     position:relative;
@@ -310,17 +325,9 @@ canvas{
 
     <div class="zoom-group">
 
-        <button onclick="setZoom(0.12)">
-            S
-        </button>
-
-        <button onclick="setZoom(0.18)">
-            M
-        </button>
-
-        <button onclick="setZoom(0.28)">
-            L
-        </button>
+       <button onclick="setZoom('S')">S</button>
+<button onclick="setZoom('M')">M</button>
+<button onclick="setZoom('L')">L</button>
 
     </div>
 
@@ -331,6 +338,8 @@ canvas{
 </div>
 
 <div id="pages"></div>
+
+let currentSize = 'M';
 
 <script>
 
@@ -933,29 +942,13 @@ function undo(){
 
 }
 
-function setZoom(scale){
+function setZoom(size){
 
-    thumbScale = scale;
+    currentSize = size;
 
-    thumbQueue.length = 0;
+    document.body.dataset.size = size;
 
-    pageList.forEach((p,i)=>{
-
-        p.thumb = null;
-
-        p.loading = true;
-
-    });
-
-    rebuildDOM();
-
-    pageList.forEach((p,i)=>{
-
-        queueThumbRender(i);
-
-    });
-
-    setStatus(`Zoom ${scale}`);
+    setStatus(`表示サイズ: ${size}`);
 
 }
 
