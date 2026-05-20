@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - Final Stable</title>
+<title>PDF Editor - Stable & Undo</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -20,16 +20,31 @@
     <input type="file" id="fileInput" accept="application/pdf">
     <button onclick="document.getElementById('addInput').click()" style="background:#3b82f6">指定位置へ追加</button>
     <input type="file" id="addInput" accept="application/pdf" style="display:none">
-    <button onclick="deleteSelected()" style="background:#ef4444">選択削除</button>
-    <button onclick="exportPdf()" style="background:#10b981">名前を付けて保存</button>
+    <button onclick="undo()">Undo</button>
+    <button onclick="deleteSelected()" style="background:#ef4444">削除</button>
+    <button onclick="exportPdf()" style="background:#10b981">保存</button>
 </div>
 <div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    let pages = []; // {blob: Blob, thumb: string}
+    let pages = []; // {blob, thumb}
+    let history = [];
 
-    async function addPages(file) {
+    function saveHistory() {
+        history.push([...pages]); // 状態のクローンを保存
+    }
+
+    function undo() {
+        if (history.length === 0) return;
+        pages = history.pop();
+        renderAll();
+    }
+
+    async function addPages(file, isReset = false) {
+        saveHistory();
+        if (isReset) pages = [];
+
         const buffer = await file.arrayBuffer();
         const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
         const newPages = [];
@@ -39,12 +54,12 @@
             const [p] = await doc.copyPages(pdf, [i]);
             doc.addPage(p);
             const blob = new Blob([await doc.save()], {type: 'application/pdf'});
-            const thumb = await generateThumbnail(blob);
-            newPages.push({ blob, thumb });
+            newPages.push({ blob, thumb: await generateThumbnail(blob) });
         }
 
-        // 挿入ロジック：選択ページがあればその前に、なければ末尾に
-        const selectedIdx = pages.findIndex((p, i) => document.getElementById('pages').children[i].classList.contains('selected'));
+        const container = document.getElementById('pages');
+        const selectedIdx = pages.findIndex((_, i) => container.children[i]?.classList.contains('selected'));
+        
         if (selectedIdx !== -1) pages.splice(selectedIdx, 0, ...newPages);
         else pages.push(...newPages);
         
@@ -74,71 +89,33 @@
     }
 
     function deleteSelected() {
+        saveHistory();
         const container = document.getElementById('pages');
         pages = pages.filter((_, i) => !container.children[i].classList.contains('selected'));
         renderAll();
     }
 
+    // Sortableの初期化
     new Sortable(document.getElementById('pages'), {
         animation: 150,
         onEnd: () => {
-            // ドラッグ完了後にDOM順序を配列に同期
             const container = document.getElementById('pages');
             const newPages = [];
             Array.from(container.children).forEach(el => {
-                const index = Array.from(container.children).indexOf(el);
-                // 実際にはもっと単純に、今のDOMの並び順でpagesを並べ替える
+                const index = [...container.children].indexOf(el);
+                // ここで配列を並べ替える
             });
-            // 修正: DOMの順番にpagesを並べ替える
-            const ordered = Array.from(container.children).map(el => {
-                const idx = Array.from(container.children).indexOf(el);
-                return pages[idx]; // これだと元の配列からインデックスを参照してしまっている
-            });
-            // 正しい同期ロジック
-            const nextPages = Array.from(container.children).map(el => {
-                const originalIndex = [...container.children].indexOf(el);
-                return pages[[...container.children].indexOf(el)]; // これも誤り
-            });
-            // シンプルに「Sortableが並び替えた後のDOM」からインデックスを特定する
-            const next = [];
-            Array.from(container.children).forEach((el, newIdx) => {
-                // 各DOM要素が元々どのインデックスだったかを特定するのは困難なので
-                // ドラッグ終了時は、Sortableで動かされた結果のDOMに基づいて再マップする
-            });
-            // 最も確実な同期：Sortable終了時に一回だけ再マッピング
+            // DOM順に配列を並べ替え
             const reordered = [...container.children].map(el => {
-                 const oldIdx = [...container.children].indexOf(el);
-                 // これだとループ内で無限に取得してしまう
+                const originalIndex = [...el.parentNode.children].indexOf(el);
+                // シンプルなDOM順インデックスによる再構築
             });
-            // 最終手段：SortableがDOMを直接いじった後、そのDOMからデータを再構築する
-            // 全DOMにインデックスを保持させる
+            // より確実な同期
+            const next = [...container.children].map(el => pages[[...container.children].indexOf(el)]);
+            pages = next;
+            renderAll(); 
         }
     });
-
-    // 最新の同期ロジック修正
-    const sortable = new Sortable(document.getElementById('pages'), {
-        animation: 150,
-        onEnd: () => {
-            const items = Array.from(document.getElementById('pages').children);
-            const newPages = items.map(el => pages[Number(el.dataset.index)]);
-            pages = newPages;
-            renderAll(); // これを呼ばないとインデックスがズレる
-        }
-    });
-
-    // renderAll内でインデックスを保持
-    function renderAll() {
-        const container = document.getElementById('pages');
-        container.innerHTML = '';
-        pages.forEach((p, i) => {
-            const div = document.createElement('div');
-            div.className = 'page-item';
-            div.dataset.index = i; // インデックスを保持
-            div.innerHTML = `<div class="page-number">${i + 1}</div><img src="${p.thumb}">`;
-            div.onclick = () => div.classList.toggle('selected');
-            container.appendChild(div);
-        });
-    }
 
     async function exportPdf() {
         const name = prompt("ファイル名:", "edited.pdf");
@@ -154,8 +131,8 @@
         a.download = name; a.click();
     }
 
-    document.getElementById('fileInput').onchange = (e) => { pages = []; addPages(e.target.files[0]); };
-    document.getElementById('addInput').onchange = (e) => addPages(e.target.files[0]);
+    document.getElementById('fileInput').onchange = (e) => addPages(e.target.files[0], true);
+    document.getElementById('addInput').onchange = (e) => addPages(e.target.files[0], false);
 </script>
 </body>
 </html>
