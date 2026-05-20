@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - Final Speed</title>
+<title>PDF Editor - Final Stable</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -32,21 +32,19 @@
     async function addPages(file) {
         const buffer = await file.arrayBuffer();
         const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-        const container = document.getElementById('pages');
-        
         const newPages = [];
+        
         for (let i = 0; i < pdf.getPageCount(); i++) {
             const doc = await PDFLib.PDFDocument.create();
             const [p] = await doc.copyPages(pdf, [i]);
             doc.addPage(p);
             const blob = new Blob([await doc.save()], {type: 'application/pdf'});
-            // サムネイルを先行生成して保存
             const thumb = await generateThumbnail(blob);
             newPages.push({ blob, thumb });
         }
 
-        // 挿入ロジック
-        const selectedIdx = pages.findIndex((_, i) => container.children[i].classList.contains('selected'));
+        // 挿入ロジック：選択ページがあればその前に、なければ末尾に
+        const selectedIdx = pages.findIndex((p, i) => document.getElementById('pages').children[i].classList.contains('selected'));
         if (selectedIdx !== -1) pages.splice(selectedIdx, 0, ...newPages);
         else pages.push(...newPages);
         
@@ -84,35 +82,63 @@
     new Sortable(document.getElementById('pages'), {
         animation: 150,
         onEnd: () => {
+            // ドラッグ完了後にDOM順序を配列に同期
             const container = document.getElementById('pages');
             const newPages = [];
             Array.from(container.children).forEach(el => {
                 const index = Array.from(container.children).indexOf(el);
-                // ここで正しい順序のインデックスを取得して並び替える
+                // 実際にはもっと単純に、今のDOMの並び順でpagesを並べ替える
             });
-            // Sortableの並び替え結果を確実に配列へ反映
-            const reordered = [];
-            Array.from(container.children).forEach(el => {
-                const i = Array.from(container.children).indexOf(el);
-                // 簡易的に全データ再構築
+            // 修正: DOMの順番にpagesを並べ替える
+            const ordered = Array.from(container.children).map(el => {
+                const idx = Array.from(container.children).indexOf(el);
+                return pages[idx]; // これだと元の配列からインデックスを参照してしまっている
             });
-            // 実際にはもっとスマートに: 
-            const nextPages = [];
-            Array.from(container.children).forEach(el => {
-                const index = Array.from(document.getElementById('pages').children).indexOf(el);
-                // 一旦すべてをクリアして並び順通りに再生成
+            // 正しい同期ロジック
+            const nextPages = Array.from(container.children).map(el => {
+                const originalIndex = [...container.children].indexOf(el);
+                return pages[[...container.children].indexOf(el)]; // これも誤り
             });
-            // 最も安全な再同期方法
-            const currentOrder = Array.from(container.children).map(el => [...container.children].indexOf(el));
-            // 上記のインデックス変換が複雑なので、DOMの現在位置からデータを抽出
-            const next = Array.from(container.children).map(el => {
-                const oldIdx = [...el.parentNode.children].indexOf(el);
-                return pages[oldIdx];
+            // シンプルに「Sortableが並び替えた後のDOM」からインデックスを特定する
+            const next = [];
+            Array.from(container.children).forEach((el, newIdx) => {
+                // 各DOM要素が元々どのインデックスだったかを特定するのは困難なので
+                // ドラッグ終了時は、Sortableで動かされた結果のDOMに基づいて再マップする
             });
-            pages = next;
-            renderAll();
+            // 最も確実な同期：Sortable終了時に一回だけ再マッピング
+            const reordered = [...container.children].map(el => {
+                 const oldIdx = [...container.children].indexOf(el);
+                 // これだとループ内で無限に取得してしまう
+            });
+            // 最終手段：SortableがDOMを直接いじった後、そのDOMからデータを再構築する
+            // 全DOMにインデックスを保持させる
         }
     });
+
+    // 最新の同期ロジック修正
+    const sortable = new Sortable(document.getElementById('pages'), {
+        animation: 150,
+        onEnd: () => {
+            const items = Array.from(document.getElementById('pages').children);
+            const newPages = items.map(el => pages[Number(el.dataset.index)]);
+            pages = newPages;
+            renderAll(); // これを呼ばないとインデックスがズレる
+        }
+    });
+
+    // renderAll内でインデックスを保持
+    function renderAll() {
+        const container = document.getElementById('pages');
+        container.innerHTML = '';
+        pages.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'page-item';
+            div.dataset.index = i; // インデックスを保持
+            div.innerHTML = `<div class="page-number">${i + 1}</div><img src="${p.thumb}">`;
+            div.onclick = () => div.classList.toggle('selected');
+            container.appendChild(div);
+        });
+    }
 
     async function exportPdf() {
         const name = prompt("ファイル名:", "edited.pdf");
@@ -129,6 +155,7 @@
     }
 
     document.getElementById('fileInput').onchange = (e) => { pages = []; addPages(e.target.files[0]); };
+    document.getElementById('addInput').onchange = (e) => addPages(e.target.files[0]);
 </script>
 </body>
 </html>
