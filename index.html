@@ -28,13 +28,13 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let pages = []; 
+    let pages = []; // {bytes: Uint8Array, selected: boolean}
     let history = [];
 
-    // 修正: ArrayBufferそのものではなく、一度数値の配列にしてから保持することでメモリ解放の影響を回避
+    // 履歴保存：バイナリデータはslice()でコピーし、参照の切断を防ぐ
     function saveHistory() {
         history.push(pages.map(p => ({ 
-            data: Array.from(p.bytes), 
+            bytes: p.bytes.slice(), 
             selected: p.selected 
         })));
     }
@@ -52,13 +52,11 @@
             };
             
             const canvas = document.createElement('canvas');
-            div.appendChild(div); // 修正: div.appendChild(canvas)
-            container.appendChild(div);
+            // 修正箇所: divにcanvasを正しく追加
             div.appendChild(canvas);
+            container.appendChild(div);
 
-            // Uint8Arrayに再変換して描画
-            const bytes = new Uint8Array(p.bytes);
-            const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+            const pdf = await pdfjsLib.getDocument({ data: p.bytes }).promise;
             const page = await pdf.getPage(1);
             const vp = page.getViewport({ scale: 0.2 });
             canvas.width = vp.width; canvas.height = vp.height;
@@ -88,9 +86,7 @@
 
     function undo() {
         if (history.length === 0) return;
-        // 履歴から復元する際、ArrayをUint8Arrayに戻す
-        const last = history.pop();
-        pages = last.map(p => ({ bytes: new Uint8Array(p.data), selected: p.selected }));
+        pages = history.pop();
         render();
     }
 
