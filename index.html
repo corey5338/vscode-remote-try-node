@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - High Performance</title>
+<title>PDF Editor - Stable & Fast</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -12,7 +12,7 @@
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
     .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 4px solid transparent; position: relative; }
     .page-item.selected { border-color: #3b82f6; }
-    .page-number { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 12px; pointer-events: none; }
+    .page-number { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.7); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
     canvas { width: 100%; pointer-events: none; background: white; border-radius: 4px; }
 </style>
 </head>
@@ -31,97 +31,36 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let pages = []; // {blob: Blob, selected: boolean}
+    let pages = []; 
     let history = [];
 
     function saveHistory() {
         history.push(pages.map(p => ({ blob: p.blob, selected: p.selected })));
     }
 
-    // ページ番号と見た目を更新する関数（全再描画を避ける）
-    function updateLayout() {
+    async function render() {
         const container = document.getElementById('pages');
-        const items = container.querySelectorAll('.page-item');
-        items.forEach((item, index) => {
-            // 番号の表示を更新
-            let numLabel = item.querySelector('.page-number');
-            if(!numLabel) {
-                numLabel = document.createElement('div');
-                numLabel.className = 'page-number';
-                item.appendChild(numLabel);
-            }
-            numLabel.textContent = (index + 1);
-        });
-    }
-
-    // 描画は初回のみ、またはページ追加時のみ実行
-    async function renderNewPages(newBlobList) {
-        const container = document.getElementById('pages');
-        for (const blob of newBlobList) {
+        container.innerHTML = '';
+        for (let i = 0; i < pages.length; i++) {
+            const p = pages[i];
             const div = document.createElement('div');
-            div.className = 'page-item';
-            div.onclick = () => { div.classList.toggle('selected'); };
+            div.className = 'page-item' + (p.selected ? ' selected' : '');
+            
+            // ページ番号表示
+            const num = document.createElement('div');
+            num.className = 'page-number';
+            num.textContent = (i + 1);
+            div.appendChild(num);
+
+            div.onclick = () => { 
+                p.selected = !p.selected; 
+                div.classList.toggle('selected'); 
+            };
             
             const canvas = document.createElement('canvas');
             div.appendChild(canvas);
             container.appendChild(div);
 
-            const buffer = await blob.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
-            const page = await pdf.getPage(1);
-            const vp = page.getViewport({ scale: 0.2 });
-            canvas.width = vp.width; canvas.height = vp.height;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-        }
-        updateLayout();
-    }
-
-    async function addPages(file, isInitial = false) {
-        saveHistory();
-        if(isInitial) { pages = []; document.getElementById('pages').innerHTML = ''; }
-        
-        const buffer = await file.arrayBuffer();
-        const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-        const newPageData = [];
-        const newBlobs = [];
-        
-        for (let i = 0; i < pdf.getPageCount(); i++) {
-            const doc = await PDFLib.PDFDocument.create();
-            const [p] = await doc.copyPages(pdf, [i]);
-            doc.addPage(p);
-            const bytes = await doc.save();
-            const blob = new Blob([bytes], {type: 'application/pdf'});
-            newPageData.push({ blob, selected: false });
-            newBlobs.push(blob);
-        }
-
-        const selectedIndex = pages.findIndex(p => document.getElementById('pages').children[pages.indexOf(p)].classList.contains('selected'));
-        
-        if (selectedIndex !== -1) {
-            pages.splice(selectedIndex, 0, ...newPageData);
-        } else {
-            pages.push(...newPageData);
-        }
-        
-        // 再描画を「追加分だけ」に限定して負荷を減らす
-        if (isInitial) {
-            await renderNewPages(newBlobs);
-        } else {
-            // ページ追加時は全再構築が安全（簡単のため）
-            await renderFull();
-        }
-    }
-
-    async function renderFull() {
-        const container = document.getElementById('pages');
-        container.innerHTML = '';
-        for(const p of pages) {
-            const div = document.createElement('div');
-            div.className = p.selected ? 'page-item selected' : 'page-item';
-            div.onclick = () => { div.classList.toggle('selected'); };
-            const canvas = document.createElement('canvas');
-            div.appendChild(canvas);
-            container.appendChild(div);
             const buffer = await p.blob.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
             const page = await pdf.getPage(1);
@@ -129,28 +68,46 @@
             canvas.width = vp.width; canvas.height = vp.height;
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
         }
-        updateLayout();
+    }
+
+    async function addPages(file) {
+        saveHistory();
+        const buffer = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
+        const newPages = [];
+        for (let i = 0; i < pdf.getPageCount(); i++) {
+            const doc = await PDFLib.PDFDocument.create();
+            const [p] = await doc.copyPages(pdf, [i]);
+            doc.addPage(p);
+            const bytes = await doc.save();
+            newPages.push({ blob: new Blob([bytes], {type: 'application/pdf'}), selected: false });
+        }
+
+        const selectedIndex = pages.findIndex(p => p.selected);
+        if (selectedIndex !== -1) {
+            pages.splice(selectedIndex, 0, ...newPages);
+        } else {
+            pages.push(...newPages);
+        }
+        render();
+    }
+
+    async function loadPdf(file) {
+        pages = [];
+        await addPages(file);
     }
 
     function deleteSelected() {
-        const items = document.querySelectorAll('.page-item');
-        const newPages = [];
-        items.forEach((item, i) => {
-            if (!item.classList.contains('selected')) {
-                newPages.push(pages[i]);
-            } else {
-                item.remove(); // DOMから即座に削除（再描画不要）
-            }
-        });
+        if (!pages.some(p => p.selected)) return;
         saveHistory();
-        pages = newPages;
-        updateLayout(); // 番号だけ振り直す
+        pages = pages.filter(p => !p.selected);
+        render();
     }
 
     function undo() {
         if (history.length === 0) return;
         pages = history.pop();
-        renderFull();
+        render();
     }
 
     new Sortable(document.getElementById('pages'), {
@@ -160,11 +117,28 @@
             saveHistory();
             const movedItem = pages.splice(evt.oldIndex, 1)[0];
             pages.splice(evt.newIndex, 0, movedItem);
-            updateLayout(); // 順序が変わったら番号だけ更新
+            render(); // 順序変更時は確実性を重視してrender
         }
     });
 
-    // ... (exportPdfはそのまま) ...
+    async function exportPdf() {
+        const fileName = prompt("保存するファイル名を入力してください:", "edited_pdf.pdf");
+        if (!fileName) return;
+        const out = await PDFLib.PDFDocument.create();
+        for (const p of pages) {
+            const buffer = await p.blob.arrayBuffer();
+            const doc = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
+            const [page] = await out.copyPages(doc, [0]);
+            out.addPage(page);
+        }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([await out.save()], {type: 'application/pdf'}));
+        a.download = fileName.endsWith('.pdf') ? fileName : fileName + '.pdf';
+        a.click();
+    }
+
+    document.getElementById('fileInput').addEventListener('change', (e) => loadPdf(e.target.files[0]));
+    document.getElementById('addInput').addEventListener('change', (e) => addPages(e.target.files[0]));
 </script>
 </body>
 </html>
