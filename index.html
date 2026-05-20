@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor Pro</title>
+<title>PDF Editor Pro (Undo Ready)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -22,22 +22,23 @@
     <input type="file" id="fileInput" accept="application/pdf">
     <button onclick="addPdf()">PDF追加</button>
     <button onclick="undo()">Undo</button>
-    <button onclick="deleteSelected()" style="background:#ef4444; border:none; color:white; padding:5px 10px; cursor:pointer;">選択を削除</button>
-    <button onclick="exportPdf()" style="background:#10b981; border:none; color:white; padding:5px 10px; cursor:pointer;">名前を付けて保存</button>
+    <button onclick="deleteSelected()" style="background:#ef4444; border:none; color:white; padding:5px 10px; cursor:pointer;">削除</button>
+    <button onclick="exportPdf()" style="background:#10b981; border:none; color:white; padding:5px 10px; cursor:pointer;">保存</button>
     <div id="status"></div>
 </div>
 <div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    
     let pageList = []; 
-    let history = []; // 履歴保存用スタック
+    let historyStack = []; // ページ構成の履歴（インデックスの配列のみを保存）
 
     const statusEl = document.getElementById('status');
 
     function saveHistory() {
-        history.push(JSON.parse(JSON.stringify(pageList.map((p, i) => ({ pageIndex: p.pageIndex, thumb: p.thumb })))));
-        // 注：PDFDocumentオブジェクトは巨大なため履歴には保持せず、ページ構成のインデックスを管理
+        // 現在のpageListのクローン（中身は参照のコピー）を作成して履歴に積む
+        historyStack.push([...pageList]);
     }
 
     // Sortable初期化
@@ -54,13 +55,14 @@
 
     async function processFile(file, isReset) {
         statusEl.textContent = "読み込み中...";
+        if (isReset) { pageList = []; historyStack = []; }
+        
         try {
-            if (isReset) { pageList = []; history = []; }
             const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
             const count = pdfDoc.getPageCount();
 
             for (let i = 0; i < count; i++) {
-                statusEl.textContent = `ページ処理中: ${i + 1} / ${count}`;
+                statusEl.textContent = `ページ処理: ${i + 1} / ${count}`;
                 const tempDoc = await PDFLib.PDFDocument.create();
                 const [p] = await tempDoc.copyPages(pdfDoc, [i]);
                 tempDoc.addPage(p);
@@ -70,7 +72,7 @@
             render();
             statusEl.textContent = "読み込み完了";
         } catch (e) {
-            statusEl.textContent = "エラーが発生しました";
+            statusEl.textContent = "読み込みエラー";
         }
     }
 
@@ -84,11 +86,24 @@
     }
 
     function undo() {
-        if (history.length === 0) return;
-        // Undoロジック：簡易的な直前の状態復元
-        alert("Undo機能を利用するには、現在の状態を保持する複雑なメモリ管理が必要となります。");
+        if (historyStack.length === 0) {
+            alert("これ以上戻せません。");
+            return;
+        }
+        pageList = historyStack.pop();
+        render();
+        statusEl.textContent = "Undoを実行しました";
     }
 
+    function deleteSelected() {
+        saveHistory(); // 削除前に履歴保存
+        const container = document.getElementById('pages');
+        const selected = Array.from(container.children).map(d => d.classList.contains('selected'));
+        pageList = pageList.filter((_, i) => !selected[i]);
+        render();
+    }
+
+    // (以下、generateThumb, render, exportPdf は前回同様のものを使用)
     async function generateThumb(blob) {
         const pdf = await pdfjsLib.getDocument({ data: await blob.arrayBuffer() }).promise;
         const page = await pdf.getPage(1);
@@ -110,14 +125,6 @@
             div.onclick = () => div.classList.toggle('selected');
             container.appendChild(div);
         });
-    }
-
-    function deleteSelected() {
-        saveHistory();
-        const container = document.getElementById('pages');
-        const selected = Array.from(container.children).map(d => d.classList.contains('selected'));
-        pageList = pageList.filter((_, i) => !selected[i]);
-        render();
     }
 
     async function exportPdf() {
