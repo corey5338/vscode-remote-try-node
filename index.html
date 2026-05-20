@@ -276,12 +276,6 @@ canvas{
 
 }
 
-.virtual-spacer{
-
-    height:40px;
-
-}
-
 </style>
 </head>
 <body data-size="M">
@@ -374,8 +368,6 @@ let lastSelectedIndex = -1;
 const thumbQueue = [];
 
 let rendering = false;
-
-const visibleMap = new Map();
 
 const observer = new IntersectionObserver(
 
@@ -764,6 +756,12 @@ function createPageElement(p,index){
 
     div.onclick = e => {
 
+        const currentIndex =
+            Number(div.dataset.index);
+
+        const currentPage =
+            pageList[currentIndex];
+
         if(
             e.shiftKey &&
             lastSelectedIndex !== -1
@@ -772,18 +770,20 @@ function createPageElement(p,index){
             const start =
                 Math.min(
                     lastSelectedIndex,
-                    index
+                    currentIndex
                 );
 
             const end =
                 Math.max(
                     lastSelectedIndex,
-                    index
+                    currentIndex
                 );
 
-            for(let i = start;
+            for(
+                let i = start;
                 i <= end;
-                i++){
+                i++
+            ){
 
                 pageList[i].selected = true;
 
@@ -791,11 +791,13 @@ function createPageElement(p,index){
 
         }else{
 
-            p.selected = !p.selected;
+            currentPage.selected =
+                !currentPage.selected;
 
         }
 
-        lastSelectedIndex = index;
+        lastSelectedIndex =
+            currentIndex;
 
         updateSelectionUI();
 
