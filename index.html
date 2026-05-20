@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor Stable</title>
+<title>PDF Editor - Stable</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -35,12 +35,7 @@
         history.push(pages.map(p => ({ bytes: p.bytes.slice(), selected: p.selected })));
     }
 
-    // ページごとの選択状態を更新する関数
-    function toggleSelect(index) {
-        pages[index].selected = !pages[index].selected;
-        render(); // データを更新してから再描画
-    }
-
+    // 描画処理：一度だけ生成する
     async function render() {
         const container = document.getElementById('pages');
         container.innerHTML = '';
@@ -49,8 +44,11 @@
             const div = document.createElement('div');
             div.className = 'page-item' + (p.selected ? ' selected' : '');
             
-            // クリック時に配列のインデックスを指定してトグル
-            div.onclick = () => toggleSelect(i);
+            // 重要：クリック時は「CSSクラスの切り替えのみ」を行い、DOM破壊・再描画は行わない
+            div.onclick = () => {
+                p.selected = !p.selected;
+                div.classList.toggle('selected');
+            };
             
             const canvas = document.createElement('canvas');
             div.appendChild(canvas);
@@ -81,6 +79,7 @@
         if (!pages.some(p => p.selected)) return;
         saveHistory();
         pages = pages.filter(p => !p.selected);
+        // 削除時のみ再描画（これが必要なDOM更新）
         render();
     }
 
