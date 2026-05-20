@@ -23,7 +23,7 @@
     <button onclick="document.getElementById('addInput').click()" style="background:#3b82f6">指定位置へ追加</button>
     <button onclick="undo()">Undo</button>
     <button onclick="deleteSelected()" style="background:#ef4444">選択削除</button>
-    <button onclick="exportPdf()" style="background:#10b981">保存</button>
+    <button onclick="exportPdf()" style="background:#10b981">名前を付けて保存</button>
 </div>
 <div id="pages"></div>
 
@@ -63,8 +63,6 @@
         saveHistory();
         const buffer = await file.arrayBuffer();
         const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-        
-        // 追加するページデータを生成
         const newPages = [];
         for (let i = 0; i < pdf.getPageCount(); i++) {
             const doc = await PDFLib.PDFDocument.create();
@@ -73,18 +71,12 @@
             const bytes = await doc.save();
             newPages.push({ blob: new Blob([bytes], {type: 'application/pdf'}), selected: false });
         }
-
-        // 挿入位置の特定（最初の選択ページを探す）
         const selectedIndex = pages.findIndex(p => p.selected);
-        
         if (selectedIndex !== -1) {
-            // 選択したページの直前に挿入
             pages.splice(selectedIndex, 0, ...newPages);
         } else {
-            // 何も選択されていなければ末尾に挿入
             pages.push(...newPages);
         }
-        
         render();
     }
 
@@ -117,6 +109,10 @@
     });
 
     async function exportPdf() {
+        // 1. ユーザーにファイル名を入力してもらう
+        const fileName = prompt("保存するファイル名を入力してください:", "edited_pdf.pdf");
+        if (!fileName) return; // キャンセルされたら終了
+
         const out = await PDFLib.PDFDocument.create();
         for (const p of pages) {
             const buffer = await p.blob.arrayBuffer();
@@ -124,9 +120,10 @@
             const [page] = await out.copyPages(doc, [0]);
             out.addPage(page);
         }
+        
         const a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([await out.save()], {type: 'application/pdf'}));
-        a.download = "edited.pdf";
+        a.download = fileName.endsWith('.pdf') ? fileName : fileName + '.pdf';
         a.click();
     }
 
