@@ -25,7 +25,6 @@
 <body>
 
 <div id="loader"><div style="color:white">処理中...</div></div>
-
 <div class="toolbar">
     <label class="file-label">新規読み込み<input type="file" id="fileInput" accept="application/pdf"></label>
     <label class="file-label" style="background:#64748b">PDF追加<input type="file" id="addInput" accept="application/pdf"></label>
@@ -38,11 +37,10 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    // 各ページは { pdfBytes, pageIndex, canvas, selected } を持つ
     let pagesData = []; 
     let history = [];
 
-    function saveState() { history.push(JSON.stringify(pagesData.map(p => ({pageIndex: p.pageIndex, pdfBytes: p.pdfBytes})))); }
+    function saveState() { history.push(JSON.stringify(pagesData.map(p => ({pdfBytes: p.pdfBytes})))); }
     function undo() { if(history.length > 0) { const state = JSON.parse(history.pop()); pagesData = state; render(); } }
 
     async function loadPdfFile(file, isAppend = false) {
@@ -50,22 +48,21 @@
         saveState();
         try {
             const arrayBuffer = await file.arrayBuffer();
-            const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(arrayBuffer));
+            const sourceDoc = await PDFLib.PDFDocument.load(new Uint8Array(arrayBuffer));
             const pdfjsDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             
-            let insertPos = pagesData.length;
-            if (isAppend && pagesData.length > 0) {
-                const pos = prompt(`何番目の後ろに挿入しますか？(0-${pagesData.length})`, pagesData.length);
-                insertPos = pos !== null ? parseInt(pos) : pagesData.length;
-            }
+            let insertPos = isAppend ? parseInt(prompt(`挿入位置 (0-${pagesData.length}):`, pagesData.length)) : pagesData.length;
+            if (isNaN(insertPos)) insertPos = pagesData.length;
 
             const newPages = [];
-            for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-                const [copy] = await PDFLib.PDFDocument.create().then(d => d.copyPages(pdfDoc, [i]));
-                const singleDoc = await PDFLib.PDFDocument.create();
-                singleDoc.addPage(copy);
-                const bytes = await singleDoc.save();
+            for (let i = 0; i < sourceDoc.getPageCount(); i++) {
+                // 1. 各ページを新しいPDFドキュメントへコピー
+                const tempDoc = await PDFLib.PDFDocument.create();
+                const [copiedPage] = await tempDoc.copyPages(sourceDoc, [i]);
+                tempDoc.addPage(copiedPage);
+                const bytes = await tempDoc.save();
 
+                // 2. プレビュー用キャンバス作成
                 const page = await pdfjsDoc.getPage(i + 1);
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -77,7 +74,7 @@
             }
             pagesData.splice(insertPos, 0, ...newPages);
             render();
-        } catch(e) { alert(e); }
+        } catch(e) { console.error(e); alert("読み込み失敗"); }
         document.getElementById('loader').style.display = 'none';
     }
 
@@ -126,9 +123,11 @@
             const [page] = await outDoc.copyPages(doc, [0]);
             outDoc.addPage(page);
         }
+        const bytes = await outDoc.save();
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([await outDoc.save()]));
-        a.download = "output.pdf"; a.click();
+        a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+        a.download = prompt("ファイル名", "edited.pdf") || "edited.pdf";
+        a.click();
     }
 
     document.getElementById('fileInput').addEventListener('change', (e) => loadPdfFile(e.target.files[0], false));
