@@ -40,22 +40,20 @@
     let history = [];
     const loader = document.getElementById('loader');
 
+    // 履歴保存：Canvasの描画状態はHTML上にあるため、JSON文字列化しても問題ないメタデータのみを保存
     function saveState() { 
         history.push(JSON.stringify(pagesData.map(p => ({pdfBytes: p.pdfBytes})))); 
     }
 
     async function undo() { 
-        if(history.length === 0) return alert("戻せる履歴がありません");
+        if(history.length === 0) return alert("これ以上戻せません");
         loader.style.display = 'flex';
-        try {
-            const state = JSON.parse(history.pop());
-            pagesData = [];
-            for(let item of state) {
-                const canvas = await renderCanvas(item.pdfBytes);
-                pagesData.push({ pdfBytes: item.pdfBytes, canvas, selected: false });
-            }
-            render(); 
-        } catch(e) { alert("Undo失敗: " + e.message); }
+        const state = JSON.parse(history.pop());
+        pagesData = [];
+        for(let item of state) {
+            pagesData.push({ pdfBytes: item.pdfBytes, canvas: await renderCanvas(item.pdfBytes), selected: false });
+        }
+        render(); 
         loader.style.display = 'none';
     }
 
@@ -75,7 +73,6 @@
         try {
             const buffer = await file.arrayBuffer();
             const sourceDoc = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-            
             let pos = isAppend ? parseInt(prompt(`挿入位置 (0-${pagesData.length}):`, pagesData.length)) : pagesData.length;
             if (isNaN(pos)) pos = pagesData.length;
 
@@ -105,6 +102,7 @@
                     div.classList.toggle('selected', p.selected);
                 }
             };
+            // 毎回ここでCanvasを再配置する（DOMからCanvasが外れても再描画される）
             div.appendChild(p.canvas);
             div.innerHTML += `<div class="page-controls"><span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span></div>`;
             pagesEl.appendChild(div);
@@ -121,17 +119,17 @@
         }
     }
 
+    // Sortableの更新を制御
     new Sortable(document.getElementById('pages'), {
-        onStart: saveState,
-        onEnd: () => {
-            const newOrder = [];
-            document.querySelectorAll('.page').forEach(div => {
-                const canvas = div.querySelector('canvas');
-                const p = pagesData.find(item => item.canvas === canvas);
-                if(p) newOrder.push(p);
-            });
-            pagesData = newOrder;
-            render();
+        onStart: () => {
+            // ドラッグ開始時に現在の状態を保存
+            saveState();
+        },
+        onEnd: (evt) => {
+            // SortableがDOMを動かした後、そのDOM順序に合わせてpagesDataを並べ替える
+            const item = pagesData.splice(evt.oldIndex, 1)[0];
+            pagesData.splice(evt.newIndex, 0, item);
+            render(); // 全て再描画することで確実にプレビューを維持
         }
     });
 
@@ -147,13 +145,10 @@
                 outDoc.addPage(page);
             }
             const bytes = await outDoc.save();
-            const blob = new Blob([bytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
+            a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
             a.download = prompt("ファイル名:", "edited.pdf") || "edited.pdf";
             a.click();
-            URL.revokeObjectURL(url);
         } catch(e) { alert("保存失敗: " + e.message); }
         loader.style.display = 'none';
     }
