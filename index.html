@@ -40,6 +40,7 @@
     let history = [];
     const loader = document.getElementById('loader');
 
+    // 履歴保存：CanvasはDOMなので保存対象から外す
     function saveState() { 
         history.push(JSON.stringify(pagesData.map(p => ({pdfBytes: p.pdfBytes})))); 
     }
@@ -48,11 +49,11 @@
         if(history.length === 0) return;
         loader.style.display = 'flex';
         const state = JSON.parse(history.pop());
-        pagesData = [];
+        const restored = [];
         for(let item of state) {
-            const canvas = await renderCanvas(item.pdfBytes);
-            pagesData.push({ pdfBytes: item.pdfBytes, canvas, selected: false });
+            restored.push({ pdfBytes: item.pdfBytes, canvas: await renderCanvas(item.pdfBytes), selected: false });
         }
+        pagesData = restored; 
         render(); 
         loader.style.display = 'none';
     }
@@ -74,7 +75,6 @@
         try {
             const arrayBuffer = await file.arrayBuffer();
             const sourceDoc = await PDFLib.PDFDocument.load(new Uint8Array(arrayBuffer));
-            
             let insertPos = isAppend ? parseInt(prompt(`挿入位置 (0-${pagesData.length}):`, pagesData.length)) : pagesData.length;
             if (isNaN(insertPos)) insertPos = pagesData.length;
 
@@ -88,7 +88,7 @@
             }
             pagesData.splice(insertPos, 0, ...newPages);
             render();
-        } catch(e) { alert("読み込み失敗: " + e.message); }
+        } catch(e) { alert("エラー: " + e.message); }
         loader.style.display = 'none';
     }
 
@@ -104,8 +104,13 @@
                     div.classList.toggle('selected', p.selected);
                 }
             };
-            div.appendChild(p.canvas); // 毎回Canvasを付け直すことでDOM問題を回避
-            div.innerHTML += `<div class="page-controls"><span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span></div>`;
+            // Canvasを毎回クローンではなく、保持しているCanvasをDOMに追加
+            div.appendChild(p.canvas);
+            
+            const controls = document.createElement('div');
+            controls.className = 'page-controls';
+            controls.innerHTML = `<span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span>`;
+            div.appendChild(controls);
             pagesEl.appendChild(div);
         });
     }
@@ -120,20 +125,19 @@
         }
     }
 
+    // Sortableの並び替え完了後に、pagesDataをDOMの順序と同期させる
     new Sortable(document.getElementById('pages'), {
         onStart: saveState,
         onEnd: () => {
             const newOrder = [];
-            // DOMの現在の並び順を取得して、pagesDataを更新
-            const pageDivs = document.querySelectorAll('.page');
-            const newPagesData = [];
-            pageDivs.forEach(div => {
+            document.querySelectorAll('.page').forEach(div => {
                 const canvas = div.querySelector('canvas');
+                // DOM上のCanvasに対応するデータを特定する
                 const p = pagesData.find(item => item.canvas === canvas);
-                newPagesData.push(p);
+                if(p) newOrder.push(p);
             });
-            pagesData = newPagesData;
-            render(); // 並び替えた後にCanvasを再描画・再配置
+            pagesData = newOrder;
+            render();
         }
     });
 
