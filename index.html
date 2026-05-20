@@ -35,6 +35,8 @@
     <div style="width: 1px; height: 20px; background: #475569;"></div>
     <button onclick="undo()">Undo</button>
     <button class="danger" onclick="deleteSelected()">削除</button>
+    <!-- 追加：選択解除ボタン -->
+    <button onclick="clearSelection()" style="background:#64748b;">選択解除</button>
     <button class="primary" onclick="exportSelected()" style="background:#8b5cf6;">抽出して保存</button>
     <button class="primary" onclick="exportPdf()">全保存</button>
     <div id="status">Ready</div>
@@ -47,7 +49,7 @@
     
     let pageList = []; 
     let historyStack = [];
-    let lastSelectedIndex = -1; // SHIFTキー選択用に記憶する変数
+    let lastSelectedIndex = -1; 
 
     function saveHistory() { historyStack.push([...pageList]); }
 
@@ -129,6 +131,15 @@
         render();
     }
 
+    // 追加：選択状態を解除する関数
+    function clearSelection() {
+        const container = document.getElementById('pages');
+        Array.from(container.children).forEach(div => {
+            div.classList.remove('selected');
+        });
+        lastSelectedIndex = -1;
+    }
+
     async function generateThumb(blob) {
         const pdf = await pdfjsLib.getDocument({ data: await blob.arrayBuffer() }).promise;
         const page = await pdf.getPage(1);
@@ -154,7 +165,6 @@
                 canvas.width = img.width; canvas.height = img.height;
                 canvas.getContext('2d').drawImage(img, 0, 0);
             };
-            // SHIFTキー対応クリックイベント
             div.onclick = (e) => {
                 if (e.shiftKey && lastSelectedIndex !== -1) {
                     const start = Math.min(lastSelectedIndex, i);
