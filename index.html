@@ -40,13 +40,12 @@
     let history = [];
     const loader = document.getElementById('loader');
 
-    // 履歴保存：Canvasの描画状態はHTML上にあるため、JSON文字列化しても問題ないメタデータのみを保存
     function saveState() { 
         history.push(JSON.stringify(pagesData.map(p => ({pdfBytes: p.pdfBytes})))); 
     }
 
     async function undo() { 
-        if(history.length === 0) return alert("これ以上戻せません");
+        if(history.length === 0) return alert("履歴なし");
         loader.style.display = 'flex';
         const state = JSON.parse(history.pop());
         pagesData = [];
@@ -73,8 +72,8 @@
         try {
             const buffer = await file.arrayBuffer();
             const sourceDoc = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-            let pos = isAppend ? parseInt(prompt(`挿入位置 (0-${pagesData.length}):`, pagesData.length)) : pagesData.length;
-            if (isNaN(pos)) pos = pagesData.length;
+            let insertPos = isAppend ? parseInt(prompt(`挿入位置 (0-${pagesData.length}):`, pagesData.length)) : pagesData.length;
+            if (isNaN(insertPos)) insertPos = pagesData.length;
 
             const newPages = [];
             for (let i = 0; i < sourceDoc.getPageCount(); i++) {
@@ -82,9 +81,12 @@
                 const [cp] = await tempDoc.copyPages(sourceDoc, [i]);
                 tempDoc.addPage(cp);
                 const bytes = await tempDoc.save();
-                newPages.push({ pdfBytes: bytes, canvas: await renderCanvas(bytes), selected: false });
+                
+                // キャンバスをここで先に生成・描画完了まで待つ
+                const canvas = await renderCanvas(bytes);
+                newPages.push({ pdfBytes: bytes, canvas, selected: false });
             }
-            pagesData.splice(pos, 0, ...newPages);
+            pagesData.splice(insertPos, 0, ...newPages);
             render();
         } catch(e) { alert("エラー: " + e.message); }
         loader.style.display = 'none';
@@ -95,16 +97,20 @@
         pagesEl.innerHTML = '';
         pagesData.forEach((p, i) => {
             const div = document.createElement('div');
-            div.className = `page ${p.selected ? 'selected' : ''}`;
+            div.className = 'page';
             div.onclick = (e) => { 
                 if(e.target.tagName !== 'SPAN') { 
                     p.selected = !p.selected; 
-                    div.classList.toggle('selected', p.selected);
+                    div.style.borderColor = p.selected ? '#3b82f6' : 'transparent';
                 }
             };
-            // 毎回ここでCanvasを再配置する（DOMからCanvasが外れても再描画される）
+            // 既に描画済みのcanvas要素を付与
             div.appendChild(p.canvas);
-            div.innerHTML += `<div class="page-controls"><span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span></div>`;
+            
+            const controls = document.createElement('div');
+            controls.className = 'page-controls';
+            controls.innerHTML = `<span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span>`;
+            div.appendChild(controls);
             pagesEl.appendChild(div);
         });
     }
@@ -119,17 +125,12 @@
         }
     }
 
-    // Sortableの更新を制御
     new Sortable(document.getElementById('pages'), {
-        onStart: () => {
-            // ドラッグ開始時に現在の状態を保存
-            saveState();
-        },
+        onStart: saveState,
         onEnd: (evt) => {
-            // SortableがDOMを動かした後、そのDOM順序に合わせてpagesDataを並べ替える
             const item = pagesData.splice(evt.oldIndex, 1)[0];
             pagesData.splice(evt.newIndex, 0, item);
-            render(); // 全て再描画することで確実にプレビューを維持
+            render();
         }
     });
 
@@ -147,7 +148,7 @@
             const bytes = await outDoc.save();
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-            a.download = prompt("ファイル名:", "edited.pdf") || "edited.pdf";
+            a.download = "edited.pdf";
             a.click();
         } catch(e) { alert("保存失敗: " + e.message); }
         loader.style.display = 'none';
