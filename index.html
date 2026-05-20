@@ -8,26 +8,33 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
     body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
-    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: #0f172a; padding: 10px 0; z-index: 10; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; }
-    canvas { width: 100%; height: auto; background: white; border-radius: 4px; }
-    button { cursor: pointer; padding: 8px 15px; border-radius: 4px; border: none; }
+    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: grab; }
+    canvas { width: 100%; height: auto; background: white; border-radius: 4px; pointer-events: none; }
+    button { cursor: pointer; padding: 8px 15px; border-radius: 4px; border: none; font-weight: bold; }
+    .btn-del { background: #ef4444; color: white; margin-top: 5px; width: 100%; }
+    .btn-save { background: #10b981; color: white; }
+    .btn-undo { background: #8b5cf6; color: white; }
 </style>
 </head>
 <body>
 
 <div class="toolbar">
     <input type="file" id="fileInput" accept="application/pdf">
-    <button onclick="exportPdf()" style="background:#10b981">保存</button>
+    <button class="btn-undo" onclick="undo()">Undo</button>
+    <button class="btn-save" onclick="exportPdf()">保存</button>
 </div>
 <div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    
     let pages = []; // {bytes: Uint8Array}
+    let history = [];
 
     async function loadPdf(file) {
+        history.push([...pages]); // 変更前に状態を記録
         const bytes = new Uint8Array(await file.arrayBuffer());
         const pdfDoc = await PDFLib.PDFDocument.load(bytes);
         const count = pdfDoc.getPageCount();
@@ -50,21 +57,35 @@
             div.className = 'page-item';
             const canvas = document.createElement('canvas');
             div.appendChild(canvas);
+            
+            // 削除ボタン
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-del';
+            delBtn.textContent = '削除';
+            delBtn.onclick = () => deletePage(i);
+            div.appendChild(delBtn);
+            
             container.appendChild(div);
 
-            // PDF.jsで個別に描画
-            const loadingTask = pdfjsLib.getDocument({ data: pages[i].bytes });
-            const pdf = await loadingTask.promise;
+            const pdf = await pdfjsLib.getDocument({ data: pages[i].bytes }).promise;
             const page = await pdf.getPage(1);
-            
-            // サイズを固定せず、ページ本来の比率を維持する
-            const scale = 0.5;
-            const viewport = page.getViewport({ scale: scale });
+            const viewport = page.getViewport({ scale: 0.3 });
             canvas.height = viewport.height;
             canvas.width = viewport.width;
-            
             await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
         }
+    }
+
+    function deletePage(i) {
+        history.push([...pages]);
+        pages.splice(i, 1);
+        render();
+    }
+
+    function undo() {
+        if (history.length === 0) return;
+        pages = history.pop();
+        render();
     }
 
     async function exportPdf() {
@@ -75,10 +96,20 @@
             out.addPage(page);
         }
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([await out.save()]));
-        a.download = "output.pdf";
+        a.href = URL.createObjectURL(new Blob([await out.save()], {type: 'application/pdf'}));
+        a.download = "edited.pdf";
         a.click();
     }
+
+    // 並び替え処理
+    new Sortable(document.getElementById('pages'), {
+        onStart: () => history.push([...pages]),
+        onEnd: (evt) => {
+            const item = pages.splice(evt.oldIndex, 1)[0];
+            pages.splice(evt.newIndex, 0, item);
+            render();
+        }
+    });
 
     document.getElementById('fileInput').addEventListener('change', (e) => loadPdf(e.target.files[0]));
 </script>
