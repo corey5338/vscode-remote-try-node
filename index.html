@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - Stable</title>
+<title>PDF Editor Stable</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -35,16 +35,15 @@
         history.push(pages.map(p => ({ bytes: p.bytes.slice(), selected: p.selected })));
     }
 
-    // 描画処理：一度だけ生成する
     async function render() {
         const container = document.getElementById('pages');
         container.innerHTML = '';
         for (let i = 0; i < pages.length; i++) {
             const p = pages[i];
             const div = document.createElement('div');
+            // データに基づいてクラスを付与
             div.className = 'page-item' + (p.selected ? ' selected' : '');
             
-            // 重要：クリック時は「CSSクラスの切り替えのみ」を行い、DOM破壊・再描画は行わない
             div.onclick = () => {
                 p.selected = !p.selected;
                 div.classList.toggle('selected');
@@ -76,15 +75,23 @@
     }
 
     function deleteSelected() {
-        if (!pages.some(p => p.selected)) return;
+        // 1. まず現在のDOMの状態と配列の状態を完全に強制同期させる
+        const items = document.querySelectorAll('.page-item');
+        items.forEach((item, index) => {
+            pages[index].selected = item.classList.contains('selected');
+        });
+
+        // 2. 選択されたものがなければ終了
+        if (!pages.some(p => p.selected)) return alert("削除するページを選択してください");
+        
         saveHistory();
+        // 3. 削除実行
         pages = pages.filter(p => !p.selected);
-        // 削除時のみ再描画（これが必要なDOM更新）
         render();
     }
 
     function undo() {
-        if (history.length === 0) return;
+        if (history.length === 0) return alert("戻せる履歴がありません");
         pages = history.pop();
         render();
     }
