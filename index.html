@@ -9,17 +9,16 @@
 
 <style>
     :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
-    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; }
+    body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
     .toolbar { background: var(--card); padding: 15px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
-    button, .file-label { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    button:hover { filter: brightness(1.2); }
+    button, .file-label { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
     .file-label { display: inline-block; cursor: pointer; }
     input[type="file"] { display: none; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 25px; }
     .page { background: var(--card); border-radius: 8px; padding: 10px; border: 3px solid transparent; cursor: grab; text-align: center; }
     .page.selected { border-color: var(--accent); }
     canvas { width: 100%; border-radius: 4px; pointer-events: none; background: white; }
-    .page-label { margin-top: 8px; font-size: 12px; color: #94a3b8; }
+    .page-label { margin-top: 8px; font-size: 13px; font-weight: bold; color: #94a3b8; }
     #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
     .spinner { width: 50px; height: 50px; border: 5px solid #334155; border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -41,7 +40,7 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
     let originalPdfDoc = null; 
-    let pagesData = []; // { canvas, selected }
+    let pagesData = []; // { canvas, originalIndex, selected }
     const loader = document.getElementById('loader');
 
     async function loadPdfFile(file, isAppend = false) {
@@ -53,16 +52,16 @@
 
             let insertAt = pagesData.length;
             if (isAppend && pagesData.length > 0) {
-                const pos = prompt(`何ページ目の後ろに挿入しますか？ (1～${pagesData.length})`, pagesData.length);
-                insertAt = pos ? parseInt(pos) : pagesData.length;
+                const pos = prompt(`何ページ目の後ろに挿入しますか？ (0～${pagesData.length})`, pagesData.length);
+                insertAt = pos !== null ? parseInt(pos) : pagesData.length;
             }
 
             if (!isAppend || !originalPdfDoc) {
                 originalPdfDoc = newDoc;
                 pagesData = [];
             } else {
-                const indices = newDoc.getPageIndices();
-                for (let i = 0; i < indices.length; i++) {
+                // PDFLib側でページを物理的に挿入
+                for (let i = 0; i < newDoc.getPageCount(); i++) {
                     const [page] = await originalPdfDoc.copyPages(newDoc, [i]);
                     originalPdfDoc.insertPage(insertAt + i, page);
                 }
@@ -76,15 +75,13 @@
                 canvas.width = vp.width; canvas.height = vp.height;
                 await page.render({ canvasContext: ctx, viewport: vp }).promise;
                 
-                pagesData.splice(insertAt + i, 0, { canvas: canvas, selected: false });
+                // insertAt に基づいて配列に挿入
+                pagesData.splice(insertAt + i, 0, { canvas, selected: false });
             }
             render();
         } catch (e) { alert("エラー: " + e.message); }
         loader.style.display = 'none';
     }
-
-    document.getElementById('fileInput').addEventListener('change', (e) => loadPdfFile(e.target.files[0], false));
-    document.getElementById('addInput').addEventListener('change', (e) => loadPdfFile(e.target.files[0], true));
 
     function render() {
         const pagesEl = document.getElementById('pages');
@@ -93,8 +90,13 @@
             const div = document.createElement('div');
             div.className = `page ${p.selected ? 'selected' : ''}`;
             div.onclick = () => { p.selected = !p.selected; div.className = `page ${p.selected ? 'selected' : ''}`; };
-            div.appendChild(p.canvas);
-            div.innerHTML += `<div class="page-label">P.${i + 1}</div>`;
+            
+            div.appendChild(p.canvas); // Canvasを追加
+            const label = document.createElement('div'); // ラベルを追加
+            label.className = 'page-label';
+            label.textContent = `P.${i + 1}`;
+            div.appendChild(label);
+            
             pagesEl.appendChild(div);
         });
     }
@@ -112,12 +114,21 @@
 
     async function exportPdf() {
         const finalPdf = await PDFLib.PDFDocument.create();
-        for (const p of pagesData) {
-            // 現在のpagesDataの順序に基づき、originalPdfDocからページを抽出し直す
-            // ページ番号をインデックスとして扱う
+        // 現在の pagesData の順序通りにページを再作成
+        for (let i = 0; i < pagesData.length; i++) {
+            const [page] = await finalPdf.copyPages(originalPdfDoc, [i]);
+            finalPdf.addPage(page);
         }
-        // ... (保存ロジックはpagesDataのインデックス順にPDFを再構築する形に修正が必要です)
+        const bytes = await finalPdf.save();
+        const fileName = prompt("保存ファイル名:", "edited.pdf") || "edited.pdf";
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+        a.download = fileName.endsWith('.pdf') ? fileName : fileName + '.pdf';
+        a.click();
     }
+
+    document.getElementById('fileInput').addEventListener('change', (e) => loadPdfFile(e.target.files[0], false));
+    document.getElementById('addInput').addEventListener('change', (e) => loadPdfFile(e.target.files[0], true));
 </script>
 </body>
 </html>
