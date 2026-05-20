@@ -15,7 +15,6 @@
 :root{
     --bg:#0f172a;
     --panel:#1e293b;
-    --panel2:#273549;
     --accent:#3b82f6;
     --danger:#ef4444;
     --text:#f8fafc;
@@ -147,7 +146,7 @@ button.danger:hover{
 }
 
 /* ======================
-   Grid
+   Pages
 ====================== */
 
 #pages{
@@ -155,7 +154,7 @@ button.danger:hover{
     display:grid;
 
     grid-template-columns:
-        repeat(auto-fill,minmax(170px,1fr));
+        repeat(auto-fill,minmax(180px,1fr));
 
     gap:22px;
 
@@ -245,7 +244,7 @@ canvas{
 
     color:var(--muted);
 
-    font-size:.8rem;
+    font-size:.82rem;
 
     font-weight:600;
 
@@ -266,7 +265,7 @@ canvas{
 
 .empty{
 
-    margin-top:100px;
+    margin-top:120px;
 
     text-align:center;
 
@@ -343,6 +342,9 @@ canvas{
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+const pagesContainer =
+    document.getElementById('pages');
+
 let pageList = [];
 
 let historyStack = [];
@@ -350,43 +352,36 @@ let historyStack = [];
 let lastSelectedIndex = -1;
 
 /* ======================
-   History
-====================== */
-
-function saveHistory(){
-
-    historyStack.push([...pageList]);
-
-}
-
-/* ======================
    Sortable
 ====================== */
 
-new Sortable(document.getElementById('pages'), {
+new Sortable(pagesContainer,{
 
     animation:200,
 
     ghostClass:'selected',
 
-    onEnd:() => {
+    onEnd:()=>{
 
         saveHistory();
 
-        const container =
-            document.getElementById('pages');
+        const newList = [];
 
-        const newOrder =
-            Array
-            .from(container.children)
-            .map(div =>
-                parseInt(div.dataset.index)
+        document
+        .querySelectorAll('.page-item')
+        .forEach(el=>{
+
+            newList.push(
+                el.pageData
             );
 
-        pageList =
-            newOrder.map(i => pageList[i]);
+        });
 
-        render();
+        pageList = newList;
+
+        updatePageNumbers();
+
+        setStatus('ページ順変更');
 
     }
 
@@ -405,12 +400,24 @@ function setStatus(text){
 }
 
 /* ======================
+   History
+====================== */
+
+function saveHistory(){
+
+    historyStack.push(
+        [...pageList]
+    );
+
+}
+
+/* ======================
    Load PDF
 ====================== */
 
 document
 .getElementById('fileInput')
-.onchange = (e) => {
+.onchange = (e)=>{
 
     processFile(
         e.target.files[0],
@@ -421,21 +428,19 @@ document
 
 async function processFile(file,isReset){
 
-    const statusEl =
-        document.getElementById('status');
-
     if(isReset){
 
         pageList = [];
 
         historyStack = [];
 
+        pagesContainer.innerHTML = '';
+
     }
 
     try{
 
-        statusEl.textContent =
-            '処理中...';
+        setStatus('PDF読み込み中...');
 
         const pdfBytes =
             await file.arrayBuffer();
@@ -452,8 +457,9 @@ async function processFile(file,isReset){
 
         for(let i=0;i<total;i++){
 
-            statusEl.textContent =
-                `読み込み: ${i+1}/${total}`;
+            setStatus(
+                `読み込み ${i+1}/${total}`
+            );
 
             const thumb =
                 await generateThumb(
@@ -461,29 +467,37 @@ async function processFile(file,isReset){
                     i
                 );
 
-            pageList.push({
+            const pageData = {
 
                 doc:pdfDoc,
 
                 pageIndex:i,
 
-                thumb:thumb
+                thumb:thumb,
 
-            });
+                selected:false
+
+            };
+
+            pageList.push(pageData);
+
+            const el =
+                createPageElement(
+                    pageData,
+                    pageList.length - 1
+                );
+
+            pagesContainer.appendChild(el);
 
         }
 
-        render();
+        setStatus('完了');
 
-        statusEl.textContent =
-            '完了';
+    }catch(err){
 
-    }catch(e){
+        console.error(err);
 
-        console.error(e);
-
-        statusEl.textContent =
-            'エラー';
+        setStatus('エラー');
 
     }
 
@@ -507,34 +521,30 @@ async function addPdf(){
         const file =
             e.target.files[0];
 
-        const container =
-            document.getElementById('pages');
-
-        const selectedElements =
-            Array
-            .from(container.children)
-            .filter(d =>
-                d.classList.contains(
-                    'selected'
-                )
-            );
-
-        const insertAfter =
-            selectedElements.length > 0
-            ? parseInt(
-                selectedElements[
-                    selectedElements.length-1
-                ].dataset.index
-              )
-            : pageList.length - 1;
+        if(!file) return;
 
         const tempPages =
             await getPagesFromPdf(file);
 
         saveHistory();
 
+        let insertIndex =
+            pageList.length;
+
+        const selectedIndex =
+            pageList.findLastIndex(
+                p=>p.selected
+            );
+
+        if(selectedIndex !== -1){
+
+            insertIndex =
+                selectedIndex + 1;
+
+        }
+
         pageList.splice(
-            insertAfter + 1,
+            insertIndex,
             0,
             ...tempPages
         );
@@ -549,11 +559,6 @@ async function addPdf(){
 
 async function getPagesFromPdf(file){
 
-    const statusEl =
-        document.getElementById('status');
-
-    const newPages = [];
-
     const pdfBytes =
         await file.arrayBuffer();
 
@@ -564,14 +569,17 @@ async function getPagesFromPdf(file){
             new Uint8Array(pdfBytes)
         );
 
+    const pages = [];
+
     for(
         let i=0;
         i<pdfDoc.getPageCount();
         i++
     ){
 
-        statusEl.textContent =
-            `挿入中: ${i+1}/${pdfDoc.getPageCount()}`;
+        setStatus(
+            `追加 ${i+1}/${pdfDoc.getPageCount()}`
+        );
 
         const thumb =
             await generateThumb(
@@ -579,92 +587,26 @@ async function getPagesFromPdf(file){
                 i
             );
 
-        newPages.push({
+        pages.push({
 
             doc:pdfDoc,
 
             pageIndex:i,
 
-            thumb:thumb
+            thumb:thumb,
+
+            selected:false
 
         });
 
     }
 
-    return newPages;
+    return pages;
 
 }
 
 /* ======================
-   Undo
-====================== */
-
-function undo(){
-
-    if(historyStack.length === 0)
-        return;
-
-    pageList =
-        historyStack.pop();
-
-    render();
-
-}
-
-/* ======================
-   Delete
-====================== */
-
-function deleteSelected(){
-
-    saveHistory();
-
-    const container =
-        document.getElementById('pages');
-
-    const selected =
-        Array
-        .from(container.children)
-        .map(d =>
-            d.classList.contains(
-                'selected'
-            )
-        );
-
-    pageList =
-        pageList.filter(
-            (_,i)=>!selected[i]
-        );
-
-    render();
-
-}
-
-/* ======================
-   Clear Selection
-====================== */
-
-function clearSelection(){
-
-    const container =
-        document.getElementById('pages');
-
-    Array
-    .from(container.children)
-    .forEach(div=>{
-
-        div.classList.remove(
-            'selected'
-        );
-
-    });
-
-    lastSelectedIndex = -1;
-
-}
-
-/* ======================
-   Generate Thumb
+   Thumbnail
 ====================== */
 
 async function generateThumb(
@@ -672,15 +614,15 @@ async function generateThumb(
     pageIndex
 ){
 
-    const bytes =
-        new Uint8Array(
-            pdfBytes.slice(0)
-        );
+    const copyBytes =
+        pdfBytes.slice(0);
 
     const pdf =
         await pdfjsLib
         .getDocument({
-            data:bytes
+
+            data:copyBytes
+
         }).promise;
 
     const page =
@@ -695,7 +637,7 @@ async function generateThumb(
 
     const viewport =
         page.getViewport({
-            scale:0.15
+            scale:0.22
         });
 
     canvas.width =
@@ -715,24 +657,25 @@ async function generateThumb(
 
     return canvas.toDataURL(
         'image/webp',
-        0.4
+        0.55
     );
 
 }
 
 /* ======================
-   Render
+   Create Page Element
 ====================== */
 
-const pagesContainer =
-    document.getElementById('pages');
-
-function createPageElement(p,index){
+function createPageElement(
+    p,
+    index
+){
 
     const div =
         document.createElement('div');
 
-    div.className = 'page-item';
+    div.className =
+        'page-item';
 
     div.pageData = p;
 
@@ -773,24 +716,31 @@ function createPageElement(p,index){
 
         canvas
         .getContext('2d')
-        .drawImage(img,0,0);
+        .drawImage(
+            img,
+            0,
+            0
+        );
 
     };
 
     const checkbox =
         div.querySelector('.page-check');
 
-    checkbox.checked = !!p.selected;
+    checkbox.checked =
+        p.selected;
 
     if(p.selected){
 
-        div.classList.add('selected');
+        div.classList.add(
+            'selected'
+        );
 
     }
 
     checkbox.addEventListener(
         'click',
-        e => e.stopPropagation()
+        e=>e.stopPropagation()
     );
 
     checkbox.addEventListener(
@@ -808,71 +758,81 @@ function createPageElement(p,index){
         }
     );
 
-    div.addEventListener('click',(e)=>{
+    div.addEventListener(
+        'click',
+        (e)=>{
 
-        if(
-            e.shiftKey &&
-            lastSelectedIndex !== -1
-        ){
-
-            const start =
-                Math.min(
-                    lastSelectedIndex,
-                    index
-                );
-
-            const end =
-                Math.max(
-                    lastSelectedIndex,
-                    index
-                );
-
-            const items =
-                Array.from(
-                    pagesContainer.children
-                );
-
-            for(
-                let i=start;
-                i<=end;
-                i++
+            if(
+                e.shiftKey &&
+                lastSelectedIndex !== -1
             ){
 
-                const item = items[i];
+                const start =
+                    Math.min(
+                        lastSelectedIndex,
+                        index
+                    );
 
-                item.pageData.selected = true;
+                const end =
+                    Math.max(
+                        lastSelectedIndex,
+                        index
+                    );
 
-                item.classList.add(
-                    'selected'
+                const items =
+                    Array.from(
+                        pagesContainer.children
+                    );
+
+                for(
+                    let i=start;
+                    i<=end;
+                    i++
+                ){
+
+                    const item =
+                        items[i];
+
+                    item.pageData.selected =
+                        true;
+
+                    item.classList.add(
+                        'selected'
+                    );
+
+                    item.querySelector(
+                        '.page-check'
+                    ).checked = true;
+
+                }
+
+            }else{
+
+                p.selected =
+                    !p.selected;
+
+                div.classList.toggle(
+                    'selected',
+                    p.selected
                 );
 
-                item.querySelector(
-                    '.page-check'
-                ).checked = true;
+                checkbox.checked =
+                    p.selected;
 
             }
 
-        }else{
-
-            p.selected = !p.selected;
-
-            div.classList.toggle(
-                'selected',
-                p.selected
-            );
-
-            checkbox.checked =
-                p.selected;
+            lastSelectedIndex = index;
 
         }
-
-        lastSelectedIndex = index;
-
-    });
+    );
 
     return div;
 
 }
+
+/* ======================
+   Render
+====================== */
 
 function render(){
 
@@ -905,6 +865,105 @@ function render(){
 }
 
 /* ======================
+   Update Page Numbers
+====================== */
+
+function updatePageNumbers(){
+
+    document
+    .querySelectorAll('.page-item')
+    .forEach((el,index)=>{
+
+        el.querySelector(
+            '.page-num'
+        ).textContent =
+            `Page ${index + 1}`;
+
+    });
+
+}
+
+/* ======================
+   Delete
+====================== */
+
+function deleteSelected(){
+
+    const selectedPages =
+        pageList.filter(
+            p=>p.selected
+        );
+
+    if(selectedPages.length === 0){
+
+        alert(
+            '削除するページを選択してください'
+        );
+
+        return;
+
+    }
+
+    saveHistory();
+
+    pageList =
+        pageList.filter(
+            p=>!p.selected
+        );
+
+    render();
+
+    setStatus(
+        `${selectedPages.length}ページ削除`
+    );
+
+}
+
+/* ======================
+   Clear Selection
+====================== */
+
+function clearSelection(){
+
+    pageList.forEach(p=>{
+
+        p.selected = false;
+
+    });
+
+    document
+    .querySelectorAll('.page-item')
+    .forEach(el=>{
+
+        el.classList.remove(
+            'selected'
+        );
+
+        el.querySelector(
+            '.page-check'
+        ).checked = false;
+
+    });
+
+}
+
+/* ======================
+   Undo
+====================== */
+
+function undo(){
+
+    if(historyStack.length === 0)
+        return;
+
+    pageList =
+        historyStack.pop();
+
+    render();
+
+}
+
+/* ======================
    Export PDF
 ====================== */
 
@@ -917,6 +976,8 @@ async function exportPdf(){
         );
 
     if(!name) return;
+
+    setStatus('PDF生成中...');
 
     const newPdf =
         await PDFLib
@@ -953,6 +1014,8 @@ async function exportPdf(){
 
     a.click();
 
+    setStatus('保存完了');
+
 }
 
 /* ======================
@@ -961,25 +1024,15 @@ async function exportPdf(){
 
 async function exportSelected(){
 
-    const container =
-        document.getElementById('pages');
+    const selectedPages =
+        pageList.filter(
+            p=>p.selected
+        );
 
-    const selectedIndices =
-        Array
-        .from(container.children)
-        .map((div,i)=>
-            div.classList.contains(
-                'selected'
-            )
-            ? i
-            : -1
-        )
-        .filter(i=>i!==-1);
-
-    if(selectedIndices.length === 0){
+    if(selectedPages.length === 0){
 
         alert(
-            '抽出したいページを選択してください'
+            '抽出ページを選択してください'
         );
 
         return;
@@ -994,15 +1047,14 @@ async function exportSelected(){
 
     if(!name) return;
 
+    setStatus('抽出中...');
+
     const newPdf =
         await PDFLib
         .PDFDocument
         .create();
 
-    for(let idx of selectedIndices){
-
-        const p =
-            pageList[idx];
+    for(let p of selectedPages){
 
         const [page] =
             await newPdf.copyPages(
@@ -1034,6 +1086,8 @@ async function exportSelected(){
         : name + '.pdf';
 
     a.click();
+
+    setStatus('抽出完了');
 
 }
 
