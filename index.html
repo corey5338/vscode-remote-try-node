@@ -28,8 +28,13 @@
     box-sizing:border-box;
 }
 
+html,
 body{
     margin:0;
+    min-height:100%;
+}
+
+body{
     background:
         radial-gradient(circle at top left,#1e293b 0%,#020617 45%);
     color:var(--text);
@@ -38,6 +43,10 @@ body{
         system-ui,
         sans-serif;
 }
+
+/* =====================================================
+   Toolbar
+===================================================== */
 
 .toolbar{
 
@@ -75,7 +84,7 @@ button{
 
     font-weight:700;
 
-    transition:.18s;
+    transition:.15s;
 
     background:#334155;
 
@@ -107,9 +116,13 @@ button.danger{
 
 }
 
+/* =====================================================
+   Pages
+===================================================== */
+
 #pages{
 
-    padding:20px;
+    position:relative;
 
     display:grid;
 
@@ -118,11 +131,17 @@ button.danger{
 
     gap:20px;
 
+    padding:20px;
+
 }
+
+/* =====================================================
+   Page Item
+===================================================== */
 
 .page-item{
 
-    background:rgba(15,23,42,.9);
+    background:rgba(15,23,42,.92);
 
     border:
         2px solid transparent;
@@ -131,12 +150,16 @@ button.danger{
 
     overflow:hidden;
 
-    transition:.15s;
+    transition:.12s;
 
     cursor:pointer;
 
     box-shadow:
         0 8px 20px rgba(0,0,0,.25);
+
+    contain:content;
+
+    will-change:transform;
 
 }
 
@@ -153,10 +176,14 @@ button.danger{
     border-color:var(--accent);
 
     box-shadow:
-        0 0 0 2px rgba(59,130,246,.25),
-        0 8px 20px rgba(0,0,0,.35);
+        0 0 0 2px rgba(59,130,246,.22),
+        0 8px 24px rgba(0,0,0,.35);
 
 }
+
+/* =====================================================
+   Preview
+===================================================== */
 
 .preview{
 
@@ -170,6 +197,8 @@ button.danger{
 
     justify-content:center;
 
+    overflow:hidden;
+
     position:relative;
 
 }
@@ -180,11 +209,15 @@ button.danger{
 
     height:100%;
 
-    object-fit:contain;
-
     display:block;
 
+    object-fit:contain;
+
 }
+
+/* =====================================================
+   Loading
+===================================================== */
 
 .placeholder{
 
@@ -193,6 +226,10 @@ button.danger{
     font-size:.9rem;
 
 }
+
+/* =====================================================
+   Footer
+===================================================== */
 
 .page-footer{
 
@@ -225,13 +262,17 @@ button.danger{
 
 }
 
+/* =====================================================
+   Empty
+===================================================== */
+
 .empty{
 
     width:100%;
 
     text-align:center;
 
-    padding:80px 20px;
+    padding:100px 20px;
 
     color:#64748b;
 
@@ -326,7 +367,7 @@ function(cb){
 };
 
 /* =====================================================
-   PDF Worker
+   Worker
 ===================================================== */
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -355,6 +396,8 @@ let lastSelectedIndex = -1;
 const renderQueue = [];
 
 let renderRunning = false;
+
+const domMap = new Map();
 
 /* =====================================================
    Status
@@ -412,7 +455,7 @@ new Sortable(pagesContainer,{
 });
 
 /* =====================================================
-   File Load
+   File Input
 ===================================================== */
 
 document
@@ -427,7 +470,7 @@ document
 };
 
 /* =====================================================
-   Process File
+   Process PDF
 ===================================================== */
 
 async function processFile(file,isReset){
@@ -441,6 +484,8 @@ async function processFile(file,isReset){
             pageList = [];
 
             historyStack = [];
+
+            domMap.clear();
 
         }
 
@@ -486,7 +531,7 @@ async function processFile(file,isReset){
 
                 renderTask:null,
 
-                thumb:null
+                bitmap:null
 
             });
 
@@ -526,58 +571,32 @@ function render(){
 
     }
 
-    pagesContainer.innerHTML = '';
-
     const fragment =
         document.createDocumentFragment();
 
+    const usedIds = new Set();
+
     pageList.forEach((p,index)=>{
 
-        const div =
-            document.createElement('div');
+        let div =
+            domMap.get(p.id);
 
-        div.className =
-            'page-item';
+        if(!div){
 
-        if(p.selected){
+            div =
+                createPageElement(
+                    p,
+                    index
+                );
 
-            div.classList.add(
-                'selected'
+            domMap.set(
+                p.id,
+                div
             );
 
         }
 
-        div.innerHTML = `
-
-            <div class="preview">
-
-                <div class="placeholder">
-                    Loading...
-                </div>
-
-                <canvas
-                    style="display:none;"
-                ></canvas>
-
-            </div>
-
-            <div class="page-footer">
-
-                <div class="page-num">
-                    Page ${index + 1}
-                </div>
-
-                <input
-                    type="checkbox"
-                    class="page-check"
-                    ${p.selected ? 'checked' : ''}
-                >
-
-            </div>
-
-        `;
-
-        setupSelection(
+        updatePageElement(
             div,
             p,
             index
@@ -585,38 +604,69 @@ function render(){
 
         fragment.appendChild(div);
 
-        const canvas =
-            div.querySelector('canvas');
-
-        if(p.thumb){
-
-            restoreThumbnail(
-                p,
-                canvas,
-                div
-            );
-
-        }else{
-
-            queueThumbnail(
-                p,
-                canvas,
-                div
-            );
-
-        }
+        usedIds.add(p.id);
 
     });
 
+    pagesContainer.innerHTML = '';
+
     pagesContainer.appendChild(fragment);
+
+    for(
+        const [id,el]
+        of domMap.entries()
+    ){
+
+        if(!usedIds.has(id)){
+
+            domMap.delete(id);
+
+        }
+
+    }
 
 }
 
 /* =====================================================
-   Selection
+   Create Page Element
 ===================================================== */
 
-function setupSelection(div,p,index){
+function createPageElement(p,index){
+
+    const div =
+        document.createElement('div');
+
+    div.className =
+        'page-item';
+
+    div.innerHTML = `
+
+        <div class="preview">
+
+            <div class="placeholder">
+                Loading...
+            </div>
+
+            <canvas
+                style="display:none;"
+            ></canvas>
+
+        </div>
+
+        <div class="page-footer">
+
+            <div class="page-num">
+                Page ${index + 1}
+            </div>
+
+            <input
+                type="checkbox"
+                class="page-check"
+            >
+
+        </div>
+
+    `;
 
     const checkbox =
         div.querySelector('.page-check');
@@ -679,6 +729,55 @@ function setupSelection(div,p,index){
         render();
 
     };
+
+    return div;
+
+}
+
+/* =====================================================
+   Update Page Element
+===================================================== */
+
+function updatePageElement(div,p,index){
+
+    div.classList.toggle(
+        'selected',
+        p.selected
+    );
+
+    div.querySelector('.page-num')
+    .textContent =
+        `Page ${index + 1}`;
+
+    const checkbox =
+        div.querySelector('.page-check');
+
+    checkbox.checked =
+        p.selected;
+
+    const canvas =
+        div.querySelector('canvas');
+
+    if(p.bitmap){
+
+        restoreBitmap(
+            canvas,
+            div,
+            p.bitmap
+        );
+
+    }else if(
+        !p.rendering &&
+        !p.rendered
+    ){
+
+        queueThumbnail(
+            p,
+            canvas,
+            div
+        );
+
+    }
 
 }
 
@@ -759,7 +858,7 @@ function idle(){
 }
 
 /* =====================================================
-   Thumbnail
+   Render Thumbnail
 ===================================================== */
 
 async function renderThumbnail(
@@ -807,10 +906,9 @@ async function renderThumbnail(
 
         await p.renderTask.promise;
 
-        p.thumb =
-            canvas.toDataURL(
-                'image/webp',
-                0.55
+        p.bitmap =
+            await createImageBitmap(
+                canvas
             );
 
         p.rendered = true;
@@ -849,51 +947,48 @@ async function renderThumbnail(
 }
 
 /* =====================================================
-   Restore
+   Restore Bitmap
 ===================================================== */
 
-function restoreThumbnail(
-    p,
+function restoreBitmap(
     canvas,
-    div
+    div,
+    bitmap
 ){
 
-    const img =
-        new Image();
-
-    img.src = p.thumb;
-
-    img.onload = ()=>{
-
-        canvas.width =
-            img.width;
-
-        canvas.height =
-            img.height;
-
-        canvas
-        .getContext('2d')
-        .drawImage(
-            img,
-            0,
-            0
+    const ctx =
+        canvas.getContext(
+            '2d',
+            {
+                alpha:false
+            }
         );
 
-        const placeholder =
-            div.querySelector(
-                '.placeholder'
-            );
+    canvas.width =
+        bitmap.width;
 
-        if(placeholder){
+    canvas.height =
+        bitmap.height;
 
-            placeholder.remove();
+    ctx.drawImage(
+        bitmap,
+        0,
+        0
+    );
 
-        }
+    const placeholder =
+        div.querySelector(
+            '.placeholder'
+        );
 
-        canvas.style.display =
-            'block';
+    if(placeholder){
 
-    };
+        placeholder.remove();
+
+    }
+
+    canvas.style.display =
+        'block';
 
 }
 
@@ -1174,7 +1269,7 @@ async function getPagesFromPdf(file){
 
             renderTask:null,
 
-            thumb:null
+            bitmap:null
 
         });
 
