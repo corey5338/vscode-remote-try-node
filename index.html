@@ -31,11 +31,13 @@
 <div class="toolbar">
     <input type="file" id="fileInput" hidden accept="application/pdf">
     <button onclick="document.getElementById('fileInput').click()">新規読み込み</button>
-    <button onclick="addPdf()">PDF追加</button>
+    <button onclick="addPdf()">指定位置へ追加</button>
     <div style="width: 1px; height: 20px; background: #475569;"></div>
     <button onclick="undo()">Undo</button>
     <button class="danger" onclick="deleteSelected()">削除</button>
-    <button class="primary" onclick="exportPdf()">保存</button>
+    <!-- ここに抽出機能ボタンを追加 -->
+    <button class="primary" onclick="exportSelected()" style="background:#8b5cf6;">抽出して保存</button>
+    <button class="primary" onclick="exportPdf()">全保存</button>
     <div id="status">Ready</div>
 </div>
 
@@ -181,6 +183,33 @@ async function getPagesFromPdf(file) {
         a.href = URL.createObjectURL(new Blob([await newPdf.save()], {type: 'application/pdf'}));
         a.download = name; a.click();
     }
+    // 選択したページのみを抽出して保存する機能
+    async function exportSelected() {
+    const container = document.getElementById('pages');
+    const selectedIndices = Array.from(container.children)
+        .map((div, i) => div.classList.contains('selected') ? i : -1)
+        .filter(i => i !== -1);
+
+    if (selectedIndices.length === 0) {
+        alert("抽出したいページを選択してください");
+        return;
+    }
+
+    const name = prompt("抽出するファイル名:", "extracted.pdf");
+    if (!name) return;
+
+    const newPdf = await PDFLib.PDFDocument.create();
+    for (let idx of selectedIndices) {
+        const p = pageList[idx];
+        const [page] = await newPdf.copyPages(p.doc, [p.pageIndex]);
+        newPdf.addPage(page);
+    }
+    
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([await newPdf.save()], {type: 'application/pdf'}));
+    a.download = name.endsWith('.pdf') ? name : name + '.pdf';
+    a.click();
+}
 </script>
 </body>
 </html>
