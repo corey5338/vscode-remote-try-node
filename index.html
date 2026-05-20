@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <title>PDF Editor Pro</title>
 
-<!-- ライブラリの読み込み（より環境に依存しにくい安定版に変更） -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<!-- 
+  ライブラリの読み込み先を安定したサーバー(jsDelivr)に変更。
+  もし社内ネットワークでブロックされた場合は、画面にアラートが出るようにしています。
+-->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js" onerror="alert('エラー: プレビュー機能(PDF.js)の読み込みが社内ネットワークでブロックされました。')"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" onerror="alert('エラー: 編集機能(PDF-lib)の読み込みが社内ネットワークでブロックされました。')"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" onerror="alert('エラー: 並べ替え機能(SortableJS)の読み込みが社内ネットワークでブロックされました。')"></script>
 
 <style>
     body {
@@ -101,7 +104,7 @@
         border-radius: 4px;
         min-height: 140px;
         object-fit: contain;
-        pointer-events: none; /* ドラッグ時の誤作動防止 */
+        pointer-events: none;
     }
 
     .bookmark-input {
@@ -150,25 +153,43 @@
 <div class="grid" id="pages"></div>
 
 <script>
-    // PDF.jsのワーカー設定（安定版）
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    
-    const { PDFDocument, PDFHexString } = PDFLib;
-
-    // データ管理
+    // データ管理用の変数
+    let PDFDocument, PDFHexString;
     let fileSources = {};
     let pagesData = [];
     let stateHistory = [];
     let lastSelectedIndex = -1;
-
     const pagesEl = document.getElementById('pages');
 
-    // セキュリティ環境に依存しないID生成関数
+    // 画面が読み込まれた後に初期化処理を実行（安全対策）
+    document.addEventListener('DOMContentLoaded', () => {
+        try {
+            // ライブラリが正しく読み込めているかチェック
+            if (typeof pdfjsLib === 'undefined' || typeof PDFLib === 'undefined') {
+                alert("システムの準備に失敗しました。画面を再読み込みしてください。\n何度も表示される場合は社内ネットワークの制限の可能性があります。");
+                return;
+            }
+
+            // PDF.jsの設定
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+            PDFDocument = PDFLib.PDFDocument;
+            PDFHexString = PDFLib.PDFHexString;
+
+            // ボタンにイベントを紐付け
+            document.getElementById('fileInput').addEventListener('change', (e) => handleFileLoad(e, false));
+            document.getElementById('addInput').addEventListener('change', (e) => handleFileLoad(e, true));
+
+        } catch (error) {
+            alert("初期化エラー: " + error.message);
+        }
+    });
+
+    // 環境に依存しないID生成関数
     function generateId() {
-        return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        return Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
     }
 
-    // 履歴管理
+    // 履歴保存
     function saveHistory() {
         stateHistory.push(JSON.parse(JSON.stringify(pagesData)));
         if (stateHistory.length > 30) stateHistory.shift();
@@ -184,12 +205,12 @@
     }
 
     // ファイル読み込み処理
-    document.getElementById('fileInput').addEventListener('change', (e) => handleFileLoad(e, false));
-    document.getElementById('addInput').addEventListener('change', (e) => handleFileLoad(e, true));
-
     async function handleFileLoad(e, isAdd) {
         const file = e.target.files[0];
         if (!file) return;
+
+        // 読み込み中であることを視覚的に示すため、カーソルを待機状態に変更
+        document.body.style.cursor = 'wait';
 
         try {
             if (isAdd) saveHistory();
@@ -197,7 +218,7 @@
             const bytes = await file.arrayBuffer();
             const sourceId = generateId();
 
-            // PDFの読み込み
+            // PDFの解析
             const pdfjsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
             const pdflibDoc = await PDFDocument.load(bytes);
             fileSources[sourceId] = { pdfjsDoc, pdflibDoc };
@@ -221,17 +242,20 @@
             }
 
             renderPages();
+            
+            // サムネイル生成は裏側で進める
             generateThumbnails(sourceId);
             
         } catch (error) {
             console.error(error);
-            alert("読み込みエラーが発生しました。\n詳細: " + error.message);
+            alert("【PDF読み込みエラー】\nファイルが壊れているか、処理に失敗しました。\n詳細: " + error.message);
         } finally {
-            e.target.value = ''; // リセット
+            e.target.value = ''; // 次も同じファイルを選べるようにリセット
+            document.body.style.cursor = 'default'; // カーソルを元に戻す
         }
     }
 
-    // サムネイル画像の非同期生成
+    // サムネイル画像の生成
     async function generateThumbnails(sourceId) {
         try {
             const src = fileSources[sourceId];
@@ -259,7 +283,7 @@
         }
     }
 
-    // UIの描画
+    // 画面の描画
     function renderPages() {
         pagesEl.innerHTML = '';
 
@@ -268,6 +292,7 @@
             pageDiv.className = 'page' + (p.selected ? ' selected' : '');
             pageDiv.dataset.id = p.id;
 
+            // ページ選択イベント
             pageDiv.onclick = (e) => {
                 if (e.target.tagName === 'INPUT') return;
                 handlePageClick(e, index);
@@ -303,6 +328,7 @@
             pagesEl.appendChild(pageDiv);
         });
 
+        // ドラッグ＆ドロップ機能
         Sortable.create(pagesEl, {
             animation: 150,
             delay: 100,
@@ -316,7 +342,7 @@
         });
     }
 
-    // 選択処理
+    // ページ選択処理 (Shiftキー対応)
     function handlePageClick(e, index) {
         if (e.shiftKey && lastSelectedIndex !== -1) {
             const start = Math.min(lastSelectedIndex, index);
@@ -342,6 +368,7 @@
         }
     }
 
+    // ツールバーの各種機能
     function selectAll() {
         pagesData.forEach(p => p.selected = true);
         updateSelectionUI();
@@ -354,19 +381,23 @@
     }
 
     function deleteSelected() {
-        if (!pagesData.some(p => p.selected)) return;
+        if (!pagesData.some(p => p.selected)) {
+            alert('削除するページを選択してください。');
+            return;
+        }
         saveHistory();
         pagesData = pagesData.filter(p => !p.selected);
         renderPages();
     }
 
-    // 保存処理
+    // 保存・抽出機能
     async function exportPdf(isExtract) {
+        document.body.style.cursor = 'wait';
         try {
             const targetPages = isExtract ? pagesData.filter(p => p.selected) : pagesData;
 
             if (targetPages.length === 0) {
-                alert('対象のページがありません。');
+                alert('対象となるページがありません。');
                 return;
             }
 
@@ -400,10 +431,12 @@
         } catch (error) {
             console.error(error);
             alert("保存中にエラーが発生しました。\n詳細: " + error.message);
+        } finally {
+            document.body.style.cursor = 'default';
         }
     }
 
-    // しおり作成
+    // しおりの埋め込み処理
     function addBookmarks(pdfDoc, bookmarks) {
         const context = pdfDoc.context;
         const outlinesDictRef = context.nextRef();
@@ -433,6 +466,7 @@
         pdfDoc.catalog.set(context.name('Outlines'), outlinesDictRef);
     }
 
+    // ダウンロード処理
     function downloadPdf(bytes, fileName) {
         const blob = new Blob([bytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
