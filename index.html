@@ -182,7 +182,7 @@ body[data-size="L"] #pages{
 
     cursor:move;
 
-    transition:.2s;
+    transition:.15s;
 
     box-shadow:
         0 8px 24px rgba(0,0,0,.25);
@@ -273,6 +273,12 @@ canvas{
     text-align:center;
 
     color:#94a3b8;
+
+}
+
+.virtual-spacer{
+
+    height:40px;
 
 }
 
@@ -368,6 +374,35 @@ let lastSelectedIndex = -1;
 const thumbQueue = [];
 
 let rendering = false;
+
+const visibleMap = new Map();
+
+const observer = new IntersectionObserver(
+
+    entries => {
+
+        entries.forEach(entry => {
+
+            const index =
+                Number(
+                    entry.target.dataset.index
+                );
+
+            if(entry.isIntersecting){
+
+                queueThumbRender(index);
+
+            }
+
+        });
+
+    },
+
+    {
+        rootMargin:'600px'
+    }
+
+);
 
 function setStatus(text){
 
@@ -480,7 +515,7 @@ async function processFile(file,isReset){
 
         for(let i = 0; i < total; i++){
 
-            const page = {
+            pageList.push({
 
                 id:crypto.randomUUID(),
 
@@ -494,29 +529,15 @@ async function processFile(file,isReset){
 
                 selected:false
 
-            };
-
-            pageList.push(page);
-
-            const div =
-                createPageElement(
-                    page,
-                    pageList.length - 1
-                );
-
-            pagesContainer.appendChild(div);
+            });
 
         }
+
+        rebuildDOM();
 
         setStatus(
             `${total}ページ読み込み`
         );
-
-        for(let i = 0; i < total; i++){
-
-            queueThumbRender(i);
-
-        }
 
     }catch(e){
 
@@ -597,14 +618,6 @@ async function addPdf(){
 
         rebuildDOM();
 
-        for(let i = insertPos;
-            i < insertPos + total;
-            i++){
-
-            queueThumbRender(i);
-
-        }
-
     };
 
     input.click();
@@ -612,6 +625,12 @@ async function addPdf(){
 }
 
 function queueThumbRender(index){
+
+    if(
+        thumbQueue.includes(index)
+    ){
+        return;
+    }
 
     thumbQueue.push(index);
 
@@ -717,13 +736,13 @@ function createPageElement(p,index){
 
     div.className='page-item';
 
+    div.dataset.index=index;
+
     if(p.selected){
 
         div.classList.add('selected');
 
     }
-
-    div.dataset.index=index;
 
     div.innerHTML = `
 
@@ -782,6 +801,8 @@ function createPageElement(p,index){
 
     };
 
+    observer.observe(div);
+
     return div;
 
 }
@@ -799,10 +820,16 @@ function updateThumbnail(index){
     const loading =
         div.querySelector('.loading');
 
-    drawThumb(
-        canvas,
-        pageList[index].thumb
-    );
+    if(!canvas.dataset.loaded){
+
+        drawThumb(
+            canvas,
+            pageList[index].thumb
+        );
+
+        canvas.dataset.loaded = '1';
+
+    }
 
     if(loading){
 
@@ -834,6 +861,59 @@ function drawThumb(canvas,src){
 
 }
 
+function rebuildDOM(){
+
+    const existing =
+        Array.from(
+            pagesContainer.children
+        );
+
+    pageList.forEach((p,i)=>{
+
+        let div = existing[i];
+
+        if(!div){
+
+            div =
+                createPageElement(p,i);
+
+            pagesContainer
+                .appendChild(div);
+
+        }
+
+        div.dataset.index = i;
+
+        div.querySelector('.page-num')
+            .textContent =
+            `Page ${i + 1}`;
+
+        div.classList.toggle(
+            'selected',
+            p.selected
+        );
+
+        if(p.thumb){
+
+            updateThumbnail(i);
+
+        }
+
+    });
+
+    while(
+        pagesContainer.children.length >
+        pageList.length
+    ){
+
+        pagesContainer.removeChild(
+            pagesContainer.lastChild
+        );
+
+    }
+
+}
+
 function updateSelectionUI(){
 
     Array.from(
@@ -846,29 +926,6 @@ function updateSelectionUI(){
         );
 
     });
-
-}
-
-function rebuildDOM(){
-
-    pagesContainer.innerHTML='';
-
-    pageList.forEach((p,i)=>{
-
-        const div =
-            createPageElement(p,i);
-
-        pagesContainer.appendChild(div);
-
-        if(p.thumb){
-
-            updateThumbnail(i);
-
-        }
-
-    });
-
-    updateSelectionUI();
 
 }
 
