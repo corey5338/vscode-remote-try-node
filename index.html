@@ -3,16 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>PDF Editor Pro</title>
-<!-- ライブラリ読み込み -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <style>
     body { margin: 0; background: #111; color: white; font-family: sans-serif; }
     .toolbar { background: #222; padding: 10px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #444; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 20px; }
-    .page { background: #333; padding: 10px; border: 3px solid transparent; cursor: pointer; }
+    .page { background: #333; padding: 10px; border: 3px solid transparent; cursor: pointer; position: relative; }
     .page.selected { border-color: #3b82f6; }
     canvas { width: 100%; background: white; }
 </style>
@@ -27,10 +25,8 @@
 <div id="pages"></div>
 
 <script>
-    // Worker設定を明示
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let originalBytes = null;
     let pdfLibDoc = null;
     let pagesData = [];
 
@@ -38,28 +34,21 @@
         const file = e.target.files[0];
         if (!file) return;
 
-        // 1. データを読み込む
-        originalBytes = await file.arrayBuffer();
-        
-        // 2. PDFLibで構造をロード
-        pdfLibDoc = await PDFLib.PDFDocument.load(originalBytes);
-        
-        // 3. プレビュー用のPDF.jsをロード
-        const pdf = await pdfjsLib.getDocument({ data: originalBytes }).promise;
+        const bytes = await file.arrayBuffer();
+        pdfLibDoc = await PDFLib.PDFDocument.load(bytes);
         
         pagesData = [];
-        for (let i = 0; i < pdf.numPages; i++) {
-            pagesData.push({ pageIndex: i, selected: false });
+        for (let i = 0; i < pdfLibDoc.getPageCount(); i++) {
+            pagesData.push({ selected: false });
         }
-        
-        render(pdf);
+        render();
     });
 
-    async function render(pdf) {
+    async function render() {
         const container = document.getElementById('pages');
         container.innerHTML = '';
         
-        for (let i = 0; i < pdf.numPages; i++) {
+        for (let i = 0; i < pagesData.length; i++) {
             const div = document.createElement('div');
             div.className = `page ${pagesData[i].selected ? 'selected' : ''}`;
             div.innerHTML = `<canvas id="c${i}"></canvas>`;
@@ -69,7 +58,9 @@
             };
             container.appendChild(div);
 
-            // 描画処理
+            // 描画: pdfLibDocをPDFに変換して描画
+            const bytes = await pdfLibDoc.save();
+            const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
             const page = await pdf.getPage(i + 1);
             const canvas = document.getElementById('c' + i);
             const ctx = canvas.getContext('2d');
@@ -79,31 +70,26 @@
         }
     }
 
+    async function deleteSelected() {
+        if (!pdfLibDoc) return;
+        
+        // 後ろから削除しないとインデックスがずれるため、後ろから処理
+        for (let i = pagesData.length - 1; i >= 0; i--) {
+            if (pagesData[i].selected) {
+                pdfLibDoc.removePage(i);
+                pagesData.splice(i, 1);
+            }
+        }
+        render();
+    }
+
     async function exportPdf() {
-        const newPdf = await PDFLib.PDFDocument.create();
-        const selectedIndices = pagesData.map((p, i) => p.selected ? i : -1).filter(i => i !== -1);
-        const indices = selectedIndices.length > 0 ? selectedIndices : pagesData.map((_, i) => i);
-        
-        const copiedPages = await newPdf.copyPages(pdfLibDoc, indices);
-        copiedPages.forEach(p => newPdf.addPage(p));
-        
-        const bytes = await newPdf.save();
+        const bytes = await pdfLibDoc.save();
         const blob = new Blob([bytes], { type: 'application/pdf' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'output.pdf';
+        a.download = 'edited.pdf';
         a.click();
-    }
-
-    function deleteSelected() {
-        pagesData = pagesData.filter(p => !p.selected);
-        // 再描画のためPDF再ロード
-        reRender();
-    }
-
-    async function reRender() {
-        const pdf = await pdfjsLib.getDocument({ data: originalBytes }).promise;
-        render(pdf);
     }
 </script>
 </body>
