@@ -231,18 +231,34 @@ let pageList = [];
 let historyStack = [];
 let lastSelectedIndex = -1;
 
-const visibleObserver =
-    new IntersectionObserver(onVisible,{
-        rootMargin:'500px'
-    });
+const PAGE_HEIGHT = 260;
+const BUFFER = 12;
+
+let visibleStart = 0;
+let visibleEnd = 0;
 
 const renderQueue = [];
 
 let renderRunning = false;
 
-/* =========================================
+const renderedMap = new Map();
+
+/* =====================================================
+   Spacer
+===================================================== */
+
+const topSpacer =
+    document.createElement('div');
+
+const bottomSpacer =
+    document.createElement('div');
+
+pagesContainer.appendChild(topSpacer);
+pagesContainer.appendChild(bottomSpacer);
+
+/* =====================================================
    Status
-========================================= */
+===================================================== */
 
 function setStatus(text){
 
@@ -252,9 +268,9 @@ function setStatus(text){
 
 }
 
-/* =========================================
+/* =====================================================
    History
-========================================= */
+===================================================== */
 
 function saveHistory(){
 
@@ -268,9 +284,9 @@ function saveHistory(){
 
 }
 
-/* =========================================
+/* =====================================================
    Sortable
-========================================= */
+===================================================== */
 
 new Sortable(pagesContainer,{
 
@@ -278,33 +294,45 @@ new Sortable(pagesContainer,{
 
     ghostClass:'selected',
 
+    draggable:'.page-item',
+
     onEnd:()=>{
 
-        saveHistory();
+        const items =
+            Array.from(
+                document.querySelectorAll(
+                    '.page-item'
+                )
+            );
 
-        const newList = [];
+        const visibleItems =
+            pageList.slice(
+                visibleStart,
+                visibleEnd
+            );
 
-        document
-        .querySelectorAll('.page-item')
-        .forEach(el=>{
+        items.forEach((el,index)=>{
 
-            newList.push(el.pageData);
+            visibleItems[index] =
+                el.pageData;
 
         });
 
-        pageList = newList;
+        pageList.splice(
+            visibleStart,
+            visibleItems.length,
+            ...visibleItems
+        );
 
-        updatePageNumbers();
-
-        setStatus('ページ順変更');
+        updateVisiblePages();
 
     }
 
 });
 
-/* =========================================
-   Load PDF
-========================================= */
+/* =====================================================
+   File Input
+===================================================== */
 
 document
 .getElementById('fileInput')
@@ -317,6 +345,10 @@ document
 
 };
 
+/* =====================================================
+   Process PDF
+===================================================== */
+
 async function processFile(file,isReset){
 
     try{
@@ -328,11 +360,11 @@ async function processFile(file,isReset){
             pageList = [];
             historyStack = [];
 
-            pagesContainer.innerHTML = '';
+            renderedMap.clear();
 
         }
 
-        setStatus('PDF読み込み中...');
+        setStatus('PDF読込中...');
 
         const pdfBytes =
             await file.arrayBuffer();
@@ -351,12 +383,9 @@ async function processFile(file,isReset){
         const total =
             pdfDoc.getPageCount();
 
-        const fragment =
-            document.createDocumentFragment();
-
         for(let i=0;i<total;i++){
 
-            const pageData = {
+            pageList.push({
 
                 id:
                     crypto.randomUUID(),
@@ -370,39 +399,23 @@ async function processFile(file,isReset){
                 pageIndex:
                     i,
 
-                selected:
-                    false,
+                selected:false,
 
-                thumb:
-                    null,
+                thumb:null,
 
-                rendered:
-                    false,
+                rendered:false,
 
-                rendering:
-                    false,
+                rendering:false,
 
-                renderTask:
-                    null,
+                renderTask:null
 
-                element:
-                    null
-
-            };
-
-            pageList.push(pageData);
-
-            const el =
-                createPageElement(
-                    pageData,
-                    pageList.length - 1
-                );
-
-            fragment.appendChild(el);
+            });
 
         }
 
-        pagesContainer.appendChild(fragment);
+        updateContainerHeight();
+
+        updateVisiblePages();
 
         setStatus(
             `${total}ページ読込完了`
@@ -418,22 +431,203 @@ async function processFile(file,isReset){
 
 }
 
-/* =========================================
+/* =====================================================
+   Container Height
+===================================================== */
+
+function updateContainerHeight(){
+
+    const totalHeight =
+        pageList.length *
+        PAGE_HEIGHT;
+
+    pagesContainer.style.position =
+        'relative';
+
+    pagesContainer.style.minHeight =
+        totalHeight + 'px';
+
+}
+
+/* =====================================================
+   Scroll
+===================================================== */
+
+window.addEventListener(
+    'scroll',
+    throttle(updateVisiblePages,16)
+);
+
+/* =====================================================
+   Visible Pages
+===================================================== */
+
+function updateVisiblePages(){
+
+    const scrollTop =
+        window.scrollY;
+
+    const viewportHeight =
+        window.innerHeight;
+
+    const start =
+        Math.max(
+            0,
+            Math.floor(
+                scrollTop / PAGE_HEIGHT
+            ) - BUFFER
+        );
+
+    const end =
+        Math.min(
+            pageList.length,
+            Math.ceil(
+                (scrollTop + viewportHeight)
+                / PAGE_HEIGHT
+            ) + BUFFER
+        );
+
+    if(
+        start === visibleStart &&
+        end === visibleEnd
+    ){
+        return;
+    }
+
+    visibleStart = start;
+    visibleEnd = end;
+
+    renderVisiblePages();
+
+}
+
+/* =====================================================
+   Render Visible
+===================================================== */
+
+function renderVisiblePages(){
+
+    const fragment =
+        document.createDocumentFragment();
+
+    topSpacer.style.height =
+        (visibleStart * PAGE_HEIGHT)
+        + 'px';
+
+    bottomSpacer.style.height =
+        (
+            (pageList.length - visibleEnd)
+            * PAGE_HEIGHT
+        ) + 'px';
+
+    cleanupInvisiblePages();
+
+    for(
+        let i=visibleStart;
+        i<visibleEnd;
+        i++
+    ){
+
+        const p = pageList[i];
+
+        let el =
+            renderedMap.get(p.id);
+
+        if(!el){
+
+            el =
+                createPageElement(
+                    p,
+                    i
+                );
+
+            renderedMap.set(
+                p.id,
+                el
+            );
+
+        }
+
+        el.querySelector('.page-num')
+        .textContent =
+            `Page ${i + 1}`;
+
+        fragment.appendChild(el);
+
+        if(
+            !p.rendered &&
+            !p.rendering
+        ){
+
+            renderQueue.push(p);
+
+        }
+
+    }
+
+    pagesContainer.innerHTML = '';
+
+    pagesContainer.appendChild(topSpacer);
+
+    pagesContainer.appendChild(fragment);
+
+    pagesContainer.appendChild(bottomSpacer);
+
+    processRenderQueue();
+
+}
+
+/* =====================================================
+   Cleanup Invisible
+===================================================== */
+
+function cleanupInvisiblePages(){
+
+    renderedMap.forEach((el,id)=>{
+
+        const p =
+            el.pageData;
+
+        const index =
+            pageList.indexOf(p);
+
+        if(
+            index < visibleStart ||
+            index > visibleEnd
+        ){
+
+            if(
+                p.renderTask &&
+                p.renderTask.cancel
+            ){
+
+                try{
+
+                    p.renderTask.cancel();
+
+                }catch{}
+
+            }
+
+        }
+
+    });
+
+}
+
+/* =====================================================
    Create Page
-========================================= */
+===================================================== */
 
 function createPageElement(p,index){
 
     const div =
         document.createElement('div');
 
-    div.className = 'page-item';
-
-    div.dataset.id = p.id;
+    div.className =
+        'page-item';
 
     div.pageData = p;
-
-    p.element = div;
 
     div.innerHTML = `
 
@@ -462,13 +656,18 @@ function createPageElement(p,index){
 
     `;
 
-    setupSelection(div,p,index);
-
-    visibleObserver.observe(div);
+    setupSelection(
+        div,
+        p,
+        index
+    );
 
     if(p.thumb){
 
-        restoreThumbnail(p);
+        restoreThumbnail(
+            p,
+            div
+        );
 
     }
 
@@ -476,42 +675,40 @@ function createPageElement(p,index){
 
 }
 
-/* =========================================
+/* =====================================================
    Selection
-========================================= */
+===================================================== */
 
 function setupSelection(div,p,index){
 
     const checkbox =
         div.querySelector('.page-check');
 
-    checkbox.checked = p.selected;
+    checkbox.checked =
+        p.selected;
 
     if(p.selected){
 
-        div.classList.add('selected');
+        div.classList.add(
+            'selected'
+        );
 
     }
 
-    checkbox.addEventListener(
-        'click',
-        e=>e.stopPropagation()
-    );
+    checkbox.onclick =
+        e=>e.stopPropagation();
 
-    checkbox.addEventListener(
-        'change',
-        ()=>{
+    checkbox.onchange = ()=>{
 
-            p.selected =
-                checkbox.checked;
+        p.selected =
+            checkbox.checked;
 
-            div.classList.toggle(
-                'selected',
-                p.selected
-            );
+        div.classList.toggle(
+            'selected',
+            p.selected
+        );
 
-        }
-    );
+    };
 
     div.onclick = e => {
 
@@ -532,84 +729,41 @@ function setupSelection(div,p,index){
                     index
                 );
 
-            const items =
-                Array.from(
-                    pagesContainer.children
-                );
+            for(
+                let i=start;
+                i<=end;
+                i++
+            ){
 
-            for(let i=start;i<=end;i++){
-
-                items[i]
-                .pageData
+                pageList[i]
                 .selected = true;
-
-                items[i]
-                .classList
-                .add('selected');
-
-                items[i]
-                .querySelector('.page-check')
-                .checked = true;
 
             }
 
         }else{
 
-            p.selected = !p.selected;
-
-            div.classList.toggle(
-                'selected',
-                p.selected
-            );
-
-            checkbox.checked =
-                p.selected;
+            p.selected =
+                !p.selected;
 
         }
 
-        lastSelectedIndex = index;
+        lastSelectedIndex =
+            index;
+
+        updateVisiblePages();
 
     };
 
 }
 
-/* =========================================
-   Visible Observer
-========================================= */
-
-function onVisible(entries){
-
-    for(const entry of entries){
-
-        if(!entry.isIntersecting)
-            continue;
-
-        const el =
-            entry.target;
-
-        const p =
-            el.pageData;
-
-        if(
-            p.rendered ||
-            p.rendering
-        ) continue;
-
-        renderQueue.push(p);
-
-    }
-
-    processRenderQueue();
-
-}
-
-/* =========================================
+/* =====================================================
    Render Queue
-========================================= */
+===================================================== */
 
 async function processRenderQueue(){
 
-    if(renderRunning) return;
+    if(renderRunning)
+        return;
 
     renderRunning = true;
 
@@ -622,15 +776,6 @@ async function processRenderQueue(){
             !p ||
             p.rendered ||
             p.rendering
-        ){
-            continue;
-        }
-
-        if(
-            !p.element ||
-            !document.body.contains(
-                p.element
-            )
         ){
             continue;
         }
@@ -660,9 +805,9 @@ function idle(){
 
 }
 
-/* =========================================
-   Thumbnail Render
-========================================= */
+/* =====================================================
+   Thumbnail
+===================================================== */
 
 async function renderThumbnail(p){
 
@@ -670,15 +815,6 @@ async function renderThumbnail(p){
         p.rendered ||
         p.rendering
     ) return;
-
-    if(
-        !p.element ||
-        !document.body.contains(
-            p.element
-        )
-    ){
-        return;
-    }
 
     p.rendering = true;
 
@@ -689,26 +825,23 @@ async function renderThumbnail(p){
                 p.pageIndex + 1
             );
 
-        if(
-            !p.element ||
-            !document.body.contains(
-                p.element
-            )
-        ){
-
-            p.rendering = false;
-
-            return;
-
-        }
-
         const viewport =
             page.getViewport({
                 scale:0.17
             });
 
+        const el =
+            renderedMap.get(p.id);
+
+        if(!el){
+
+            p.rendering = false;
+            return;
+
+        }
+
         const canvas =
-            p.element.querySelector('canvas');
+            el.querySelector('canvas');
 
         const ctx =
             canvas.getContext(
@@ -744,7 +877,7 @@ async function renderThumbnail(p){
         p.rendered = true;
 
         const placeholder =
-            p.element.querySelector(
+            el.querySelector(
                 '.placeholder'
             );
 
@@ -776,19 +909,14 @@ async function renderThumbnail(p){
 
 }
 
-/* =========================================
-   Restore Thumbnail
-========================================= */
+/* =====================================================
+   Restore
+===================================================== */
 
-function restoreThumbnail(p){
-
-    if(
-        !p.thumb ||
-        !p.element
-    ) return;
+function restoreThumbnail(p,el){
 
     const canvas =
-        p.element.querySelector('canvas');
+        el.querySelector('canvas');
 
     const img =
         new Image();
@@ -805,12 +933,16 @@ function restoreThumbnail(p){
 
         canvas
         .getContext('2d')
-        .drawImage(img,0,0);
+        .drawImage(
+            img,
+            0,
+            0
+        );
 
     };
 
     const placeholder =
-        p.element.querySelector(
+        el.querySelector(
             '.placeholder'
         );
 
@@ -825,18 +957,18 @@ function restoreThumbnail(p){
 
 }
 
-/* =========================================
+/* =====================================================
    Delete
-========================================= */
+===================================================== */
 
 function deleteSelected(){
 
-    const targets =
+    const selected =
         pageList.filter(
             p=>p.selected
         );
 
-    if(targets.length === 0){
+    if(selected.length === 0){
 
         alert(
             '削除ページを選択してください'
@@ -848,136 +980,39 @@ function deleteSelected(){
 
     saveHistory();
 
-    targets.forEach(p=>{
-
-        cleanupPage(p);
-
-        if(p.element){
-
-            p.element.remove();
-
-        }
-
-    });
-
     pageList =
         pageList.filter(
             p=>!p.selected
         );
 
-    updatePageNumbers();
+    updateContainerHeight();
 
-    setStatus(
-        `${targets.length}ページ削除`
-    );
+    updateVisiblePages();
 
 }
 
-/* =========================================
-   Cleanup
-========================================= */
-
-function cleanupPage(p){
-
-    if(
-        p.renderTask &&
-        p.renderTask.cancel
-    ){
-
-        try{
-
-            p.renderTask.cancel();
-
-        }catch{}
-
-    }
-
-    p.rendering = false;
-
-}
-
-function cleanupAllPages(){
-
-    pageList.forEach(cleanupPage);
-
-}
-
-/* =========================================
+/* =====================================================
    Undo
-========================================= */
+===================================================== */
 
 function undo(){
 
-    if(historyStack.length === 0)
-        return;
-
-    cleanupAllPages();
+    if(
+        historyStack.length === 0
+    ) return;
 
     pageList =
         historyStack.pop();
 
-    render();
+    updateContainerHeight();
+
+    updateVisiblePages();
 
 }
 
-/* =========================================
-   Render
-========================================= */
-
-function render(){
-
-    pagesContainer.innerHTML = '';
-
-    const fragment =
-        document.createDocumentFragment();
-
-    pageList.forEach((p,index)=>{
-
-        let el =
-            p.element;
-
-        if(!el){
-
-            el =
-                createPageElement(
-                    p,
-                    index
-                );
-
-        }
-
-        p.element = el;
-
-        el.querySelector('.page-num')
-        .textContent =
-            `Page ${index + 1}`;
-
-        fragment.appendChild(el);
-
-        visibleObserver.observe(el);
-
-    });
-
-    pagesContainer.appendChild(fragment);
-
-}
-
-/* =========================================
-   Utils
-========================================= */
-
-function updatePageNumbers(){
-
-    document
-    .querySelectorAll('.page-num')
-    .forEach((el,index)=>{
-
-        el.textContent =
-            `Page ${index + 1}`;
-
-    });
-
-}
+/* =====================================================
+   Clear Selection
+===================================================== */
 
 function clearSelection(){
 
@@ -987,24 +1022,13 @@ function clearSelection(){
 
     });
 
-    document
-    .querySelectorAll('.page-item')
-    .forEach(el=>{
-
-        el.classList.remove(
-            'selected'
-        );
-
-        el.querySelector('.page-check')
-        .checked = false;
-
-    });
+    updateVisiblePages();
 
 }
 
-/* =========================================
+/* =====================================================
    Export
-========================================= */
+===================================================== */
 
 async function exportPdf(){
 
@@ -1015,8 +1039,6 @@ async function exportPdf(){
         );
 
     if(!name) return;
-
-    setStatus('PDF生成中...');
 
     const newPdf =
         await PDFLib
@@ -1052,7 +1074,7 @@ async function exportSelected(){
     if(selected.length === 0){
 
         alert(
-            'ページを選択してください'
+            'ページを選択'
         );
 
         return;
@@ -1114,13 +1136,11 @@ function downloadPdf(bytes,name){
 
     a.click();
 
-    setStatus('保存完了');
-
 }
 
-/* =========================================
+/* =====================================================
    Add PDF
-========================================= */
+===================================================== */
 
 async function addPdf(){
 
@@ -1165,7 +1185,9 @@ async function addPdf(){
             ...pages
         );
 
-        render();
+        updateContainerHeight();
+
+        updateVisiblePages();
 
     };
 
@@ -1208,32 +1230,72 @@ async function getPagesFromPdf(file){
             pdfjsDoc:
                 pdfjsDoc,
 
-            pageIndex:
-                i,
+            pageIndex:i,
 
-            selected:
-                false,
+            selected:false,
 
-            thumb:
-                null,
+            thumb:null,
 
-            rendered:
-                false,
+            rendered:false,
 
-            rendering:
-                false,
+            rendering:false,
 
-            renderTask:
-                null,
-
-            element:
-                null
+            renderTask:null
 
         });
 
     }
 
     return pages;
+
+}
+
+/* =====================================================
+   Cleanup
+===================================================== */
+
+function cleanupAllPages(){
+
+    pageList.forEach(p=>{
+
+        if(
+            p.renderTask &&
+            p.renderTask.cancel
+        ){
+
+            try{
+
+                p.renderTask.cancel();
+
+            }catch{}
+
+        }
+
+    });
+
+}
+
+/* =====================================================
+   Throttle
+===================================================== */
+
+function throttle(fn,wait){
+
+    let last = 0;
+
+    return (...args)=>{
+
+        const now = Date.now();
+
+        if(now - last >= wait){
+
+            last = now;
+
+            fn(...args);
+
+        }
+
+    };
 
 }
 
