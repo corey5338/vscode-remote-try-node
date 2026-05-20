@@ -10,7 +10,7 @@
     body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
     .toolbar { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: #0f172a; padding: 10px 0; z-index: 10; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 3px solid transparent; }
+    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 4px solid transparent; }
     .page-item.selected { border-color: #3b82f6; }
     canvas { width: 100%; height: auto; background: white; border-radius: 4px; pointer-events: none; }
     button { cursor: pointer; padding: 8px 15px; border-radius: 4px; border: none; font-weight: bold; }
@@ -35,13 +35,16 @@
     let pages = []; // {bytes: Uint8Array, selected: boolean}
     let history = [];
 
+    // 履歴保存用ヘルパー（バイナリはコピーしないと壊れるため単純なJSONではなく構造を維持）
+    function saveHistory() {
+        history.push(pages.map(p => ({ bytes: p.bytes, selected: p.selected })));
+    }
+
     async function loadPdf(file) {
-        history.push(JSON.parse(JSON.stringify(pages))); // 状態保存
+        saveHistory();
         const bytes = new Uint8Array(await file.arrayBuffer());
         const pdfDoc = await PDFLib.PDFDocument.load(bytes);
-        const count = pdfDoc.getPageCount();
-        
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < pdfDoc.getPageCount(); i++) {
             const newDoc = await PDFLib.PDFDocument.create();
             const [page] = await newDoc.copyPages(pdfDoc, [i]);
             newDoc.addPage(page);
@@ -57,9 +60,11 @@
         for (let i = 0; i < pages.length; i++) {
             const div = document.createElement('div');
             div.className = 'page-item' + (pages[i].selected ? ' selected' : '');
+            
+            // 選択切り替え時：再描画せずクラスだけ変える
             div.onclick = () => {
                 pages[i].selected = !pages[i].selected;
-                render(); // 再描画で選択状態を反映
+                div.classList.toggle('selected', pages[i].selected);
             };
 
             const canvas = document.createElement('canvas');
@@ -68,16 +73,15 @@
 
             const pdf = await pdfjsLib.getDocument({ data: pages[i].bytes }).promise;
             const page = await pdf.getPage(1);
-            const viewport = page.getViewport({ scale: 0.3 });
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+            const vp = page.getViewport({ scale: 0.3 });
+            canvas.width = vp.width; canvas.height = vp.height;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
         }
     }
 
     function deleteSelected() {
         if (!pages.some(p => p.selected)) return alert("削除するページを選択してください");
-        history.push(JSON.parse(JSON.stringify(pages)));
+        saveHistory();
         pages = pages.filter(p => !p.selected);
         render();
     }
@@ -102,7 +106,7 @@
     }
 
     new Sortable(document.getElementById('pages'), {
-        onStart: () => history.push(JSON.parse(JSON.stringify(pages))),
+        onStart: () => saveHistory(),
         onEnd: (evt) => {
             const item = pages.splice(evt.oldIndex, 1)[0];
             pages.splice(evt.newIndex, 0, item);
