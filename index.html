@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - Stable</title>
+<title>PDF Editor Stable</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -28,14 +28,13 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let pages = []; // {data: Uint8Array, selected: boolean}
+    let pages = []; 
     let history = [];
 
-    // 修正: ArrayBufferそのものではなく、一度数値の配列(通常のJS配列)に変換して保存する
-    // これにより、ArrayBufferのDetached問題を完全に回避します
+    // 履歴保存：new Uint8Array(p.bytes) で、完全に独立したメモリ上のコピーを作成する
     function saveHistory() {
         history.push(pages.map(p => ({ 
-            bytes: Array.from(p.bytes), 
+            bytes: new Uint8Array(p.bytes), 
             selected: p.selected 
         })));
     }
@@ -56,7 +55,6 @@
             div.appendChild(canvas);
             container.appendChild(div);
 
-            // PDF.jsには Uint8Array を渡す必要があるため変換して描画
             const pdf = await pdfjsLib.getDocument({ data: p.bytes }).promise;
             const page = await pdf.getPage(1);
             const vp = page.getViewport({ scale: 0.2 });
@@ -73,7 +71,9 @@
             const doc = await PDFLib.PDFDocument.create();
             const [p] = await doc.copyPages(pdf, [i]);
             doc.addPage(p);
-            pages.push({ bytes: await doc.save(), selected: false });
+            // .save() で得られた ArrayBuffer をすぐさま独立した Uint8Array にコピーする
+            const savedBytes = await doc.save();
+            pages.push({ bytes: new Uint8Array(savedBytes), selected: false });
         }
         render();
     }
@@ -87,9 +87,7 @@
 
     function undo() {
         if (history.length === 0) return;
-        // 履歴から復元する際、数値配列を Uint8Array に戻す
-        const last = history.pop();
-        pages = last.map(p => ({ bytes: new Uint8Array(p.bytes), selected: p.selected }));
+        pages = history.pop();
         render();
     }
 
