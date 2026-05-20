@@ -472,8 +472,6 @@ new Sortable(pagesContainer,{
 
         rebuildDOM();
 
-        updateSelectionUI();
-
     }
 
 });
@@ -826,16 +824,12 @@ function updateThumbnail(index){
     const loading =
         div.querySelector('.loading');
 
-    if(!canvas.dataset.loaded){
+    drawThumb(
+        canvas,
+        pageList[index].thumb
+    );
 
-        drawThumb(
-            canvas,
-            pageList[index].thumb
-        );
-
-        canvas.dataset.loaded = '1';
-
-    }
+    canvas.dataset.loaded = '1';
 
     if(loading){
 
@@ -869,35 +863,14 @@ function drawThumb(canvas,src){
 
 function rebuildDOM(){
 
-    const existing =
-        Array.from(
-            pagesContainer.children
-        );
+    pagesContainer.innerHTML = '';
 
     pageList.forEach((p,i)=>{
 
-        let div = existing[i];
+        const div =
+            createPageElement(p,i);
 
-        if(!div){
-
-            div =
-                createPageElement(p,i);
-
-            pagesContainer
-                .appendChild(div);
-
-        }
-
-        div.dataset.index = i;
-
-        div.querySelector('.page-num')
-            .textContent =
-            `Page ${i + 1}`;
-
-        div.classList.toggle(
-            'selected',
-            p.selected
-        );
+        pagesContainer.appendChild(div);
 
         if(p.thumb){
 
@@ -906,17 +879,6 @@ function rebuildDOM(){
         }
 
     });
-
-    while(
-        pagesContainer.children.length >
-        pageList.length
-    ){
-
-        pagesContainer.removeChild(
-            pagesContainer.lastChild
-        );
-
-    }
 
 }
 
@@ -979,8 +941,6 @@ function deleteSelected(){
 
     rebuildDOM();
 
-    updateSelectionUI();
-
     setStatus(
         `${selectedPages.length}ページ削除`
     );
@@ -998,8 +958,6 @@ function undo(){
     pageList = historyStack.pop();
 
     rebuildDOM();
-
-    updateSelectionUI();
 
     setStatus('Undo');
 
