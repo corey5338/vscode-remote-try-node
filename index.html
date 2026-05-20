@@ -458,10 +458,13 @@ async function processFile(file,isReset){
 
 async function generateThumb(pdfBytes,pageIndex){
 
+    const bytes =
+        new Uint8Array(pdfBytes.slice(0));
+
     const pdf =
         await pdfjsLib
         .getDocument({
-            data:pdfBytes
+            data:bytes
         }).promise;
 
     const page =
@@ -479,6 +482,7 @@ async function generateThumb(pdfBytes,pageIndex){
         canvas.getContext('2d');
 
     canvas.width = viewport.width;
+
     canvas.height = viewport.height;
 
     await page.render({
