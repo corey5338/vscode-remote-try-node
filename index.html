@@ -28,16 +28,16 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let pdfLibDoc = null;
-    let pagesData = []; // { id, canvasData, selected }
-    const pagesEl = document.getElementById('pages');
+    let originalPdfDoc = null; // 元のPDFデータ
+    let pagesData = []; // { originalIndex, canvas, selected }
 
     document.getElementById('fileInput').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         const bytes = await file.arrayBuffer();
-        pdfLibDoc = await PDFLib.PDFDocument.load(bytes);
+        // 編集用として読み込み
+        originalPdfDoc = await PDFLib.PDFDocument.load(bytes);
         const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
 
         pagesData = [];
@@ -49,14 +49,15 @@
             canvas.width = vp.width; canvas.height = vp.height;
             await page.render({ canvasContext: ctx, viewport: vp }).promise;
             
-            pagesData.push({ id: Math.random(), canvas: canvas, selected: false });
+            pagesData.push({ originalIndex: i, canvas: canvas, selected: false });
         }
         render();
     });
 
     function render() {
+        const pagesEl = document.getElementById('pages');
         pagesEl.innerHTML = '';
-        pagesData.forEach((p, i) => {
+        pagesData.forEach((p) => {
             const div = document.createElement('div');
             div.className = `page ${p.selected ? 'selected' : ''}`;
             div.onclick = () => { p.selected = !p.selected; div.className = `page ${p.selected ? 'selected' : ''}`; };
@@ -65,8 +66,7 @@
         });
     }
 
-    // ドラッグ＆ドロップ並べ替え設定
-    new Sortable(pagesEl, {
+    new Sortable(document.getElementById('pages'), {
         animation: 150,
         onEnd: (evt) => {
             const item = pagesData.splice(evt.oldIndex, 1)[0];
@@ -74,17 +74,16 @@
         }
     });
 
-    async function deleteSelected() {
+    function deleteSelected() {
         pagesData = pagesData.filter(p => !p.selected);
         render();
     }
 
     async function exportPdf() {
         const newPdf = await PDFLib.PDFDocument.create();
-        for (let i = 0; i < pagesData.length; i++) {
-            // 現在のpagesDataの順序に基づき、元のpdfLibDocから該当ページをコピー
-            // 注: ページ入れ替えに対応するため、全ページ一度読み込んでから再構築するのが最も安全です
-            const [copied] = await newPdf.copyPages(pdfLibDoc, [i]);
+        // 現在のpagesDataの並び順に基づいて、元のPDFからページを抽出・コピーする
+        for (const p of pagesData) {
+            const [copied] = await newPdf.copyPages(originalPdfDoc, [p.originalIndex]);
             newPdf.addPage(copied);
         }
         const bytes = await newPdf.save();
