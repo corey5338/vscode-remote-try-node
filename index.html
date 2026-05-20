@@ -40,32 +40,32 @@
     let history = [];
     const loader = document.getElementById('loader');
 
-    // 履歴保存：CanvasはDOMなので保存対象から外す
     function saveState() { 
         history.push(JSON.stringify(pagesData.map(p => ({pdfBytes: p.pdfBytes})))); 
     }
 
     async function undo() { 
-        if(history.length === 0) return;
+        if(history.length === 0) return alert("戻せる履歴がありません");
         loader.style.display = 'flex';
-        const state = JSON.parse(history.pop());
-        const restored = [];
-        for(let item of state) {
-            restored.push({ pdfBytes: item.pdfBytes, canvas: await renderCanvas(item.pdfBytes), selected: false });
-        }
-        pagesData = restored; 
-        render(); 
+        try {
+            const state = JSON.parse(history.pop());
+            pagesData = [];
+            for(let item of state) {
+                const canvas = await renderCanvas(item.pdfBytes);
+                pagesData.push({ pdfBytes: item.pdfBytes, canvas, selected: false });
+            }
+            render(); 
+        } catch(e) { alert("Undo失敗: " + e.message); }
         loader.style.display = 'none';
     }
 
     async function renderCanvas(bytes) {
-        const pdfjsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
-        const page = await pdfjsDoc.getPage(1);
+        const doc = await pdfjsLib.getDocument({ data: bytes }).promise;
+        const page = await doc.getPage(1);
         const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
         const vp = page.getViewport({ scale: 0.3 });
         canvas.width = vp.width; canvas.height = vp.height;
-        await page.render({ canvasContext: ctx, viewport: vp }).promise;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
         return canvas;
     }
 
@@ -73,20 +73,21 @@
         loader.style.display = 'flex';
         saveState();
         try {
-            const arrayBuffer = await file.arrayBuffer();
-            const sourceDoc = await PDFLib.PDFDocument.load(new Uint8Array(arrayBuffer));
-            let insertPos = isAppend ? parseInt(prompt(`挿入位置 (0-${pagesData.length}):`, pagesData.length)) : pagesData.length;
-            if (isNaN(insertPos)) insertPos = pagesData.length;
+            const buffer = await file.arrayBuffer();
+            const sourceDoc = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
+            
+            let pos = isAppend ? parseInt(prompt(`挿入位置 (0-${pagesData.length}):`, pagesData.length)) : pagesData.length;
+            if (isNaN(pos)) pos = pagesData.length;
 
             const newPages = [];
             for (let i = 0; i < sourceDoc.getPageCount(); i++) {
                 const tempDoc = await PDFLib.PDFDocument.create();
-                const [copiedPage] = await tempDoc.copyPages(sourceDoc, [i]);
-                tempDoc.addPage(copiedPage);
+                const [cp] = await tempDoc.copyPages(sourceDoc, [i]);
+                tempDoc.addPage(cp);
                 const bytes = await tempDoc.save();
                 newPages.push({ pdfBytes: bytes, canvas: await renderCanvas(bytes), selected: false });
             }
-            pagesData.splice(insertPos, 0, ...newPages);
+            pagesData.splice(pos, 0, ...newPages);
             render();
         } catch(e) { alert("エラー: " + e.message); }
         loader.style.display = 'none';
@@ -104,19 +105,14 @@
                     div.classList.toggle('selected', p.selected);
                 }
             };
-            // Canvasを毎回クローンではなく、保持しているCanvasをDOMに追加
             div.appendChild(p.canvas);
-            
-            const controls = document.createElement('div');
-            controls.className = 'page-controls';
-            controls.innerHTML = `<span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span>`;
-            div.appendChild(controls);
+            div.innerHTML += `<div class="page-controls"><span>P.${i+1}</span><span class="move-btn" onclick="movePage(${i})">移動</span></div>`;
             pagesEl.appendChild(div);
         });
     }
 
     function movePage(idx) {
-        const target = prompt("移動先:", idx + 1);
+        const target = prompt("移動先番号:", idx + 1);
         if(target && target > 0 && target <= pagesData.length) {
             saveState();
             const item = pagesData.splice(idx, 1)[0];
@@ -125,14 +121,12 @@
         }
     }
 
-    // Sortableの並び替え完了後に、pagesDataをDOMの順序と同期させる
     new Sortable(document.getElementById('pages'), {
         onStart: saveState,
         onEnd: () => {
             const newOrder = [];
             document.querySelectorAll('.page').forEach(div => {
                 const canvas = div.querySelector('canvas');
-                // DOM上のCanvasに対応するデータを特定する
                 const p = pagesData.find(item => item.canvas === canvas);
                 if(p) newOrder.push(p);
             });
@@ -144,17 +138,24 @@
     function deleteSelected() { saveState(); pagesData = pagesData.filter(p => !p.selected); render(); }
 
     async function exportPdf() {
-        const outDoc = await PDFLib.PDFDocument.create();
-        for (const p of pagesData) {
-            const doc = await PDFLib.PDFDocument.load(p.pdfBytes);
-            const [page] = await outDoc.copyPages(doc, [0]);
-            outDoc.addPage(page);
-        }
-        const bytes = await outDoc.save();
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-        a.download = prompt("ファイル名", "edited.pdf") || "edited.pdf";
-        a.click();
+        loader.style.display = 'flex';
+        try {
+            const outDoc = await PDFLib.PDFDocument.create();
+            for (const p of pagesData) {
+                const doc = await PDFLib.PDFDocument.load(p.pdfBytes);
+                const [page] = await outDoc.copyPages(doc, [0]);
+                outDoc.addPage(page);
+            }
+            const bytes = await outDoc.save();
+            const blob = new Blob([bytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = prompt("ファイル名:", "edited.pdf") || "edited.pdf";
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch(e) { alert("保存失敗: " + e.message); }
+        loader.style.display = 'none';
     }
 
     document.getElementById('fileInput').addEventListener('change', (e) => loadPdfFile(e.target.files[0], false));
