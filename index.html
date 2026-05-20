@@ -2,115 +2,99 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor - Stable Version</title>
+<title>PDF Editor Pro</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
-    body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
-    .toolbar { display: flex; gap: 10px; margin-bottom: 20px; background: #0f172a; position: sticky; top: 0; z-index: 10; padding: 10px 0; }
-    #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-    .page-item { background: #334155; padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 4px solid transparent; position: relative; }
+    body { background: #1e293b; color: white; padding: 20px; font-family: sans-serif; }
+    #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+    .page-item { background: #334155; padding: 5px; border-radius: 4px; cursor: move; border: 3px solid transparent; text-align: center; }
     .page-item.selected { border-color: #3b82f6; }
-    canvas { width: 100%; pointer-events: none; background: white; border-radius: 4px; }
+    canvas { width: 100%; pointer-events: none; }
 </style>
 </head>
 <body>
-
-<div class="toolbar">
-    <input type="file" id="fileInput" accept="application/pdf">
-    <button onclick="undo()">Undo</button>
-    <button onclick="deleteSelected()" style="background:#ef4444">削除</button>
-    <button onclick="exportPdf()" style="background:#10b981">名前を付けて保存</button>
-</div>
-<div id="pages"></div>
+    <button onclick="addPdf()">PDF追加</button>
+    <button onclick="deleteSelected()" style="background:#ef4444; border:none; color:white; padding:5px 10px;">選択を削除</button>
+    <button onclick="exportPdf()" style="background:#10b981; border:none; color:white; padding:5px 10px;">名前を付けて保存</button>
+    <div id="pages"></div>
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    
-    let pages = []; 
-    let history = [];
-
-    function saveHistory() {
-        history.push([...pages]);
-    }
-
-    async function render() {
-        const container = document.getElementById('pages');
-        container.innerHTML = '';
-        for (let i = 0; i < pages.length; i++) {
-            const p = pages[i];
-            const div = document.createElement('div');
-            div.className = 'page-item' + (p.selected ? ' selected' : '');
-            div.onclick = () => { p.selected = !p.selected; div.classList.toggle('selected'); };
-            
-            const canvas = document.createElement('canvas');
-            div.appendChild(canvas);
-            container.appendChild(div);
-
-            const buffer = await p.blob.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
-            const page = await pdf.getPage(1);
-            const vp = page.getViewport({ scale: 0.2 });
-            canvas.width = vp.width; canvas.height = vp.height;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-        }
-    }
-
-    async function loadPdf(file) {
-        pages = [];
-        const buffer = await file.arrayBuffer();
-        const pdf = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-        for (let i = 0; i < pdf.getPageCount(); i++) {
-            const doc = await PDFLib.PDFDocument.create();
-            const [p] = await doc.copyPages(pdf, [i]);
-            doc.addPage(p);
-            const bytes = await doc.save();
-            pages.push({ blob: new Blob([bytes], {type: 'application/pdf'}), selected: false });
-        }
-        render();
-    }
-
-    function deleteSelected() {
-        if (!pages.some(p => p.selected)) return;
-        saveHistory();
-        pages = pages.filter(p => !p.selected);
-        render();
-    }
-
-    function undo() {
-        if (history.length === 0) return;
-        pages = history.pop();
-        render();
-    }
+    let pageList = []; 
 
     new Sortable(document.getElementById('pages'), {
         animation: 150,
-        onEnd: (evt) => {
-            if (evt.oldIndex === evt.newIndex) return;
-            saveHistory();
-            const movedItem = pages.splice(evt.oldIndex, 1)[0];
-            pages.splice(evt.newIndex, 0, movedItem);
+        onEnd: () => {
+            const container = document.getElementById('pages');
+            const newOrder = Array.from(container.children).map(div => div.dataset.index);
+            pageList = newOrder.map(i => pageList[i]);
+            render();
         }
     });
 
-    async function exportPdf() {
-        const fileName = prompt("保存するファイル名を入力してください:", "edited_pdf.pdf");
-        if (!fileName) return;
-        const out = await PDFLib.PDFDocument.create();
-        for (const p of pages) {
-            const buffer = await p.blob.arrayBuffer();
-            const doc = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
-            const [page] = await out.copyPages(doc, [0]);
-            out.addPage(page);
-        }
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([await out.save()], {type: 'application/pdf'}));
-        a.download = fileName.endsWith('.pdf') ? fileName : fileName + '.pdf';
-        a.click();
+    async function addPdf() {
+        const input = document.createElement('input');
+        input.type = 'file'; input.accept = 'application/pdf';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            const pdfDoc = await PDFLib.PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
+            for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+                const tempDoc = await PDFLib.PDFDocument.create();
+                const [p] = await tempDoc.copyPages(pdfDoc, [i]);
+                tempDoc.addPage(p);
+                const thumb = await generateThumb(new Blob([await tempDoc.save()], {type: 'application/pdf'}));
+                pageList.push({ doc: pdfDoc, pageIndex: i, thumb });
+            }
+            render();
+        };
+        input.click();
     }
 
-    document.getElementById('fileInput').addEventListener('change', (e) => loadPdf(e.target.files[0]));
+    async function generateThumb(blob) {
+        const pdf = await pdfjsLib.getDocument({ data: await blob.arrayBuffer() }).promise;
+        const page = await pdf.getPage(1);
+        const canvas = document.createElement('canvas');
+        const vp = page.getViewport({ scale: 0.15 });
+        canvas.width = vp.width; canvas.height = vp.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+        return canvas.toDataURL('image/webp', 0.4);
+    }
+
+    function render() {
+        const container = document.getElementById('pages');
+        container.innerHTML = '';
+        pageList.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'page-item';
+            div.dataset.index = i;
+            div.innerHTML = `<img src="${p.thumb}"><div>${i + 1}</div>`;
+            div.onclick = () => div.classList.toggle('selected');
+            container.appendChild(div);
+        });
+    }
+
+    function deleteSelected() {
+        const container = document.getElementById('pages');
+        const selected = Array.from(container.children).map(d => d.classList.contains('selected'));
+        pageList = pageList.filter((_, i) => !selected[i]);
+        render();
+    }
+
+    async function exportPdf() {
+        const name = prompt("ファイル名を入力:", "edited.pdf");
+        if (!name) return;
+        const newPdf = await PDFLib.PDFDocument.create();
+        for (let p of pageList) {
+            const [page] = await newPdf.copyPages(p.doc, [p.pageIndex]);
+            newPdf.addPage(page);
+        }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([await newPdf.save()], {type: 'application/pdf'}));
+        a.download = name.endsWith('.pdf') ? name : name + '.pdf';
+        a.click();
+    }
 </script>
 </body>
 </html>
