@@ -35,7 +35,6 @@
     let pages = []; // {bytes: Uint8Array, selected: boolean}
     let history = [];
 
-    // 安全な履歴保存用関数
     function saveHistory() {
         history.push(pages.map(p => ({ bytes: p.bytes.slice(), selected: p.selected })));
     }
@@ -58,10 +57,12 @@
         container.innerHTML = '';
         
         for (let i = 0; i < pages.length; i++) {
+            const p = pages[i];
             const div = document.createElement('div');
-            div.className = 'page-item' + (pages[i].selected ? ' selected' : '');
+            div.className = 'page-item' + (p.selected ? ' selected' : '');
+            
             div.onclick = () => {
-                pages[i].selected = !pages[i].selected;
+                p.selected = !p.selected;
                 div.classList.toggle('selected');
             };
 
@@ -69,7 +70,7 @@
             div.appendChild(canvas);
             container.appendChild(div);
 
-            const pdf = await pdfjsLib.getDocument({ data: pages[i].bytes }).promise;
+            const pdf = await pdfjsLib.getDocument({ data: p.bytes }).promise;
             const page = await pdf.getPage(1);
             const vp = page.getViewport({ scale: 0.3 });
             canvas.width = vp.width; canvas.height = vp.height;
@@ -78,14 +79,16 @@
     }
 
     function deleteSelected() {
-        if (!pages.some(p => p.selected)) return alert("削除するページを選択してください");
+        // 削除する前に現在の状態を履歴へ保存
         saveHistory();
+        // 選択されていないものだけを抽出してページ配列を更新
         pages = pages.filter(p => !p.selected);
+        // 再描画
         render();
     }
 
     function undo() {
-        if (history.length === 0) return alert("これ以上戻せません");
+        if (history.length === 0) return alert("戻せる履歴がありません");
         pages = history.pop();
         render();
     }
@@ -108,6 +111,7 @@
         onEnd: (evt) => {
             const item = pages.splice(evt.oldIndex, 1)[0];
             pages.splice(evt.newIndex, 0, item);
+            // 並び替え後はrenderが必ずDOMを再生成するため整合性が保たれます
             render();
         }
     });
