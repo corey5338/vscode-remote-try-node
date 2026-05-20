@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>PDF Editor Stable</title>
+<title>PDF Editor - Blob Version</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -28,15 +28,16 @@
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
-    let pages = []; 
+    let pages = []; // {blob: Blob, selected: boolean}
     let history = [];
 
-    // 履歴保存：new Uint8Array(p.bytes) で、完全に独立したメモリ上のコピーを作成する
+    // Blobを保持するように変更（Detachedエラーが発生しません）
     function saveHistory() {
-        history.push(pages.map(p => ({ 
-            bytes: new Uint8Array(p.bytes), 
-            selected: p.selected 
-        })));
+        history.push(pages.map(p => ({ blob: p.blob, selected: p.selected })));
+    }
+
+    async function getArrayBuffer(blob) {
+        return await blob.arrayBuffer();
     }
 
     async function render() {
@@ -46,16 +47,14 @@
             const p = pages[i];
             const div = document.createElement('div');
             div.className = 'page-item' + (p.selected ? ' selected' : '');
-            div.onclick = () => { 
-                p.selected = !p.selected; 
-                div.classList.toggle('selected'); 
-            };
+            div.onclick = () => { p.selected = !p.selected; div.classList.toggle('selected'); };
             
             const canvas = document.createElement('canvas');
             div.appendChild(canvas);
             container.appendChild(div);
 
-            const pdf = await pdfjsLib.getDocument({ data: p.bytes }).promise;
+            const buffer = await getArrayBuffer(p.blob);
+            const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
             const page = await pdf.getPage(1);
             const vp = page.getViewport({ scale: 0.2 });
             canvas.width = vp.width; canvas.height = vp.height;
@@ -71,9 +70,8 @@
             const doc = await PDFLib.PDFDocument.create();
             const [p] = await doc.copyPages(pdf, [i]);
             doc.addPage(p);
-            // .save() で得られた ArrayBuffer をすぐさま独立した Uint8Array にコピーする
-            const savedBytes = await doc.save();
-            pages.push({ bytes: new Uint8Array(savedBytes), selected: false });
+            const bytes = await doc.save();
+            pages.push({ blob: new Blob([bytes], {type: 'application/pdf'}), selected: false });
         }
         render();
     }
@@ -101,7 +99,8 @@
     async function exportPdf() {
         const out = await PDFLib.PDFDocument.create();
         for (const p of pages) {
-            const doc = await PDFLib.PDFDocument.load(p.bytes);
+            const buffer = await getArrayBuffer(p.blob);
+            const doc = await PDFLib.PDFDocument.load(new Uint8Array(buffer));
             const [page] = await out.copyPages(doc, [0]);
             out.addPage(page);
         }
