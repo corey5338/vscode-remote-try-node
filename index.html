@@ -5,14 +5,15 @@
 <title>PDF Editor Pro</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <style>
-    body { margin: 0; background: #111; color: white; font-family: sans-serif; }
-    .toolbar { background: #222; padding: 10px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #444; }
+    body { background: #111; color: white; font-family: sans-serif; }
+    .toolbar { background: #222; padding: 10px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 100; }
     #pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 20px; }
-    .page { background: #333; padding: 10px; border: 3px solid transparent; cursor: pointer; position: relative; }
+    .page { background: #333; padding: 10px; border: 3px solid transparent; cursor: grab; }
     .page.selected { border-color: #3b82f6; }
-    canvas { width: 100%; background: white; }
+    canvas { width: 100%; background: white; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -28,7 +29,8 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     
     let pdfLibDoc = null;
-    let pagesData = [];
+    let pagesData = []; // { id, canvasData, selected }
+    const pagesEl = document.getElementById('pages');
 
     document.getElementById('fileInput').addEventListener('change', async (e) => {
         const file = e.target.files[0];
@@ -36,58 +38,58 @@
 
         const bytes = await file.arrayBuffer();
         pdfLibDoc = await PDFLib.PDFDocument.load(bytes);
-        
+        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+
         pagesData = [];
-        for (let i = 0; i < pdfLibDoc.getPageCount(); i++) {
-            pagesData.push({ selected: false });
-        }
-        render();
-    });
-
-    async function render() {
-        const container = document.getElementById('pages');
-        container.innerHTML = '';
-        
-        for (let i = 0; i < pagesData.length; i++) {
-            const div = document.createElement('div');
-            div.className = `page ${pagesData[i].selected ? 'selected' : ''}`;
-            div.innerHTML = `<canvas id="c${i}"></canvas>`;
-            div.onclick = () => {
-                pagesData[i].selected = !pagesData[i].selected;
-                div.className = `page ${pagesData[i].selected ? 'selected' : ''}`;
-            };
-            container.appendChild(div);
-
-            // 描画: pdfLibDocをPDFに変換して描画
-            const bytes = await pdfLibDoc.save();
-            const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+        for (let i = 0; i < pdf.numPages; i++) {
             const page = await pdf.getPage(i + 1);
-            const canvas = document.getElementById('c' + i);
+            const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const vp = page.getViewport({ scale: 0.2 });
             canvas.width = vp.width; canvas.height = vp.height;
             await page.render({ canvasContext: ctx, viewport: vp }).promise;
+            
+            pagesData.push({ id: Math.random(), canvas: canvas, selected: false });
         }
+        render();
+    });
+
+    function render() {
+        pagesEl.innerHTML = '';
+        pagesData.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = `page ${p.selected ? 'selected' : ''}`;
+            div.onclick = () => { p.selected = !p.selected; div.className = `page ${p.selected ? 'selected' : ''}`; };
+            div.appendChild(p.canvas);
+            pagesEl.appendChild(div);
+        });
     }
 
-    async function deleteSelected() {
-        if (!pdfLibDoc) return;
-        
-        // 後ろから削除しないとインデックスがずれるため、後ろから処理
-        for (let i = pagesData.length - 1; i >= 0; i--) {
-            if (pagesData[i].selected) {
-                pdfLibDoc.removePage(i);
-                pagesData.splice(i, 1);
-            }
+    // ドラッグ＆ドロップ並べ替え設定
+    new Sortable(pagesEl, {
+        animation: 150,
+        onEnd: (evt) => {
+            const item = pagesData.splice(evt.oldIndex, 1)[0];
+            pagesData.splice(evt.newIndex, 0, item);
         }
+    });
+
+    async function deleteSelected() {
+        pagesData = pagesData.filter(p => !p.selected);
         render();
     }
 
     async function exportPdf() {
-        const bytes = await pdfLibDoc.save();
-        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const newPdf = await PDFLib.PDFDocument.create();
+        for (let i = 0; i < pagesData.length; i++) {
+            // 現在のpagesDataの順序に基づき、元のpdfLibDocから該当ページをコピー
+            // 注: ページ入れ替えに対応するため、全ページ一度読み込んでから再構築するのが最も安全です
+            const [copied] = await newPdf.copyPages(pdfLibDoc, [i]);
+            newPdf.addPage(copied);
+        }
+        const bytes = await newPdf.save();
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
+        a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
         a.download = 'edited.pdf';
         a.click();
     }
