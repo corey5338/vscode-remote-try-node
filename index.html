@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>PDF Architect Pro</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -31,56 +32,709 @@
     box-sizing:border-box;
 }
 
-html,
 body{
     margin:0;
-    padding:0;
-    min-height:100%;
-}
-
-body{
     background:
-        radial-gradient(circle at top left,#1e293b 0%,#020617 42%),
+        radial-gradient(circle at top left,#1e293b 0%,#020617 40%),
         linear-gradient(to bottom,#020617,#0f172a);
-
     color:var(--text);
-
     font-family:
         Inter,
         "Segoe UI",
-        system-ui,
         sans-serif;
+    min-height:100vh;
 }
 
-.app-header{
-    padding:22px 24px 0;
+.app{
+    max-width:1700px;
+    margin:auto;
+    padding:24px;
 }
 
-.title-row{
+.header{
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:20px;
     flex-wrap:wrap;
+    margin-bottom:24px;
 }
 
-.title-wrap h1{
+.title h1{
     margin:0;
     font-size:2rem;
     font-weight:800;
-    const selectedCount = pageList.filter(p=>p.selected).length;
-    if(selectedCount === 0){
-        alert('削除するページを選択してください');
+}
+
+.title p{
+    margin:8px 0 0;
+    color:var(--muted);
+}
+
+.stats{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.stat{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);
+    padding:14px 18px;
+    border-radius:18px;
+    min-width:120px;
+}
+
+.stat-label{
+    font-size:.75rem;
+    color:var(--muted);
+}
+
+.stat-value{
+    font-size:1.4rem;
+    font-weight:700;
+    margin-top:4px;
+}
+
+.toolbar{
+    position:sticky;
+    top:16px;
+    z-index:100;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+    margin-bottom:28px;
+
+    background:rgba(15,23,42,.75);
+    backdrop-filter:blur(14px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:18px;
+
+    box-shadow:var(--shadow);
+}
+
+button{
+    border:none;
+    border-radius:14px;
+    padding:12px 18px;
+    cursor:pointer;
+    color:white;
+    font-weight:700;
+    transition:.2s;
+    background:#334155;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+}
+
+.primary{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.success{
+    background:linear-gradient(135deg,#059669,#10b981);
+}
+
+.danger{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+}
+
+.secondary{
+    background:#475569;
+}
+
+#status{
+    margin-left:auto;
+    color:var(--muted);
+    font-size:.95rem;
+}
+
+#pages{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fill,minmax(220px,1fr));
+    gap:24px;
+}
+
+.page-item{
+    background:rgba(15,23,42,.85);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    transition:.2s;
+
+    position:relative;
+
+    box-shadow:var(--shadow);
+}
+
+.page-item:hover{
+    transform:translateY(-4px);
+}
+
+.page-item.selected{
+    border:2px solid var(--accent);
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.25),
+        var(--shadow);
+}
+
+.page-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px;
+}
+
+.page-preview{
+    background:#0f172a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:10px;
+}
+
+canvas{
+    width:100%;
+    border-radius:12px;
+    background:white;
+}
+
+.page-footer{
+    padding:14px;
+}
+
+.page-number{
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.page-meta{
+    color:var(--muted);
+    font-size:.85rem;
+}
+
+.checkbox{
+    width:20px;
+    height:20px;
+    cursor:pointer;
+}
+
+.empty{
+    text-align:center;
+    padding:80px 20px;
+    color:var(--muted);
+}
+
+.empty h2{
+    color:white;
+}
+
+@media(max-width:700px){
+
+    .toolbar{
+        position:relative;
+        top:0;
+    }
+
+    #status{
+        width:100%;
+        margin-left:0;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+
+        <div class="title">
+            <h1>PDF Architect Pro</h1>
+            <p>
+                PDF編集・削除・抽出・並び替え
+            </p>
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-label">
+                    総ページ
+                </div>
+
+                <div class="stat-value" id="totalPages">
+                    0
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">
+                    選択中
+                </div>
+
+                <div class="stat-value" id="selectedPages">
+                    0
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="toolbar">
+
+        <input
+            type="file"
+            id="fileInput"
+            hidden
+            accept="application/pdf"
+        >
+
+        <button
+            class="primary"
+            onclick="document.getElementById('fileInput').click()"
+        >
+            新規読み込み
+        </button>
+
+        <button onclick="addPdf()">
+            PDF追加
+        </button>
+
+        <button
+            class="secondary"
+            onclick="selectAll()"
+        >
+            全選択
+        </button>
+
+        <button
+            class="secondary"
+            onclick="clearSelection()"
+        >
+            選択解除
+        </button>
+
+        <button
+            class="danger"
+            onclick="deleteSelected()"
+        >
+            削除
+        </button>
+
+        <button
+            class="primary"
+            onclick="exportSelected()"
+        >
+            抽出保存
+        </button>
+
+        <button
+            class="success"
+            onclick="exportPdf()"
+        >
+            全保存
+        </button>
+
+        <button onclick="undo()">
+            Undo
+        </button>
+
+        <div id="status">
+            Ready
+        </div>
+
+    </div>
+
+    <div id="pages">
+
+        <div class="empty">
+            <h2>PDFを読み込んでください</h2>
+            <p>
+                「新規読み込み」からPDFを選択
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const pagesContainer =
+document.getElementById('pages');
+
+let pageList = [];
+
+let historyStack = [];
+
+let lastSelectedIndex = -1;
+
+function setStatus(text){
+    document.getElementById('status').textContent = text;
+}
+
+function updateStats(){
+
+    document.getElementById('totalPages').textContent =
+        pageList.length;
+
+    document.getElementById('selectedPages').textContent =
+        pageList.filter(p=>p.selected).length;
+
+}
+
+function saveHistory(){
+
+    historyStack.push(
+        structuredClone(pageList)
+    );
+
+    if(historyStack.length > 30){
+        historyStack.shift();
+    }
+
+}
+
+function undo(){
+
+    if(historyStack.length === 0){
         return;
+    }
+
+    pageList = historyStack.pop();
+
+    render();
+
+    setStatus('Undo');
+
+}
+
+document.getElementById('fileInput').onchange =
+async (e)=>{
+
+    const file = e.target.files[0];
+
+    if(!file){
+        return;
+    }
+
+    pageList = [];
+
+    historyStack = [];
+
+    await loadPdf(file);
+
+};
+
+async function loadPdf(file){
+
+    setStatus('PDF読込中...');
+
+    const bytes =
+        await file.arrayBuffer();
+
+    const pdfDoc =
+        await PDFLib.PDFDocument.load(bytes);
+
+    for(let i=0;i<pdfDoc.getPageCount();i++){
+
+        pageList.push({
+
+            doc:pdfDoc,
+
+            pageIndex:i,
+
+            selected:false,
+
+            thumbRendered:false
+
+        });
+
+    }
+
+    render();
+
+    setStatus('読込完了');
+
+}
+
+async function addPdf(){
+
+    const input =
+        document.createElement('input');
+
+    input.type = 'file';
+
+    input.accept = 'application/pdf';
+
+    input.onchange = async (e)=>{
+
+        const file = e.target.files[0];
+
+        if(!file){
+            return;
+        }
+
+        saveHistory();
+
+        const bytes =
+            await file.arrayBuffer();
+
+        const pdfDoc =
+            await PDFLib.PDFDocument.load(bytes);
+
+        let insertIndex =
+            pageList.length;
+
+        const selectedIndex =
+            pageList.findIndex(p=>p.selected);
+
+        if(selectedIndex !== -1){
+            insertIndex = selectedIndex + 1;
+        }
+
+        const newPages = [];
+
+        for(let i=0;i<pdfDoc.getPageCount();i++){
+
+            newPages.push({
+
+                doc:pdfDoc,
+
+                pageIndex:i,
+
+                selected:false,
+
+                thumbRendered:false
+
+            });
+
+        }
+
+        pageList.splice(
+            insertIndex,
+            0,
+            ...newPages
+        );
+
+        render();
+
+        setStatus('PDF追加完了');
+
+    };
+
+    input.click();
+
+}
+
+function selectAll(){
+
+    pageList.forEach(p=>{
+        p.selected = true;
+    });
+
+    render();
+
+}
+
+function clearSelection(){
+
+    pageList.forEach(p=>{
+        p.selected = false;
+    });
+
+    render();
+
+}
+
+function deleteSelected(){
+
+    const selectedCount =
+        pageList.filter(p=>p.selected).length;
+
+    if(selectedCount === 0){
+
+        alert('削除するページを選択してください');
+
+        return;
+
     }
 
     saveHistory();
 
-    pageList = pageList.filter(p => !p.selected);
+    pageList =
+        pageList.filter(p=>!p.selected);
 
     render();
 
     setStatus(`${selectedCount}ページ削除`);
+
+}
+
+async function exportPdf(){
+
+    if(pageList.length === 0){
+        return;
+    }
+
+    const name =
+        prompt('保存名','edited.pdf');
+
+    if(!name){
+        return;
+    }
+
+    const newPdf =
+        await PDFLib.PDFDocument.create();
+
+    for(const p of pageList){
+
+        const [copiedPage] =
+            await newPdf.copyPages(
+                p.doc,
+                [p.pageIndex]
+            );
+
+        newPdf.addPage(copiedPage);
+
+    }
+
+    const blob = new Blob(
+        [await newPdf.save()],
+        {type:'application/pdf'}
+    );
+
+    downloadBlob(blob,name);
+
+}
+
+async function exportSelected(){
+
+    const selected =
+        pageList.filter(p=>p.selected);
+
+    if(selected.length === 0){
+
+        alert('抽出ページを選択してください');
+
+        return;
+
+    }
+
+    const name =
+        prompt('保存名','extract.pdf');
+
+    if(!name){
+        return;
+    }
+
+    const newPdf =
+        await PDFLib.PDFDocument.create();
+
+    for(const p of selected){
+
+        const [copiedPage] =
+            await newPdf.copyPages(
+                p.doc,
+                [p.pageIndex]
+            );
+
+        newPdf.addPage(copiedPage);
+
+    }
+
+    const blob = new Blob(
+        [await newPdf.save()],
+        {type:'application/pdf'}
+    );
+
+    downloadBlob(blob,name);
+
+}
+
+function downloadBlob(blob,name){
+
+    const a =
+        document.createElement('a');
+
+    a.href =
+        URL.createObjectURL(blob);
+
+    a.download = name;
+
+    a.click();
+
+}
+
+async function lazyRenderThumbnail(page,canvas){
+
+    if(page.thumbRendered){
+        return;
+    }
+
+    const tempPdf =
+        await PDFLib.PDFDocument.create();
+
+    const [copiedPage] =
+        await tempPdf.copyPages(
+            page.doc,
+            [page.pageIndex]
+        );
+
+    tempPdf.addPage(copiedPage);
+
+    const bytes =
+        await tempPdf.save();
+
+    const pdf =
+        await pdfjsLib.getDocument({
+            data:bytes
+        }).promise;
+
+    const pdfPage =
+        await pdf.getPage(1);
+
+    const viewport =
+        pdfPage.getViewport({
+            scale:0.35
+        });
+
+    canvas.width = viewport.width;
+
+    canvas.height = viewport.height;
+
+    await pdfPage.render({
+
+        canvasContext:
+            canvas.getContext('2d'),
+
+        viewport
+
+    }).promise;
+
+    page.thumbRendered = true;
 
 }
 
@@ -94,7 +748,7 @@ async function render(){
             <div class="empty">
                 <h2>PDFを読み込んでください</h2>
                 <p>
-                    新規読み込みからPDFを選択してください
+                    「新規読み込み」からPDF選択
                 </p>
             </div>
         `;
@@ -105,11 +759,12 @@ async function render(){
 
     pagesContainer.innerHTML = '';
 
-    for(let i = 0; i < pageList.length; i++){
+    for(let i=0;i<pageList.length;i++){
 
         const p = pageList[i];
 
-        const div = document.createElement('div');
+        const div =
+            document.createElement('div');
 
         div.className = 'page-item';
 
@@ -121,15 +776,15 @@ async function render(){
 
         div.innerHTML = `
 
-            <div class="page-topbar">
+            <div class="page-top">
 
                 <input
                     type="checkbox"
-                    class="page-checkbox"
+                    class="checkbox"
                     ${p.selected ? 'checked' : ''}
                 >
 
-                <div class="page-chip">
+                <div>
                     PDF
                 </div>
 
@@ -141,49 +796,63 @@ async function render(){
 
             <div class="page-footer">
 
-                <div>
-                    <div class="page-num">
-                        Page ${i + 1}
-                    </div>
+                <div class="page-number">
+                    Page ${i+1}
+                </div>
 
-                    <div class="page-meta">
-                        元ページ ${p.pageIndex + 1}
-                    </div>
+                <div class="page-meta">
+                    元ページ ${p.pageIndex+1}
                 </div>
 
             </div>
 
         `;
 
-        const checkbox = div.querySelector('.page-checkbox');
+        const checkbox =
+            div.querySelector('.checkbox');
 
-        checkbox.addEventListener('click', e => {
-            e.stopPropagation();
-        });
+        checkbox.addEventListener(
+            'click',
+            e=>e.stopPropagation()
+        );
 
-        checkbox.addEventListener('change', () => {
+        checkbox.addEventListener(
+            'change',
+            ()=>{
 
-            p.selected = checkbox.checked;
+                p.selected =
+                    checkbox.checked;
 
-            render();
+                render();
 
-        });
+            }
+        );
 
-        div.onclick = (e) => {
+        div.onclick = (e)=>{
 
-            if(e.shiftKey && lastSelectedIndex !== -1){
+            if(e.shiftKey &&
+               lastSelectedIndex !== -1){
 
-                const start = Math.min(lastSelectedIndex, i);
+                const start =
+                    Math.min(
+                        lastSelectedIndex,
+                        i
+                    );
 
-                const end = Math.max(lastSelectedIndex, i);
+                const end =
+                    Math.max(
+                        lastSelectedIndex,
+                        i
+                    );
 
-                for(let j = start; j <= end; j++){
+                for(let j=start;j<=end;j++){
                     pageList[j].selected = true;
                 }
 
             }else{
 
-                p.selected = !p.selected;
+                p.selected =
+                    !p.selected;
 
             }
 
@@ -195,12 +864,49 @@ async function render(){
 
         pagesContainer.appendChild(div);
 
-        const canvas = div.querySelector('canvas');
+        const canvas =
+            div.querySelector('canvas');
 
-        lazyRenderThumbnail(p, canvas);
+        lazyRenderThumbnail(p,canvas);
 
     }
 
     updateStats();
 
 }
+
+new Sortable(
+    pagesContainer,
+    {
+
+        animation:200,
+
+        onEnd:(evt)=>{
+
+            saveHistory();
+
+            const moved =
+                pageList.splice(
+                    evt.oldIndex,
+                    1
+                )[0];
+
+            pageList.splice(
+                evt.newIndex,
+                0,
+                moved
+            );
+
+            render();
+
+            setStatus('並び替え完了');
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
