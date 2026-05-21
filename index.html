@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>PDF Architect Pro</title>
+<title>PDF Architect Pro - Phase5</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -81,7 +81,7 @@ button{
 
     cursor:pointer;
 
-    transition:.2s;
+    transition:.15s;
 
     font-weight:600;
 
@@ -180,7 +180,7 @@ body[data-size="L"] #pages{
 
     cursor:move;
 
-    transition:.15s;
+    transition:.12s;
 
     box-shadow:
         0 8px 24px rgba(0,0,0,.25);
@@ -363,24 +363,25 @@ let historyStack = [];
 
 let lastSelectedIndex = -1;
 
-const thumbQueue = [];
+const renderQueue = [];
 
 let rendering = false;
 
-const observer = new IntersectionObserver(
+const visibleObserver =
+new IntersectionObserver(
 
     entries => {
 
         entries.forEach(entry => {
 
-            const index =
-                Number(
-                    entry.target.dataset.index
-                );
-
             if(entry.isIntersecting){
 
-                queueThumbRender(index);
+                const index =
+                    Number(
+                        entry.target.dataset.index
+                    );
+
+                queueRender(index);
 
             }
 
@@ -389,14 +390,15 @@ const observer = new IntersectionObserver(
     },
 
     {
-        rootMargin:'600px'
+        rootMargin:'1000px'
     }
 
 );
 
 function setStatus(text){
 
-    document.getElementById('status')
+    document
+        .getElementById('status')
         .textContent = text;
 
 }
@@ -428,53 +430,11 @@ function saveHistory(){
 
     historyStack.push(
 
-        pageList.map(p => ({
-
-            id:p.id,
-
-            doc:p.doc,
-
-            pdfBytes:p.pdfBytes,
-
-            pageIndex:p.pageIndex,
-
-            thumb:p.thumb,
-
-            selected:p.selected
-
-        }))
+        structuredClone(pageList)
 
     );
 
 }
-
-new Sortable(pagesContainer,{
-
-    animation:180,
-
-    ghostClass:'selected',
-
-    onEnd:(evt)=>{
-
-        saveHistory();
-
-        const moved =
-            pageList.splice(
-                evt.oldIndex,
-                1
-            )[0];
-
-        pageList.splice(
-            evt.newIndex,
-            0,
-            moved
-        );
-
-        rebuildDOM();
-
-    }
-
-});
 
 async function processFile(file,isReset){
 
@@ -515,15 +475,17 @@ async function processFile(file,isReset){
 
                 pageIndex:i,
 
+                selected:false,
+
                 thumb:null,
 
-                selected:false
+                rendering:false
 
             });
 
         }
 
-        rebuildDOM();
+        renderVisiblePages();
 
         setStatus(
             `${total}ページ読み込み`
@@ -555,15 +517,7 @@ async function addPdf(){
 
         if(!file) return;
 
-        const selected =
-            pageList.findLastIndex(
-                p=>p.selected
-            );
-
-        const insertPos =
-            selected >= 0
-            ? selected + 1
-            : pageList.length;
+        saveHistory();
 
         const pdfBytes =
             await file.arrayBuffer();
@@ -576,7 +530,15 @@ async function addPdf(){
         const total =
             pdfDoc.getPageCount();
 
-        saveHistory();
+        const selected =
+            pageList.findLastIndex(
+                p=>p.selected
+            );
+
+        const insertPos =
+            selected >= 0
+            ? selected + 1
+            : pageList.length;
 
         const newPages = [];
 
@@ -592,9 +554,11 @@ async function addPdf(){
 
                 pageIndex:i,
 
+                selected:false,
+
                 thumb:null,
 
-                selected:false
+                rendering:false
 
             });
 
@@ -606,7 +570,7 @@ async function addPdf(){
             ...newPages
         );
 
-        rebuildDOM();
+        renderVisiblePages();
 
     };
 
@@ -614,48 +578,166 @@ async function addPdf(){
 
 }
 
-function queueThumbRender(index){
+function renderVisiblePages(){
 
-    if(
-        thumbQueue.includes(index)
-    ){
-        return;
-    }
+    pagesContainer.innerHTML='';
 
-    thumbQueue.push(index);
+    const fragment =
+        document.createDocumentFragment();
 
-    processThumbQueue();
+    pageList.forEach((p,index)=>{
+
+        const div =
+            createPageElement(p,index);
+
+        fragment.appendChild(div);
+
+    });
+
+    pagesContainer.appendChild(fragment);
 
 }
 
-async function processThumbQueue(){
+function createPageElement(p,index){
+
+    const div =
+        document.createElement('div');
+
+    div.className='page-item';
+
+    div.dataset.index=index;
+
+    if(p.selected){
+
+        div.classList.add('selected');
+
+    }
+
+    div.innerHTML=`
+
+        <div class="preview-wrap">
+
+            <canvas></canvas>
+
+            <div class="loading">
+                Loading...
+            </div>
+
+        </div>
+
+        <div class="page-num">
+            Page ${index + 1}
+        </div>
+
+    `;
+
+    div.onclick = e => {
+
+        const idx =
+            Number(div.dataset.index);
+
+        if(
+            e.shiftKey &&
+            lastSelectedIndex !== -1
+        ){
+
+            const start =
+                Math.min(
+                    idx,
+                    lastSelectedIndex
+                );
+
+            const end =
+                Math.max(
+                    idx,
+                    lastSelectedIndex
+                );
+
+            for(let i=start;i<=end;i++){
+
+                pageList[i].selected=true;
+
+            }
+
+        }else{
+
+            pageList[idx].selected =
+                !pageList[idx].selected;
+
+        }
+
+        lastSelectedIndex = idx;
+
+        updateSelectionUI();
+
+    };
+
+    visibleObserver.observe(div);
+
+    if(p.thumb){
+
+        drawThumb(index);
+
+    }
+
+    return div;
+
+}
+
+function updateSelectionUI(){
+
+    Array.from(
+        pagesContainer.children
+    ).forEach((div,index)=>{
+
+        div.classList.toggle(
+            'selected',
+            pageList[index].selected
+        );
+
+    });
+
+}
+
+function queueRender(index){
+
+    const page = pageList[index];
+
+    if(!page) return;
+
+    if(page.thumb) return;
+
+    if(page.rendering) return;
+
+    renderQueue.push(index);
+
+    processQueue();
+
+}
+
+async function processQueue(){
 
     if(rendering) return;
 
     rendering = true;
 
-    while(thumbQueue.length){
+    while(renderQueue.length){
 
         const index =
-            thumbQueue.shift();
+            renderQueue.shift();
 
-        const p = pageList[index];
+        const page =
+            pageList[index];
 
-        if(!p) continue;
+        if(!page) continue;
 
-        if(p.thumb) continue;
+        if(page.thumb) continue;
+
+        page.rendering = true;
 
         try{
 
-            const thumb =
-                await generateThumb(
-                    p.pdfBytes,
-                    p.pageIndex
-                );
-
-            p.thumb = thumb;
-
-            updateThumbnail(index);
+            await renderThumbnail(index);
 
         }catch(e){
 
@@ -663,33 +745,53 @@ async function processThumbQueue(){
 
         }
 
+        page.rendering = false;
+
+        await idle();
+
     }
 
     rendering = false;
 
 }
 
-async function generateThumb(
-    pdfBytes,
-    pageIndex
-){
+function idle(){
 
-    const copy =
-        pdfBytes.slice(0);
+    return new Promise(resolve=>{
+
+        requestIdleCallback(
+            ()=>resolve(),
+            {timeout:50}
+        );
+
+    });
+
+}
+
+async function renderThumbnail(index){
+
+    const p = pageList[index];
+
+    if(!p) return;
+
+    const scale =
+        getCurrentScale();
 
     const pdf =
         await pdfjsLib.getDocument({
-            data:copy
+
+            data:p.pdfBytes.slice(0)
+
         }).promise;
 
     const page =
         await pdf.getPage(
-            pageIndex + 1
+            p.pageIndex + 1
         );
 
     const viewport =
         page.getViewport({
-            scale:0.18
+            scale
         });
 
     const canvas =
@@ -712,111 +814,39 @@ async function generateThumb(
 
     }).promise;
 
-    return canvas.toDataURL(
-        'image/webp',
-        0.6
-    );
+    p.thumb =
+        canvas.toDataURL(
+            'image/webp',
+            0.55
+        );
+
+    drawThumb(index);
 
 }
 
-function createPageElement(p,index){
+function getCurrentScale(){
 
-    const div =
-        document.createElement('div');
+    const size =
+        document.body.dataset.size;
 
-    div.className='page-item';
+    if(size === 'S') return 0.08;
 
-    div.dataset.index=index;
+    if(size === 'L') return 0.22;
 
-    if(p.selected){
-
-        div.classList.add('selected');
-
-    }
-
-    div.innerHTML = `
-
-        <div class="preview-wrap">
-
-            <canvas></canvas>
-
-            <div class="loading">
-                Loading...
-            </div>
-
-        </div>
-
-        <div class="page-num">
-            Page ${index + 1}
-        </div>
-
-    `;
-
-    div.onclick = e => {
-
-        const currentIndex =
-            Number(div.dataset.index);
-
-        if(
-            currentIndex < 0 ||
-            currentIndex >= pageList.length
-        ){
-            return;
-        }
-
-        if(
-            e.shiftKey &&
-            lastSelectedIndex !== -1
-        ){
-
-            const start =
-                Math.min(
-                    lastSelectedIndex,
-                    currentIndex
-                );
-
-            const end =
-                Math.max(
-                    lastSelectedIndex,
-                    currentIndex
-                );
-
-            for(
-                let i = start;
-                i <= end;
-                i++
-            ){
-
-                pageList[i].selected = true;
-
-            }
-
-        }else{
-
-            pageList[currentIndex].selected =
-                !pageList[currentIndex].selected;
-
-        }
-
-        lastSelectedIndex =
-            currentIndex;
-
-        updateSelectionUI();
-
-    };
-
-    observer.observe(div);
-
-    return div;
+    return 0.14;
 
 }
 
-function updateThumbnail(index){
+function drawThumb(index){
 
     const div =
         pagesContainer.children[index];
 
     if(!div) return;
+
+    const p = pageList[index];
+
+    if(!p.thumb) return;
 
     const canvas =
         div.querySelector('canvas');
@@ -824,26 +854,10 @@ function updateThumbnail(index){
     const loading =
         div.querySelector('.loading');
 
-    drawThumb(
-        canvas,
-        pageList[index].thumb
-    );
+    const img =
+        new Image();
 
-    canvas.dataset.loaded = '1';
-
-    if(loading){
-
-        loading.remove();
-
-    }
-
-}
-
-function drawThumb(canvas,src){
-
-    const img = new Image();
-
-    img.src = src;
+    img.src = p.thumb;
 
     img.onload = ()=>{
 
@@ -857,47 +871,13 @@ function drawThumb(canvas,src){
             .getContext('2d')
             .drawImage(img,0,0);
 
-    };
+        if(loading){
 
-}
-
-function rebuildDOM(){
-
-    pagesContainer.innerHTML = '';
-
-    pageList.forEach((p,i)=>{
-
-        const div =
-            createPageElement(p,i);
-
-        pagesContainer.appendChild(div);
-
-        if(p.thumb){
-
-            updateThumbnail(i);
+            loading.remove();
 
         }
 
-    });
-
-}
-
-function updateSelectionUI(){
-
-    Array.from(
-        pagesContainer.children
-    ).forEach((div,i)=>{
-
-        const page = pageList[i];
-
-        if(!page) return;
-
-        div.classList.toggle(
-            'selected',
-            page.selected
-        );
-
-    });
+    };
 
 }
 
@@ -907,20 +887,18 @@ function clearSelection(){
         p=>p.selected=false
     );
 
-    lastSelectedIndex = -1;
-
     updateSelectionUI();
 
 }
 
 function deleteSelected(){
 
-    const selectedPages =
+    const selected =
         pageList.filter(
-            p => p.selected
+            p=>p.selected
         );
 
-    if(selectedPages.length === 0){
+    if(selected.length===0){
 
         alert(
             '削除ページを選択してください'
@@ -934,30 +912,31 @@ function deleteSelected(){
 
     pageList =
         pageList.filter(
-            p => !p.selected
+            p=>!p.selected
         );
 
     lastSelectedIndex = -1;
 
-    rebuildDOM();
+    renderVisiblePages();
 
     setStatus(
-        `${selectedPages.length}ページ削除`
+        `${selected.length}ページ削除`
     );
 
 }
 
 function undo(){
 
-    if(historyStack.length === 0){
+    if(historyStack.length===0){
 
         return;
 
     }
 
-    pageList = historyStack.pop();
+    pageList =
+        historyStack.pop();
 
-    rebuildDOM();
+    renderVisiblePages();
 
     setStatus('Undo');
 
@@ -965,9 +944,19 @@ function undo(){
 
 function setZoom(size){
 
-    document.body.dataset.size = size;
+    document.body.dataset.size=size;
 
-    setStatus(`表示サイズ: ${size}`);
+    pageList.forEach(p=>{
+
+        p.thumb=null;
+
+    });
+
+    renderVisiblePages();
+
+    setStatus(
+        `表示サイズ: ${size}`
+    );
 
 }
 
@@ -1039,7 +1028,7 @@ async function exportSelected(){
     const name =
         prompt(
             'ファイル名',
-            'extracted.pdf'
+            'selected.pdf'
         );
 
     if(!name) return;
@@ -1081,6 +1070,34 @@ async function exportSelected(){
     a.click();
 
 }
+
+new Sortable(pagesContainer,{
+
+    animation:180,
+
+    ghostClass:'selected',
+
+    onEnd:(evt)=>{
+
+        saveHistory();
+
+        const moved =
+            pageList.splice(
+                evt.oldIndex,
+                1
+            )[0];
+
+        pageList.splice(
+            evt.newIndex,
+            0,
+            moved
+        );
+
+        renderVisiblePages();
+
+    }
+
+});
 
 document.addEventListener(
     'keydown',
