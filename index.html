@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>PDF Architect Pro Ultimate Stable</title>
+<title>PDF Architect Pro Phase6</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -110,6 +110,22 @@ button.primary:hover{
 button.danger{
 
     background:var(--danger);
+
+}
+
+input.number-input{
+
+    width:90px;
+
+    padding:10px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#0f172a;
+
+    color:white;
 
 }
 
@@ -267,6 +283,26 @@ button.danger{
         指定位置へ追加
     </button>
 
+    <input
+        id="insertPageInput"
+        class="number-input"
+        type="number"
+        min="1"
+        placeholder="追加位置"
+    >
+
+    <button onclick="moveSelectedPages()">
+        選択ページ移動
+    </button>
+
+    <input
+        id="movePageInput"
+        class="number-input"
+        type="number"
+        min="1"
+        placeholder="移動先"
+    >
+
     <button onclick="undo()">
         Undo
     </button>
@@ -321,15 +357,15 @@ let lastSelectedIndex = -1;
 
 let renderVersion = 0;
 
-let renderingNow = false;
-
 const renderQueue = [];
 
-const MAX_HISTORY = 15;
+const MAX_HISTORY = 10;
 
 const MAX_RENDERERS = 2;
 
 let activeRenderers = 0;
+
+let observer;
 
 function setStatus(text){
 
@@ -342,6 +378,42 @@ function setStatus(text){
 function bumpRenderVersion(){
 
     renderVersion++;
+
+}
+
+function cleanupMemory(){
+
+    if(historyStack.length > MAX_HISTORY){
+
+        historyStack.shift();
+
+    }
+
+}
+
+function saveHistory(){
+
+    historyStack.push(
+
+        pageList.map(p => ({
+
+            id:p.id,
+
+            pageIndex:p.pageIndex,
+
+            selected:p.selected,
+
+            thumb:p.thumb,
+
+            pdfBytes:p.pdfBytes,
+
+            doc:p.doc
+
+        }))
+
+    );
+
+    cleanupMemory();
 
 }
 
@@ -366,48 +438,6 @@ document
     }
 
 };
-
-function cleanupMemory(){
-
-    if(historyStack.length > MAX_HISTORY){
-
-        historyStack.shift();
-
-    }
-
-    if(window.gc){
-
-        try{
-            window.gc();
-        }catch(e){}
-    }
-
-}
-
-function saveHistory(){
-
-    const snapshot =
-        pageList.map(p => ({
-
-            id:p.id,
-
-            pageIndex:p.pageIndex,
-
-            selected:p.selected,
-
-            thumb:p.thumb,
-
-            pdfBytes:p.pdfBytes,
-
-            doc:p.doc
-
-        }));
-
-    historyStack.push(snapshot);
-
-    cleanupMemory();
-
-}
 
 async function processFile(file,isReset){
 
@@ -464,8 +494,6 @@ async function processFile(file,isReset){
 
         render();
 
-        generateAllThumbnails();
-
         setStatus(
             `${total}ページ読み込み`
         );
@@ -515,10 +543,30 @@ async function addPdf(){
         const total =
             pdfDoc.getPageCount();
 
-        const insertPos =
-            pageList.findLastIndex(
-                p=>p.selected
-            ) + 1;
+        let insertPos =
+            Number(
+                document.getElementById(
+                    'insertPageInput'
+                ).value
+            ) - 1;
+
+        if(
+            isNaN(insertPos) ||
+            insertPos < 0
+        ){
+
+            insertPos =
+                pageList.findLastIndex(
+                    p=>p.selected
+                ) + 1;
+
+        }
+
+        if(insertPos < 0){
+
+            insertPos = pageList.length;
+
+        }
 
         const newPages = [];
 
@@ -545,16 +593,12 @@ async function addPdf(){
         }
 
         pageList.splice(
-            insertPos < 0
-                ? pageList.length
-                : insertPos,
+            insertPos,
             0,
             ...newPages
         );
 
         render();
-
-        generateAllThumbnails();
 
         setStatus(
             `${total}ページ追加`
@@ -567,6 +611,12 @@ async function addPdf(){
 }
 
 function render(){
+
+    if(observer){
+
+        observer.disconnect();
+
+    }
 
     if(pageList.length===0){
 
@@ -679,48 +729,67 @@ function render(){
 
     pagesContainer.appendChild(fragment);
 
+    setupIntersectionObserver();
+
 }
 
-function updateSelectionUI(){
+function setupIntersectionObserver(){
+
+    observer =
+        new IntersectionObserver(
+
+        entries => {
+
+            entries.forEach(entry => {
+
+                if(entry.isIntersecting){
+
+                    const index =
+                        Number(
+                            entry.target.dataset.index
+                        );
+
+                    queueThumbnail(index);
+
+                }
+
+            });
+
+        },
+
+        {
+            rootMargin:'400px'
+        }
+
+    );
 
     Array.from(
         pagesContainer.children
-    ).forEach((div,index)=>{
+    ).forEach(div => {
 
-        div.classList.toggle(
-            'selected',
-            pageList[index].selected
-        );
+        observer.observe(div);
 
     });
 
 }
 
-function generateAllThumbnails(){
+function queueThumbnail(index){
 
-    const currentVersion =
-        renderVersion;
+    const p = pageList[index];
 
-    for(let i = 0; i < pageList.length; i++){
+    if(!p) return;
 
-        const p = pageList[i];
+    if(p.thumb) return;
 
-        if(
-            !p.thumb &&
-            !p.rendering
-        ){
+    if(p.rendering) return;
 
-            renderQueue.push({
+    renderQueue.push({
 
-                index:i,
+        index,
 
-                version:currentVersion
+        version:renderVersion
 
-            });
-
-        }
-
-    }
+    });
 
     processRenderQueue();
 
@@ -800,7 +869,7 @@ async function generateThumbnail(index,version){
 
         const viewport =
             page.getViewport({
-                scale:0.13
+                scale:0.12
             });
 
         const canvas =
@@ -830,9 +899,6 @@ async function generateThumbnail(index,version){
 
         if(version !== renderVersion){
 
-            canvas.width = 1;
-            canvas.height = 1;
-
             return;
 
         }
@@ -840,19 +906,19 @@ async function generateThumbnail(index,version){
         p.thumb =
             canvas.toDataURL(
                 'image/webp',
-                0.6
+                0.55
             );
 
         canvas.width = 1;
         canvas.height = 1;
-
-        updateThumbnail(index);
 
         page.cleanup();
 
         pdf.cleanup();
 
         pdf.destroy();
+
+        updateThumbnail(index);
 
     }catch(e){
 
@@ -890,6 +956,21 @@ function updateThumbnail(index){
         <img src="${p.thumb}">
 
     `;
+
+}
+
+function updateSelectionUI(){
+
+    Array.from(
+        pagesContainer.children
+    ).forEach((div,index)=>{
+
+        div.classList.toggle(
+            'selected',
+            pageList[index].selected
+        );
+
+    });
 
 }
 
@@ -931,15 +1012,62 @@ function deleteSelected(){
             p=>!p.selected
         );
 
-    lastSelectedIndex = -1;
-
     render();
 
     setStatus(
         `${selected.length}ページ削除`
     );
 
-    cleanupMemory();
+}
+
+function moveSelectedPages(){
+
+    const target =
+        Number(
+            document.getElementById(
+                'movePageInput'
+            ).value
+        ) - 1;
+
+    if(isNaN(target)){
+
+        alert('移動先を入力してください');
+
+        return;
+
+    }
+
+    const selected =
+        pageList.filter(
+            p=>p.selected
+        );
+
+    if(selected.length===0){
+
+        alert('移動ページを選択してください');
+
+        return;
+
+    }
+
+    saveHistory();
+
+    pageList =
+        pageList.filter(
+            p=>!p.selected
+        );
+
+    pageList.splice(
+        target,
+        0,
+        ...selected
+    );
+
+    render();
+
+    setStatus(
+        `${selected.length}ページ移動`
+    );
 
 }
 
@@ -959,8 +1087,6 @@ function undo(){
         historyStack.pop();
 
     render();
-
-    generateAllThumbnails();
 
     setStatus('Undo');
 
@@ -1093,10 +1219,6 @@ new Sortable(pagesContainer,{
 
     onEnd:(evt)=>{
 
-        bumpRenderVersion();
-
-        renderQueue.length = 0;
-
         saveHistory();
 
         const moved =
@@ -1112,8 +1234,6 @@ new Sortable(pagesContainer,{
         );
 
         render();
-
-        generateAllThumbnails();
 
         setStatus('並び替え完了');
 
