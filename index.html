@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>PDF Architect Pro Stable</title>
+<title>PDF Architect Pro Stable+</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -195,14 +195,14 @@ button.danger{
 
 }
 
-canvas{
+.preview-wrap img{
 
     width:100%;
     height:100%;
 
-    display:block;
+    object-fit:contain;
 
-    border-radius:10px;
+    display:block;
 
 }
 
@@ -325,11 +325,23 @@ let historyStack = [];
 
 let lastSelectedIndex = -1;
 
+let renderVersion = 0;
+
+let renderingNow = false;
+
+const renderQueue = [];
+
 function setStatus(text){
 
     document
         .getElementById('status')
         .textContent = text;
+
+}
+
+function bumpRenderVersion(){
+
+    renderVersion++;
 
 }
 
@@ -381,6 +393,8 @@ function saveHistory(){
 async function processFile(file,isReset){
 
     try{
+
+        bumpRenderVersion();
 
         if(isReset){
 
@@ -459,6 +473,8 @@ async function addPdf(){
 
         if(!file) return;
 
+        bumpRenderVersion();
+
         saveHistory();
 
         setStatus('PDF追加中...');
@@ -511,7 +527,7 @@ async function addPdf(){
 
         render();
 
-        generateNewThumbnails();
+        generateAllThumbnails();
 
         setStatus(
             `${total}ページ追加`
@@ -574,15 +590,7 @@ function render(){
                 ${
                     p.thumb
                     ?
-                    `<img
-                        src="${p.thumb}"
-                        style="
-                            width:100%;
-                            height:100%;
-                            object-fit:contain;
-                            display:block;
-                        "
-                    >`
+                    `<img src="${p.thumb}">`
                     :
                     `<div class="loading">
                         Loading...
@@ -663,41 +671,71 @@ function updateSelectionUI(){
 
 async function generateAllThumbnails(){
 
+    const currentVersion =
+        renderVersion;
+
     for(let i = 0; i < pageList.length; i++){
+
+        if(currentVersion !== renderVersion){
+
+            return;
+
+        }
 
         const p = pageList[i];
 
         if(!p.thumb){
 
-            await generateThumbnail(i);
+            renderQueue.push({
+                index:i,
+                version:currentVersion
+            });
 
         }
 
     }
 
+    processRenderQueue();
+
 }
 
-async function generateNewThumbnails(){
+async function processRenderQueue(){
 
-    for(let i = 0; i < pageList.length; i++){
+    if(renderingNow) return;
 
-        const p = pageList[i];
+    renderingNow = true;
 
-        if(!p.thumb){
+    while(renderQueue.length){
 
-            await generateThumbnail(i);
+        const item =
+            renderQueue.shift();
+
+        if(!item) continue;
+
+        if(item.version !== renderVersion){
+
+            continue;
 
         }
 
+        await generateThumbnail(
+            item.index,
+            item.version
+        );
+
     }
+
+    renderingNow = false;
 
 }
 
-async function generateThumbnail(index){
+async function generateThumbnail(index,version){
 
     const p = pageList[index];
 
     if(!p) return;
+
+    if(p.thumb) return;
 
     try{
 
@@ -707,6 +745,12 @@ async function generateThumbnail(index){
                 data:p.pdfBytes.slice(0)
 
             }).promise;
+
+        if(version !== renderVersion){
+
+            return;
+
+        }
 
         const page =
             await pdf.getPage(
@@ -738,6 +782,12 @@ async function generateThumbnail(index){
 
         }).promise;
 
+        if(version !== renderVersion){
+
+            return;
+
+        }
+
         p.thumb =
             canvas.toDataURL(
                 'image/webp',
@@ -766,6 +816,8 @@ function updateThumbnail(index){
 
     if(!p) return;
 
+    if(!p.thumb) return;
+
     const wrap =
         div.querySelector('.preview-wrap');
 
@@ -773,15 +825,7 @@ function updateThumbnail(index){
 
     wrap.innerHTML = `
 
-        <img
-            src="${p.thumb}"
-            style="
-                width:100%;
-                height:100%;
-                object-fit:contain;
-                display:block;
-            "
-        >
+        <img src="${p.thumb}">
 
     `;
 
@@ -814,6 +858,8 @@ function deleteSelected(){
 
     }
 
+    bumpRenderVersion();
+
     saveHistory();
 
     pageList =
@@ -824,6 +870,8 @@ function deleteSelected(){
     lastSelectedIndex = -1;
 
     render();
+
+    generateAllThumbnails();
 
     setStatus(
         `${selected.length}ページ削除`
@@ -839,10 +887,14 @@ function undo(){
 
     }
 
+    bumpRenderVersion();
+
     pageList =
         historyStack.pop();
 
     render();
+
+    generateAllThumbnails();
 
     setStatus('Undo');
 
@@ -975,6 +1027,8 @@ new Sortable(pagesContainer,{
 
     onEnd:(evt)=>{
 
+        bumpRenderVersion();
+
         saveHistory();
 
         const moved =
@@ -990,6 +1044,8 @@ new Sortable(pagesContainer,{
         );
 
         render();
+
+        generateAllThumbnails();
 
         setStatus('並び替え完了');
 
