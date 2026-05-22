@@ -1022,12 +1022,25 @@ function deleteSelected(){
 
 function moveSelectedPages(){
 
-    const inputValue =
+    const input =
         document.getElementById(
             'movePageInput'
-        ).value.trim();
+        );
 
-    if(inputValue === ''){
+    if(!input){
+
+        alert('移動先入力欄が見つかりません');
+
+        return;
+
+    }
+
+    const rawValue = input.value;
+
+    if(
+        rawValue === null ||
+        rawValue === undefined
+    ){
 
         alert('移動先ページ番号を入力してください');
 
@@ -1035,16 +1048,42 @@ function moveSelectedPages(){
 
     }
 
+    const inputValue =
+        rawValue.trim();
+
+    if(inputValue.length === 0){
+
+        alert('移動先ページ番号を入力してください');
+
+        input.focus();
+
+        return;
+
+    }
+
     const target =
-        Number(inputValue) - 1;
+        parseInt(inputValue,10) - 1;
 
     if(
-        isNaN(target) ||
+        Number.isNaN(target)
+    ){
+
+        alert('数値を入力してください');
+
+        input.focus();
+
+        return;
+
+    }
+
+    if(
         target < 0 ||
         target > pageList.length
     ){
 
-        alert('正しい移動先ページ番号を入力してください');
+        alert('正しいページ番号を入力してください');
+
+        input.focus();
 
         return;
 
@@ -1052,10 +1091,10 @@ function moveSelectedPages(){
 
     const selected =
         pageList.filter(
-            p=>p.selected
+            p => p.selected
         );
 
-    if(selected.length===0){
+    if(selected.length === 0){
 
         alert('移動するページを選択してください');
 
@@ -1067,7 +1106,7 @@ function moveSelectedPages(){
 
     pageList =
         pageList.filter(
-            p=>!p.selected
+            p => !p.selected
         );
 
     pageList.splice(
