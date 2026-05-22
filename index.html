@@ -3,20 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PDF Architect Pro Ultimate</title>
+
+<title>PDF Architect Pro Ultimate Stable</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 
 <style>
+
 :root{
+
     --bg:#020617;
     --panel:#0f172a;
     --panel2:#1e293b;
+
     --accent:#2563eb;
     --danger:#dc2626;
+
     --text:#f8fafc;
+    --muted:#94a3b8;
+
 }
 
 *{
@@ -24,152 +31,270 @@
 }
 
 body{
+
     margin:0;
+
     background:var(--bg);
+
     color:var(--text);
-    font-family:sans-serif;
+
+    font-family:
+        Inter,
+        sans-serif;
+
     height:100vh;
+
     overflow:hidden;
+
 }
 
 .app{
+
     display:grid;
-    grid-template-columns:260px 1fr;
+
+    grid-template-columns:
+        270px 1fr;
+
     height:100vh;
+
 }
 
 .sidebar{
+
     background:var(--panel);
+
     padding:18px;
+
     overflow:auto;
-    border-right:1px solid #334155;
+
+    border-right:
+        1px solid #334155;
+
 }
 
 .main{
+
     display:flex;
+
     flex-direction:column;
+
     overflow:hidden;
-}
 
-.toolbar-title{
-    font-size:1.2rem;
-    font-weight:bold;
-    margin-bottom:18px;
-}
-
-.group{
-    margin-bottom:20px;
-    background:rgba(255,255,255,.03);
-    padding:14px;
-    border-radius:16px;
-}
-
-.group-title{
-    color:#94a3b8;
-    font-size:.8rem;
-    margin-bottom:12px;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    margin-bottom:10px;
-    cursor:pointer;
-    background:#334155;
-    color:white;
-    font-weight:bold;
-}
-
-button:hover{
-    filter:brightness(1.1);
-}
-
-.primary{
-    background:var(--accent);
-}
-
-.danger{
-    background:var(--danger);
-}
-
-input{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    background:#020617;
-    color:white;
-    margin-bottom:10px;
 }
 
 .content{
+
     flex:1;
+
     overflow:auto;
+
     padding:20px;
+
+}
+
+.group{
+
+    margin-bottom:18px;
+
+    background:
+        rgba(255,255,255,.03);
+
+    padding:14px;
+
+    border-radius:18px;
+
+}
+
+.group-title{
+
+    color:var(--muted);
+
+    margin-bottom:12px;
+
+    font-size:.8rem;
+
+    font-weight:700;
+
+}
+
+button{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:12px;
+
+    margin-bottom:10px;
+
+    cursor:pointer;
+
+    background:#334155;
+
+    color:white;
+
+    font-weight:700;
+
+    transition:
+        transform .12s,
+        filter .12s;
+
+}
+
+button:hover{
+
+    transform:translateY(-1px);
+
+    filter:brightness(1.08);
+
+}
+
+.primary{
+
+    background:var(--accent);
+
+}
+
+.danger{
+
+    background:var(--danger);
+
+}
+
+input{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#020617;
+
+    color:white;
+
+    margin-bottom:10px;
+
 }
 
 #pages{
+
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:20px;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(210px,1fr));
+
+    gap:18px;
+
 }
 
 .page{
+
     background:var(--panel2);
+
     border-radius:18px;
+
     padding:12px;
+
     border:2px solid transparent;
+
     cursor:pointer;
+
+    transition:
+        transform .12s,
+        border-color .12s;
+
+}
+
+.page:hover{
+
+    transform:translateY(-2px);
+
 }
 
 .page.selected{
+
     border-color:#3b82f6;
+
 }
 
 .preview{
+
     aspect-ratio:0.7;
-    background:#0f172a;
+
+    background:#0b1120;
+
     border-radius:12px;
+
     overflow:hidden;
+
     display:flex;
+
     align-items:center;
+
     justify-content:center;
+
+    position:relative;
+
 }
 
 .preview img{
+
     width:100%;
+
     height:100%;
+
     object-fit:contain;
-}
 
-.meta{
-    margin-top:10px;
-}
-
-.statusbar{
-    height:42px;
-    border-top:1px solid #334155;
-    display:flex;
-    align-items:center;
-    padding:0 16px;
-    background:#0f172a;
-}
-
-.badge{
-    position:absolute;
-    top:10px;
-    right:10px;
-    background:#020617;
-    padding:4px 8px;
-    border-radius:999px;
-    font-size:.7rem;
 }
 
 .loading{
+
     color:#94a3b8;
+
+    font-size:.8rem;
+
 }
+
+.statusbar{
+
+    height:42px;
+
+    border-top:
+        1px solid #334155;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 14px;
+
+    background:#0f172a;
+
+}
+
+.rotate-badge{
+
+    position:absolute;
+
+    top:8px;
+    left:8px;
+
+    background:
+        rgba(0,0,0,.6);
+
+    padding:5px 8px;
+
+    border-radius:999px;
+
+    font-size:.7rem;
+
+}
+
 </style>
 </head>
 <body>
@@ -178,17 +303,25 @@ input{
 
 <div class="sidebar">
 
-<div class="toolbar-title">
-PDF Architect Pro
-</div>
+<h2>PDF Architect</h2>
 
 <div class="group">
 
-<div class="group-title">読み込み</div>
+<div class="group-title">
+読み込み
+</div>
 
-<input type="file" id="fileInput" hidden accept="application/pdf">
+<input
+    type="file"
+    id="fileInput"
+    hidden
+    accept="application/pdf"
+>
 
-<button class="primary" onclick="openFileDialog()">
+<button
+    class="primary"
+    onclick="openFileDialog()"
+>
 新規読み込み
 </button>
 
@@ -196,33 +329,48 @@ PDF Architect Pro
 PDF追加
 </button>
 
-<input id="insertInput" type="number" placeholder="追加位置">
+<input
+    id="insertInput"
+    type="number"
+    min="1"
+    placeholder="追加位置"
+>
 
 </div>
 
 <div class="group">
 
-<div class="group-title">編集</div>
+<div class="group-title">
+編集
+</div>
 
 <button onclick="moveSelectedPages()">
 選択ページ移動
 </button>
 
-<input id="moveInput" type="number" placeholder="移動先">
+<input
+    id="moveInput"
+    type="number"
+    min="1"
+    placeholder="移動先"
+>
 
 <button onclick="rotateSelected(90)">
-↻ 右回転
+右回転
 </button>
 
 <button onclick="rotateSelected(-90)">
-↺ 左回転
+左回転
 </button>
 
 <button onclick="undo()">
 Undo
 </button>
 
-<button class="danger" onclick="deleteSelected()">
+<button
+    class="danger"
+    onclick="deleteSelected()"
+>
 削除
 </button>
 
@@ -234,13 +382,21 @@ Undo
 
 <div class="group">
 
-<div class="group-title">保存</div>
+<div class="group-title">
+保存
+</div>
 
-<button class="primary" onclick="exportSelected()">
+<button
+    class="primary"
+    onclick="exportSelected()"
+>
 抽出保存
 </button>
 
-<button class="primary" onclick="exportPdf()">
+<button
+    class="primary"
+    onclick="exportPdf()"
+>
 全保存
 </button>
 
@@ -251,11 +407,17 @@ Undo
 <div class="main">
 
 <div class="content">
+
 <div id="pages"></div>
+
 </div>
 
 <div class="statusbar">
-<div id="status">Ready</div>
+
+<div id="status">
+Ready
+</div>
+
 </div>
 
 </div>
@@ -271,109 +433,211 @@ const pagesContainer =
     document.getElementById('pages');
 
 let pageList = [];
+
 let historyStack = [];
+
 let lastSelectedIndex = -1;
+
 const thumbCache = new Map();
 
+const pdfRenderCache = new Map();
+
+const renderQueue = [];
+
+let activeRenderers = 0;
+
+const MAX_RENDERERS = 2;
+
+let observer;
+
 function setStatus(text){
-    document.getElementById('status').textContent = text;
+
+    document
+        .getElementById('status')
+        .textContent = text;
+
 }
 
 function openFileDialog(){
-    document.getElementById('fileInput').click();
+
+    document
+        .getElementById('fileInput')
+        .click();
+
 }
 
-document.getElementById('fileInput').onchange = e=>{
-    const file = e.target.files[0];
+document
+.getElementById('fileInput')
+.onchange = e=>{
+
+    const file =
+        e.target.files[0];
+
     if(file){
+
         processFile(file,true);
+
     }
+
 };
+
+function validatePageNumber(value,max){
+
+    if(value.trim()===''){
+
+        return null;
+
+    }
+
+    const num =
+        parseInt(value,10);
+
+    if(Number.isNaN(num)){
+
+        return null;
+
+    }
+
+    if(num <= 0){
+
+        return null;
+
+    }
+
+    if(num > max + 1){
+
+        return max + 1;
+
+    }
+
+    return num;
+
+}
 
 function saveHistory(){
 
     historyStack.push(
+
         pageList.map(p=>({
-            ...p,
-            selected:p.selected,
-            rotation:p.rotation
+
+            ...p
+
         }))
+
     );
 
-    if(historyStack.length > 20){
+    if(historyStack.length > 15){
+
         historyStack.shift();
+
     }
 
 }
 
 async function processFile(file,isReset){
 
-    if(isReset){
-        pageList = [];
-        historyStack = [];
+    try{
+
+        if(isReset){
+
+            pageList = [];
+
+            historyStack = [];
+
+        }
+
+        setStatus('PDF読み込み中...');
+
+        const pdfBytes =
+            await file.arrayBuffer();
+
+        const pdfDoc =
+            await PDFLib.PDFDocument.load(
+                pdfBytes
+            );
+
+        for(
+            let i=0;
+            i<pdfDoc.getPageCount();
+            i++
+        ){
+
+            pageList.push({
+
+                id:crypto.randomUUID(),
+
+                doc:pdfDoc,
+
+                pdfBytes,
+
+                pageIndex:i,
+
+                selected:false,
+
+                rotation:0,
+
+                thumb:null,
+
+                rendering:false,
+
+                fileName:file.name
+
+            });
+
+        }
+
+        render();
+
+        setStatus(
+            `${pdfDoc.getPageCount()}ページ読み込み`
+        );
+
+    }catch(e){
+
+        console.error(e);
+
+        setStatus('エラー');
+
     }
-
-    setStatus('PDF読み込み中...');
-
-    const pdfBytes =
-        await file.arrayBuffer();
-
-    const pdfDoc =
-        await PDFLib.PDFDocument.load(pdfBytes);
-
-    const total =
-        pdfDoc.getPageCount();
-
-    for(let i=0;i<total;i++){
-
-        pageList.push({
-            id:crypto.randomUUID(),
-            doc:pdfDoc,
-            pdfBytes,
-            pageIndex:i,
-            selected:false,
-            rotation:0,
-            thumb:null,
-            fileName:file.name
-        });
-
-    }
-
-    render();
-
-    setStatus(`${total}ページ読み込み`);
 
 }
 
 async function addPdf(){
 
+    const pos =
+        validatePageNumber(
+
+            document
+            .getElementById('insertInput')
+            .value,
+
+            pageList.length
+
+        );
+
+    if(pos === null){
+
+        alert(
+            '1以上の追加位置を入力してください'
+        );
+
+        return;
+
+    }
+
     const input =
         document.createElement('input');
 
     input.type='file';
+
     input.accept='application/pdf';
 
     input.onchange = async e=>{
 
-        const file = e.target.files[0];
+        const file =
+            e.target.files[0];
 
         if(!file) return;
-
-        const insertInput =
-            document.getElementById('insertInput');
-
-        if(insertInput.value.trim()===''){
-            alert('追加位置を入力してください');
-            return;
-        }
-
-        let insertPos =
-            parseInt(insertInput.value,10)-1;
-
-        if(Number.isNaN(insertPos)){
-            alert('数値を入力してください');
-            return;
-        }
 
         saveHistory();
 
@@ -381,26 +645,47 @@ async function addPdf(){
             await file.arrayBuffer();
 
         const pdfDoc =
-            await PDFLib.PDFDocument.load(pdfBytes);
+            await PDFLib.PDFDocument.load(
+                pdfBytes
+            );
 
-        const newPages = [];
+        const insertPages = [];
 
-        for(let i=0;i<pdfDoc.getPageCount();i++){
+        for(
+            let i=0;
+            i<pdfDoc.getPageCount();
+            i++
+        ){
 
-            newPages.push({
+            insertPages.push({
+
                 id:crypto.randomUUID(),
+
                 doc:pdfDoc,
+
                 pdfBytes,
+
                 pageIndex:i,
+
                 selected:false,
+
                 rotation:0,
+
                 thumb:null,
+
+                rendering:false,
+
                 fileName:file.name
+
             });
 
         }
 
-        pageList.splice(insertPos,0,...newPages);
+        pageList.splice(
+            pos - 1,
+            0,
+            ...insertPages
+        );
 
         render();
 
@@ -410,97 +695,89 @@ async function addPdf(){
 
 }
 
-async function generateThumbnail(p){
+function render(){
 
-    const key =
-        `${p.fileName}_${p.pageIndex}`;
+    if(observer){
 
-    if(thumbCache.has(key)){
-        return thumbCache.get(key);
+        observer.disconnect();
+
     }
-
-    const pdf =
-        await pdfjsLib.getDocument({
-            data:p.pdfBytes.slice(0)
-        }).promise;
-
-    const page =
-        await pdf.getPage(
-            p.pageIndex + 1
-        );
-
-    const viewport =
-        page.getViewport({
-            scale:0.20
-        });
-
-    const canvas =
-        document.createElement('canvas');
-
-    const ctx =
-        canvas.getContext('2d');
-
-    canvas.width =
-        viewport.width;
-
-    canvas.height =
-        viewport.height;
-
-    await page.render({
-        canvasContext:ctx,
-        viewport
-    }).promise;
-
-    const thumb =
-        canvas.toDataURL('image/webp',0.7);
-
-    thumbCache.set(key,thumb);
-
-    page.cleanup();
-    pdf.cleanup();
-    pdf.destroy();
-
-    return thumb;
-
-}
-
-async function render(){
 
     pagesContainer.innerHTML='';
 
-    if(pageList.length===0){
+    const fragment =
+        document.createDocumentFragment();
 
-        pagesContainer.innerHTML =
-            '<div style="padding:40px;">PDFを読み込んでください</div>';
-
-        return;
-
-    }
-
-    for(let index=0; index<pageList.length; index++){
-
-        const p = pageList[index];
+    pageList.forEach((p,index)=>{
 
         const div =
             document.createElement('div');
 
         div.className='page';
 
+        div.dataset.index=index;
+
         if(p.selected){
+
             div.classList.add('selected');
+
         }
 
-        div.innerHTML = `
+        div.innerHTML=`
+
             <div class="preview">
-                <div class="loading">Loading...</div>
+
+                ${
+                    p.thumb
+                    ?
+                    `
+                    <img
+                        src="${p.thumb}"
+                        style="
+                            transform:
+                                rotate(${p.rotation}deg);
+                        "
+                    >
+                    `
+                    :
+                    `
+                    <div class="loading">
+                        Loading...
+                    </div>
+                    `
+                }
+
+                ${
+                    p.rotation !== 0
+                    ?
+                    `
+                    <div class="rotate-badge">
+                        ${p.rotation}°
+                    </div>
+                    `
+                    :
+                    ''
+                }
+
             </div>
 
-            <div class="meta">
-                <div><b>Page ${index+1}</b></div>
-                <div style="color:#94a3b8;font-size:.8rem;">
+            <div style="margin-top:10px;">
+
+                <div>
+                    <b>
+                        Page ${index+1}
+                    </b>
+                </div>
+
+                <div style="
+                    color:#94a3b8;
+                    font-size:.8rem;
+                ">
                     元ページ ${p.pageIndex+1}
                 </div>
+
             </div>
+
         `;
 
         div.onclick = e=>{
@@ -511,45 +788,321 @@ async function render(){
             ){
 
                 const start =
-                    Math.min(index,lastSelectedIndex);
+                    Math.min(
+                        index,
+                        lastSelectedIndex
+                    );
 
                 const end =
-                    Math.max(index,lastSelectedIndex);
+                    Math.max(
+                        index,
+                        lastSelectedIndex
+                    );
 
                 for(let i=start;i<=end;i++){
+
                     pageList[i].selected = true;
+
                 }
 
             }else{
 
-                p.selected = !p.selected;
+                p.selected =
+                    !p.selected;
 
             }
 
-            lastSelectedIndex = index;
+            lastSelectedIndex =
+                index;
 
             updateSelectionUI();
 
         };
 
-        pagesContainer.appendChild(div);
+        fragment.appendChild(div);
 
-        const thumb =
-            await generateThumbnail(p);
+    });
 
-        p.thumb = thumb;
+    pagesContainer.appendChild(fragment);
 
-        div.querySelector('.preview').innerHTML = `
-            <img
-                src="${thumb}"
-                style="
-                    transform:
-                        rotate(${p.rotation}deg);
-                "
-            >
-        `;
+    setupObserver();
+
+}
+
+function setupObserver(){
+
+    observer =
+        new IntersectionObserver(
+
+        entries=>{
+
+            entries.forEach(entry=>{
+
+                if(entry.isIntersecting){
+
+                    const index =
+                        Number(
+                            entry.target.dataset.index
+                        );
+
+                    queueRender(index);
+
+                }
+
+            });
+
+        },
+
+        {
+            rootMargin:'600px'
+        }
+
+    );
+
+    Array.from(
+        pagesContainer.children
+    ).forEach(div=>{
+
+        observer.observe(div);
+
+    });
+
+}
+
+function queueRender(index){
+
+    const p =
+        pageList[index];
+
+    if(!p) return;
+
+    if(p.thumb) return;
+
+    if(p.rendering) return;
+
+    if(renderQueue.includes(index)){
+
+        return;
 
     }
+
+    renderQueue.push(index);
+
+    processRenderQueue();
+
+}
+
+async function processRenderQueue(){
+
+    while(
+
+        activeRenderers < MAX_RENDERERS &&
+        renderQueue.length > 0
+
+    ){
+
+        const index =
+            renderQueue.shift();
+
+        activeRenderers++;
+
+        generateThumbnail(index)
+        .finally(()=>{
+
+            activeRenderers--;
+
+            processRenderQueue();
+
+        });
+
+    }
+
+}
+
+async function getPdfRenderer(p){
+
+    const key =
+        p.fileName;
+
+    if(pdfRenderCache.has(key)){
+
+        return pdfRenderCache.get(key);
+
+    }
+
+    const pdf =
+        await pdfjsLib.getDocument({
+
+            data:p.pdfBytes.slice(0)
+
+        }).promise;
+
+    pdfRenderCache.set(key,pdf);
+
+    return pdf;
+
+}
+
+async function generateThumbnail(index){
+
+    const p =
+        pageList[index];
+
+    if(!p) return;
+
+    if(p.thumb) return;
+
+    if(p.rendering) return;
+
+    p.rendering = true;
+
+    const timeout =
+        setTimeout(()=>{
+
+            p.rendering = false;
+
+        },15000);
+
+    try{
+
+        const cacheKey =
+            `${p.fileName}_${p.pageIndex}`;
+
+        if(thumbCache.has(cacheKey)){
+
+            p.thumb =
+                thumbCache.get(cacheKey);
+
+            updateThumbnail(index);
+
+            return;
+
+        }
+
+        const pdf =
+            await getPdfRenderer(p);
+
+        const page =
+            await pdf.getPage(
+                p.pageIndex + 1
+            );
+
+        const viewport =
+            page.getViewport({
+                scale:0.18
+            });
+
+        const canvas =
+            document.createElement('canvas');
+
+        const ctx =
+            canvas.getContext(
+                '2d',
+                {
+                    alpha:false
+                }
+            );
+
+        canvas.width =
+            viewport.width;
+
+        canvas.height =
+            viewport.height;
+
+        await new Promise(resolve=>{
+
+            requestIdleCallback(
+                async()=>{
+
+                    await page.render({
+
+                        canvasContext:ctx,
+
+                        viewport
+
+                    }).promise;
+
+                    resolve();
+
+                },
+
+                {
+                    timeout:3000
+                }
+            );
+
+        });
+
+        p.thumb =
+            canvas.toDataURL(
+                'image/webp',
+                0.68
+            );
+
+        thumbCache.set(
+            cacheKey,
+            p.thumb
+        );
+
+        updateThumbnail(index);
+
+        canvas.width = 1;
+        canvas.height = 1;
+
+        page.cleanup();
+
+    }catch(e){
+
+        console.error(e);
+
+    }finally{
+
+        clearTimeout(timeout);
+
+        p.rendering = false;
+
+    }
+
+}
+
+function updateThumbnail(index){
+
+    const div =
+        pagesContainer.children[index];
+
+    if(!div) return;
+
+    const p =
+        pageList[index];
+
+    if(!p) return;
+
+    const wrap =
+        div.querySelector('.preview');
+
+    wrap.innerHTML=`
+
+        <img
+            src="${p.thumb}"
+            style="
+                transform:
+                    rotate(${p.rotation}deg);
+            "
+        >
+
+        ${
+            p.rotation !== 0
+            ?
+            `
+            <div class="rotate-badge">
+                ${p.rotation}°
+            </div>
+            `
+            :
+            ''
+        }
+
+    `;
 
 }
 
@@ -560,8 +1113,11 @@ function updateSelectionUI(){
     ).forEach((div,index)=>{
 
         div.classList.toggle(
+
             'selected',
+
             pageList[index].selected
+
         );
 
     });
@@ -586,14 +1142,21 @@ function rotateSelected(deg){
         );
 
     if(selected.length===0){
-        alert('回転ページを選択してください');
+
+        alert(
+            '回転ページを選択してください'
+        );
+
         return;
+
     }
 
     saveHistory();
 
     selected.forEach(p=>{
+
         p.rotation += deg;
+
     });
 
     render();
@@ -608,8 +1171,13 @@ function deleteSelected(){
         );
 
     if(selected.length===0){
-        alert('削除ページを選択してください');
+
+        alert(
+            '削除ページを選択してください'
+        );
+
         return;
+
     }
 
     saveHistory();
@@ -621,24 +1189,33 @@ function deleteSelected(){
 
     render();
 
+    setStatus(
+        `${selected.length}ページ削除`
+    );
+
 }
 
 function moveSelectedPages(){
 
-    const input =
-        document.getElementById('moveInput');
+    const target =
+        validatePageNumber(
 
-    if(input.value.trim()===''){
-        alert('移動先ページ番号を入力してください');
+            document
+            .getElementById('moveInput')
+            .value,
+
+            pageList.length
+
+        );
+
+    if(target === null){
+
+        alert(
+            '1以上の移動先ページ番号を入力してください'
+        );
+
         return;
-    }
 
-    let target =
-        parseInt(input.value,10)-1;
-
-    if(Number.isNaN(target)){
-        alert('数値を入力してください');
-        return;
     }
 
     const selected =
@@ -647,8 +1224,13 @@ function moveSelectedPages(){
         );
 
     if(selected.length===0){
-        alert('移動ページを選択してください');
+
+        alert(
+            '移動ページを選択してください'
+        );
+
         return;
+
     }
 
     saveHistory();
@@ -659,7 +1241,7 @@ function moveSelectedPages(){
         );
 
     pageList.splice(
-        target,
+        target - 1,
         0,
         ...selected
     );
@@ -671,7 +1253,9 @@ function moveSelectedPages(){
 function undo(){
 
     if(historyStack.length===0){
+
         return;
+
     }
 
     pageList =
@@ -682,6 +1266,8 @@ function undo(){
 }
 
 async function exportPdf(){
+
+    setStatus('PDF生成中...');
 
     const newPdf =
         await PDFLib.PDFDocument.create();
@@ -697,9 +1283,11 @@ async function exportPdf(){
         if(p.rotation !== 0){
 
             page.setRotation(
+
                 PDFLib.degrees(
                     p.rotation
                 )
+
             );
 
         }
@@ -710,8 +1298,13 @@ async function exportPdf(){
 
     const blob =
         new Blob(
+
             [await newPdf.save()],
-            {type:'application/pdf'}
+
+            {
+                type:'application/pdf'
+            }
+
         );
 
     const a =
@@ -724,6 +1317,8 @@ async function exportPdf(){
 
     a.click();
 
+    setStatus('保存完了');
+
 }
 
 async function exportSelected(){
@@ -734,8 +1329,13 @@ async function exportSelected(){
         );
 
     if(selected.length===0){
-        alert('抽出ページを選択してください');
+
+        alert(
+            '抽出ページを選択してください'
+        );
+
         return;
+
     }
 
     const newPdf =
@@ -752,9 +1352,11 @@ async function exportSelected(){
         if(p.rotation !== 0){
 
             page.setRotation(
+
                 PDFLib.degrees(
                     p.rotation
                 )
+
             );
 
         }
@@ -765,8 +1367,13 @@ async function exportSelected(){
 
     const blob =
         new Blob(
+
             [await newPdf.save()],
-            {type:'application/pdf'}
+
+            {
+                type:'application/pdf'
+            }
+
         );
 
     const a =
@@ -838,11 +1445,15 @@ document.addEventListener(
         }
 
         if(e.key==='Delete'){
+
             deleteSelected();
+
         }
 
         if(e.key==='Escape'){
+
             clearSelection();
+
         }
 
     }
