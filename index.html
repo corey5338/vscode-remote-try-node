@@ -251,6 +251,10 @@ button.danger{
 
     background:#0f172a;
 
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
 }
 
 .preview-wrap img{
@@ -262,7 +266,8 @@ button.danger{
 
     display:block;
 
-    transition:transform .15s;
+    transition:
+        transform .15s;
 
 }
 
@@ -377,6 +382,26 @@ button.danger{
 
 }
 
+.rotate-badge{
+
+    position:absolute;
+    top:10px;
+    left:10px;
+
+    background:rgba(15,23,42,.75);
+
+    padding:6px 10px;
+
+    border-radius:999px;
+
+    font-size:.72rem;
+
+    color:#cbd5e1;
+
+    font-weight:700;
+
+}
+
 </style>
 </head>
 <body>
@@ -417,6 +442,14 @@ button.danger{
         min="1"
         placeholder="移動先"
     >
+
+    <button onclick="rotateSelected(90)">
+        ↻ 右回転
+    </button>
+
+    <button onclick="rotateSelected(-90)">
+        ↺ 左回転
+    </button>
 
     <button onclick="undo()">
         Undo
@@ -482,11 +515,7 @@ let activeRenderers = 0;
 
 let observer;
 
-/* ========= サムネ永続キャッシュ ========= */
-
 const thumbCache = new Map();
-
-/* ====================================== */
 
 function setStatus(text){
 
@@ -530,7 +559,9 @@ function saveHistory(){
 
             doc:p.doc,
 
-            cacheKey:p.cacheKey
+            cacheKey:p.cacheKey,
+
+            rotation:p.rotation
 
         }))
 
@@ -616,7 +647,9 @@ async function processFile(file,isReset){
 
                 rendering:false,
 
-                cacheKey
+                cacheKey,
+
+                rotation:0
 
             });
 
@@ -653,10 +686,6 @@ async function addPdf(){
             e.target.files[0];
 
         if(!file) return;
-
-        bumpRenderVersion();
-
-        renderQueue.length = 0;
 
         saveHistory();
 
@@ -725,7 +754,9 @@ async function addPdf(){
 
                 rendering:false,
 
-                cacheKey
+                cacheKey,
+
+                rotation:0
 
             });
 
@@ -806,11 +837,21 @@ function render(){
                 ${
                     p.thumb
                     ?
-                    `<img src="${p.thumb}">`
+                    `
+                    <img
+                        src="${p.thumb}"
+                        style="
+                            transform:
+                                rotate(${p.rotation}deg);
+                        "
+                    >
+                    `
                     :
-                    `<div class="loading">
+                    `
+                    <div class="loading">
                         Loading...
-                    </div>`
+                    </div>
+                    `
                 }
 
             </div>
@@ -818,6 +859,18 @@ function render(){
             <div class="badge">
                 PDF
             </div>
+
+            ${
+                p.rotation !== 0
+                ?
+                `
+                <div class="rotate-badge">
+                    ${p.rotation}°
+                </div>
+                `
+                :
+                ''
+            }
 
             <div class="page-footer">
 
@@ -1009,14 +1062,6 @@ async function generateThumbnail(index,version){
         const pdf =
             await loadingTask.promise;
 
-        if(version !== renderVersion){
-
-            loadingTask.destroy();
-
-            return;
-
-        }
-
         const page =
             await pdf.getPage(
                 p.pageIndex + 1
@@ -1051,12 +1096,6 @@ async function generateThumbnail(index,version){
             viewport
 
         }).promise;
-
-        if(version !== renderVersion){
-
-            return;
-
-        }
 
         p.thumb =
             canvas.toDataURL(
@@ -1109,11 +1148,15 @@ function updateThumbnail(index){
     const wrap =
         div.querySelector('.preview-wrap');
 
-    if(!wrap) return;
-
     wrap.innerHTML = `
 
-        <img src="${p.thumb}">
+        <img
+            src="${p.thumb}"
+            style="
+                transform:
+                    rotate(${p.rotation}deg);
+            "
+        >
 
     `;
 
@@ -1144,6 +1187,53 @@ function clearSelection(){
 
 }
 
+function rotateSelected(deg){
+
+    const selected =
+        pageList.filter(
+            p=>p.selected
+        );
+
+    if(selected.length===0){
+
+        alert('回転ページを選択してください');
+
+        return;
+
+    }
+
+    saveHistory();
+
+    pageList.forEach(p=>{
+
+        if(p.selected){
+
+            p.rotation += deg;
+
+            if(p.rotation >= 360){
+
+                p.rotation = 0;
+
+            }
+
+            if(p.rotation <= -360){
+
+                p.rotation = 0;
+
+            }
+
+        }
+
+    });
+
+    render();
+
+    setStatus(
+        `${selected.length}ページ回転`
+    );
+
+}
+
 function deleteSelected(){
 
     const selected =
@@ -1160,10 +1250,6 @@ function deleteSelected(){
         return;
 
     }
-
-    bumpRenderVersion();
-
-    renderQueue.length = 0;
 
     saveHistory();
 
@@ -1257,10 +1343,6 @@ function undo(){
 
     }
 
-    bumpRenderVersion();
-
-    renderQueue.length = 0;
-
     pageList =
         historyStack.pop();
 
@@ -1292,6 +1374,16 @@ async function exportPdf(){
                 p.doc,
                 [p.pageIndex]
             );
+
+        if(p.rotation !== 0){
+
+            page.setRotation(
+                PDFLib.degrees(
+                    p.rotation
+                )
+            );
+
+        }
 
         newPdf.addPage(page);
 
@@ -1359,6 +1451,16 @@ async function exportSelected(){
                 p.doc,
                 [p.pageIndex]
             );
+
+        if(p.rotation !== 0){
+
+            page.setRotation(
+                PDFLib.degrees(
+                    p.rotation
+                )
+            );
+
+        }
 
         newPdf.addPage(page);
 
