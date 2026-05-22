@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>PDF Architect Pro Stable+</title>
+<title>PDF Architect Pro Ultimate Stable</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -13,7 +13,6 @@
 <style>
 
 :root{
-
     --bg:#020617;
     --panel:#1e293b;
     --panel2:#334155;
@@ -22,17 +21,13 @@
     --danger:#ef4444;
     --text:#f8fafc;
     --muted:#94a3b8;
-
 }
 
 *{
-
     box-sizing:border-box;
-
 }
 
 body{
-
     margin:0;
     padding:20px;
 
@@ -46,7 +41,6 @@ body{
         "Segoe UI",
         system-ui,
         sans-serif;
-
 }
 
 .toolbar{
@@ -331,6 +325,12 @@ let renderingNow = false;
 
 const renderQueue = [];
 
+const MAX_HISTORY = 15;
+
+const MAX_RENDERERS = 2;
+
+let activeRenderers = 0;
+
 function setStatus(text){
 
     document
@@ -367,6 +367,23 @@ document
 
 };
 
+function cleanupMemory(){
+
+    if(historyStack.length > MAX_HISTORY){
+
+        historyStack.shift();
+
+    }
+
+    if(window.gc){
+
+        try{
+            window.gc();
+        }catch(e){}
+    }
+
+}
+
 function saveHistory(){
 
     const snapshot =
@@ -388,6 +405,8 @@ function saveHistory(){
 
     historyStack.push(snapshot);
 
+    cleanupMemory();
+
 }
 
 async function processFile(file,isReset){
@@ -395,6 +414,8 @@ async function processFile(file,isReset){
     try{
 
         bumpRenderVersion();
+
+        renderQueue.length = 0;
 
         if(isReset){
 
@@ -433,7 +454,9 @@ async function processFile(file,isReset){
 
                 selected:false,
 
-                thumb:null
+                thumb:null,
+
+                rendering:false
 
             });
 
@@ -475,6 +498,8 @@ async function addPdf(){
 
         bumpRenderVersion();
 
+        renderQueue.length = 0;
+
         saveHistory();
 
         setStatus('PDF追加中...');
@@ -511,7 +536,9 @@ async function addPdf(){
 
                 selected:false,
 
-                thumb:null
+                thumb:null,
+
+                rendering:false
 
             });
 
@@ -669,26 +696,26 @@ function updateSelectionUI(){
 
 }
 
-async function generateAllThumbnails(){
+function generateAllThumbnails(){
 
     const currentVersion =
         renderVersion;
 
     for(let i = 0; i < pageList.length; i++){
 
-        if(currentVersion !== renderVersion){
-
-            return;
-
-        }
-
         const p = pageList[i];
 
-        if(!p.thumb){
+        if(
+            !p.thumb &&
+            !p.rendering
+        ){
 
             renderQueue.push({
+
                 index:i,
+
                 version:currentVersion
+
             });
 
         }
@@ -699,33 +726,34 @@ async function generateAllThumbnails(){
 
 }
 
-async function processRenderQueue(){
+function processRenderQueue(){
 
-    if(renderingNow) return;
+    while(
 
-    renderingNow = true;
+        activeRenderers < MAX_RENDERERS &&
+        renderQueue.length > 0
 
-    while(renderQueue.length){
+    ){
 
         const item =
             renderQueue.shift();
 
-        if(!item) continue;
+        if(!item) return;
 
-        if(item.version !== renderVersion){
+        activeRenderers++;
 
-            continue;
-
-        }
-
-        await generateThumbnail(
+        generateThumbnail(
             item.index,
             item.version
-        );
+        ).finally(()=>{
+
+            activeRenderers--;
+
+            processRenderQueue();
+
+        });
 
     }
-
-    renderingNow = false;
 
 }
 
@@ -737,16 +765,29 @@ async function generateThumbnail(index,version){
 
     if(p.thumb) return;
 
+    if(version !== renderVersion){
+
+        return;
+
+    }
+
+    p.rendering = true;
+
     try{
 
-        const pdf =
-            await pdfjsLib.getDocument({
+        const loadingTask =
+            pdfjsLib.getDocument({
 
                 data:p.pdfBytes.slice(0)
 
-            }).promise;
+            });
+
+        const pdf =
+            await loadingTask.promise;
 
         if(version !== renderVersion){
+
+            loadingTask.destroy();
 
             return;
 
@@ -759,14 +800,19 @@ async function generateThumbnail(index,version){
 
         const viewport =
             page.getViewport({
-                scale:0.14
+                scale:0.13
             });
 
         const canvas =
             document.createElement('canvas');
 
         const ctx =
-            canvas.getContext('2d');
+            canvas.getContext(
+                '2d',
+                {
+                    alpha:false
+                }
+            );
 
         canvas.width =
             viewport.width;
@@ -784,6 +830,9 @@ async function generateThumbnail(index,version){
 
         if(version !== renderVersion){
 
+            canvas.width = 1;
+            canvas.height = 1;
+
             return;
 
         }
@@ -791,14 +840,27 @@ async function generateThumbnail(index,version){
         p.thumb =
             canvas.toDataURL(
                 'image/webp',
-                0.7
+                0.6
             );
 
+        canvas.width = 1;
+        canvas.height = 1;
+
         updateThumbnail(index);
+
+        page.cleanup();
+
+        pdf.cleanup();
+
+        pdf.destroy();
 
     }catch(e){
 
         console.error(e);
+
+    }finally{
+
+        p.rendering = false;
 
     }
 
@@ -860,6 +922,8 @@ function deleteSelected(){
 
     bumpRenderVersion();
 
+    renderQueue.length = 0;
+
     saveHistory();
 
     pageList =
@@ -871,11 +935,11 @@ function deleteSelected(){
 
     render();
 
-    generateAllThumbnails();
-
     setStatus(
         `${selected.length}ページ削除`
     );
+
+    cleanupMemory();
 
 }
 
@@ -888,6 +952,8 @@ function undo(){
     }
 
     bumpRenderVersion();
+
+    renderQueue.length = 0;
 
     pageList =
         historyStack.pop();
@@ -1028,6 +1094,8 @@ new Sortable(pagesContainer,{
     onEnd:(evt)=>{
 
         bumpRenderVersion();
+
+        renderQueue.length = 0;
 
         saveHistory();
 
