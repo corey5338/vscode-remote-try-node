@@ -14,391 +14,626 @@
 
 :root{
 
-    --bg:#020617;
-    --bg2:#0f172a;
+```
+--bg:#020617;
+--bg2:#0f172a;
 
-    --panel:rgba(15,23,42,.88);
-    --panel2:#1e293b;
+--panel:rgba(15,23,42,.92);
+--panel2:#1e293b;
 
-    --accent:#3b82f6;
-    --accent2:#60a5fa;
+--accent:#3b82f6;
+--accent2:#60a5fa;
 
-    --danger:#ef4444;
+--danger:#ef4444;
 
-    --text:#f8fafc;
-    --muted:#94a3b8;
+--text:#f8fafc;
+--muted:#94a3b8;
 
-    --shadow:
-        0 12px 40px rgba(0,0,0,.35);
+--border:rgba(255,255,255,.06);
+
+--shadow:
+    0 12px 40px rgba(0,0,0,.35);
+```
 
 }
 
 *{
-    box-sizing:border-box;
+box-sizing:border-box;
 }
 
 body{
 
-    margin:0;
-    padding:20px;
+```
+margin:0;
 
-    min-height:100vh;
+background:
+    radial-gradient(circle at top left,#1e293b 0%,#020617 45%),
+    linear-gradient(to bottom,#020617,#0f172a);
 
-    background:
-        radial-gradient(circle at top left,#1e293b 0%,#020617 45%),
-        linear-gradient(to bottom,#020617,#0f172a);
+color:var(--text);
 
-    color:var(--text);
+font-family:
+    Inter,
+    "Segoe UI",
+    system-ui,
+    sans-serif;
 
-    font-family:
-        Inter,
-        "Segoe UI",
-        system-ui,
-        sans-serif;
+height:100vh;
+
+overflow:hidden;
+```
 
 }
 
-.toolbar{
+.app{
 
-    position:sticky;
-    top:16px;
-    z-index:100;
+```
+display:grid;
 
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    align-items:center;
+grid-template-columns:
+    280px 1fr;
 
-    padding:18px;
+height:100vh;
+```
 
-    border-radius:24px;
+}
 
-    background:rgba(15,23,42,.82);
+.sidebar{
 
-    backdrop-filter:blur(14px);
+```
+background:rgba(15,23,42,.95);
 
-    border:1px solid rgba(255,255,255,.05);
+border-right:1px solid var(--border);
 
-    box-shadow:var(--shadow);
+backdrop-filter:blur(20px);
+
+display:flex;
+flex-direction:column;
+
+padding:20px;
+
+gap:18px;
+
+overflow:auto;
+```
+
+}
+
+.app-title{
+
+```
+display:flex;
+align-items:center;
+gap:14px;
+
+padding-bottom:16px;
+
+border-bottom:1px solid var(--border);
+```
+
+}
+
+.logo{
+
+```
+width:54px;
+height:54px;
+
+border-radius:18px;
+
+background:
+    linear-gradient(
+        135deg,
+        var(--accent),
+        #2563eb
+    );
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:1.6rem;
+
+box-shadow:
+    0 12px 24px rgba(37,99,235,.35);
+```
+
+}
+
+.title-text h1{
+
+```
+margin:0;
+
+font-size:1.1rem;
+```
+
+}
+
+.title-text p{
+
+```
+margin:4px 0 0;
+
+color:var(--muted);
+
+font-size:.8rem;
+```
+
+}
+
+.side-section{
+
+```
+display:flex;
+flex-direction:column;
+
+gap:10px;
+```
+
+}
+
+.side-label{
+
+```
+font-size:.78rem;
+
+color:var(--muted);
+
+text-transform:uppercase;
+
+letter-spacing:.08em;
+
+font-weight:700;
+```
+
+}
+
+.side-card{
+
+```
+background:rgba(30,41,59,.7);
+
+border:1px solid var(--border);
+
+border-radius:18px;
+
+padding:14px;
+
+display:flex;
+flex-direction:column;
+
+gap:10px;
+```
 
 }
 
 button{
 
-    border:none;
+```
+border:none;
 
-    border-radius:14px;
+border-radius:14px;
 
-    padding:11px 18px;
+padding:12px 16px;
 
-    cursor:pointer;
+cursor:pointer;
 
-    color:white;
+color:white;
 
-    background:#334155;
+background:#334155;
 
-    transition:
-        transform .12s,
-        background .12s,
-        box-shadow .12s;
+transition:
+    transform .12s,
+    background .12s;
 
-    font-weight:700;
+font-weight:700;
 
-    box-shadow:
-        0 6px 18px rgba(0,0,0,.2);
+font-size:.92rem;
+```
 
 }
 
 button:hover{
 
-    transform:translateY(-2px);
+```
+transform:translateY(-2px);
 
-    background:#475569;
+background:#475569;
+```
 
 }
 
 button.primary{
 
-    background:linear-gradient(
+```
+background:
+    linear-gradient(
         135deg,
         var(--accent),
         var(--accent2)
     );
-
-}
-
-button.primary:hover{
-
-    filter:brightness(1.06);
+```
 
 }
 
 button.danger{
 
-    background:linear-gradient(
+```
+background:
+    linear-gradient(
         135deg,
         #ef4444,
         #dc2626
     );
+```
 
 }
 
 .number-input{
 
-    width:110px;
+```
+width:100%;
 
-    padding:11px;
+padding:12px;
 
-    border:none;
+border:none;
 
-    border-radius:12px;
+border-radius:14px;
 
-    background:#0f172a;
+background:#0f172a;
 
-    color:white;
+color:white;
 
-    outline:none;
+outline:none;
 
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.06);
+border:1px solid var(--border);
+```
 
 }
 
-#status{
+.main{
 
-    margin-left:auto;
+```
+display:flex;
+flex-direction:column;
 
-    color:var(--muted);
+overflow:hidden;
+```
 
-    font-size:.9rem;
+}
 
-    font-weight:600;
+.titlebar{
+
+```
+height:64px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 22px;
+
+background:rgba(15,23,42,.78);
+
+backdrop-filter:blur(18px);
+
+border-bottom:1px solid var(--border);
+```
+
+}
+
+.window-buttons{
+
+```
+display:flex;
+gap:10px;
+```
+
+}
+
+.window-dot{
+
+```
+width:14px;
+height:14px;
+
+border-radius:999px;
+```
+
+}
+
+.red{
+background:#ef4444;
+}
+
+.yellow{
+background:#f59e0b;
+}
+
+.green{
+background:#22c55e;
+}
+
+.titlebar-right{
+
+```
+display:flex;
+align-items:center;
+gap:16px;
+```
+
+}
+
+.status-pill{
+
+```
+background:rgba(30,41,59,.85);
+
+border:1px solid var(--border);
+
+padding:8px 14px;
+
+border-radius:999px;
+
+color:#cbd5e1;
+
+font-size:.85rem;
+
+font-weight:700;
+```
+
+}
+
+.content{
+
+```
+flex:1;
+
+overflow:auto;
+
+padding:24px;
+```
 
 }
 
 #pages{
 
-    display:grid;
+```
+display:grid;
 
-    grid-template-columns:
-        repeat(auto-fill,minmax(190px,1fr));
+grid-template-columns:
+    repeat(auto-fill,minmax(210px,1fr));
 
-    gap:22px;
-
-    margin-top:24px;
+gap:24px;
+```
 
 }
 
 .page-item{
 
-    position:relative;
+```
+position:relative;
 
-    overflow:hidden;
+overflow:hidden;
 
-    border-radius:22px;
+border-radius:24px;
 
-    background:rgba(30,41,59,.85);
+background:
+    linear-gradient(
+        180deg,
+        rgba(30,41,59,.9),
+        rgba(15,23,42,.92)
+    );
 
-    border:2px solid transparent;
+border:2px solid transparent;
 
-    padding:12px;
+padding:14px;
 
-    cursor:move;
+cursor:move;
 
-    transition:
-        transform .12s,
-        border-color .12s,
-        box-shadow .12s;
-
-    box-shadow:
-        0 10px 26px rgba(0,0,0,.25);
+transition:
+    transform .12s,
+    border-color .12s;
+```
 
 }
 
 .page-item:hover{
 
-    transform:translateY(-4px);
+```
+transform:translateY(-4px);
 
-    border-color:#64748b;
-
-    box-shadow:
-        0 16px 36px rgba(0,0,0,.35);
+border-color:#64748b;
+```
 
 }
 
 .page-item.selected{
 
-    border-color:var(--accent);
+```
+border-color:var(--accent);
 
-    background:
-        linear-gradient(
-            180deg,
-            rgba(37,99,235,.32),
-            rgba(30,41,59,.92)
-        );
+background:
+    linear-gradient(
+        180deg,
+        rgba(37,99,235,.34),
+        rgba(15,23,42,.95)
+    );
+```
 
 }
 
 .preview-wrap{
 
-    position:relative;
+```
+position:relative;
 
-    aspect-ratio:0.7;
+aspect-ratio:0.7;
 
-    overflow:hidden;
+overflow:hidden;
 
-    border-radius:14px;
+border-radius:18px;
 
-    background:#0f172a;
+background:#0f172a;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+display:flex;
+align-items:center;
+justify-content:center;
+```
 
 }
 
 .preview-wrap img{
 
-    width:100%;
-    height:100%;
+```
+width:100%;
+height:100%;
 
-    object-fit:contain;
+object-fit:contain;
 
-    display:block;
-
-    transition:
-        transform .15s;
-
-}
-
-.page-item:hover img{
-
-    transform:scale(1.015);
+display:block;
+```
 
 }
 
 .loading{
 
-    position:absolute;
-    inset:0;
+```
+position:absolute;
+inset:0;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+display:flex;
+align-items:center;
+justify-content:center;
 
-    color:#cbd5e1;
+color:#cbd5e1;
 
-    font-size:.85rem;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(255,255,255,.02),
-            rgba(255,255,255,.06),
-            rgba(255,255,255,.02)
-        );
-
-    background-size:200% 100%;
-
-    animation:loadingAnim 1.2s linear infinite;
-
-}
-
-@keyframes loadingAnim{
-
-    0%{
-        background-position:200% 0;
-    }
-
-    100%{
-        background-position:-200% 0;
-    }
+font-size:.86rem;
+```
 
 }
 
 .page-footer{
 
-    margin-top:12px;
+```
+margin-top:14px;
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
+```
 
 }
 
 .page-num{
 
-    font-size:.9rem;
+```
+font-size:.95rem;
 
-    font-weight:700;
+font-weight:700;
+```
 
 }
 
 .page-meta{
 
-    color:var(--muted);
+```
+color:var(--muted);
 
-    font-size:.75rem;
-
-}
-
-.empty{
-
-    margin-top:50px;
-
-    padding:60px;
-
-    border-radius:28px;
-
-    background:rgba(30,41,59,.5);
-
-    text-align:center;
-
-    color:#94a3b8;
-
-    box-shadow:var(--shadow);
+font-size:.76rem;
+```
 
 }
 
 .badge{
 
-    position:absolute;
-    top:10px;
-    right:10px;
+```
+position:absolute;
+top:12px;
+right:12px;
 
-    background:rgba(15,23,42,.75);
+background:rgba(15,23,42,.82);
 
-    backdrop-filter:blur(10px);
+padding:6px 10px;
 
-    padding:6px 10px;
+border-radius:999px;
 
-    border-radius:999px;
+font-size:.72rem;
 
-    font-size:.72rem;
+font-weight:700;
 
-    color:#cbd5e1;
-
-    font-weight:700;
+color:#cbd5e1;
+```
 
 }
 
 .rotate-badge{
 
-    position:absolute;
-    top:10px;
-    left:10px;
+```
+position:absolute;
+top:12px;
+left:12px;
 
-    background:rgba(15,23,42,.75);
+background:rgba(15,23,42,.82);
 
-    padding:6px 10px;
+padding:6px 10px;
 
-    border-radius:999px;
+border-radius:999px;
 
-    font-size:.72rem;
+font-size:.72rem;
 
-    color:#cbd5e1;
+font-weight:700;
 
-    font-weight:700;
+color:#cbd5e1;
+```
+
+}
+
+.empty{
+
+```
+margin-top:80px;
+
+padding:80px;
+
+border-radius:32px;
+
+background:
+    linear-gradient(
+        180deg,
+        rgba(30,41,59,.6),
+        rgba(15,23,42,.75)
+    );
+
+border:1px solid var(--border);
+
+text-align:center;
+
+color:#94a3b8;
+```
+
+}
+
+.statusbar{
+
+```
+height:42px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 18px;
+
+background:rgba(15,23,42,.88);
+
+border-top:1px solid var(--border);
+
+color:#cbd5e1;
+
+font-size:.82rem;
+```
 
 }
 
@@ -406,1166 +641,193 @@ button.danger{
 </head>
 <body>
 
-<div class="toolbar">
+<div class="app">
 
-    <input
-        type="file"
-        id="fileInput"
-        hidden
-        accept="application/pdf"
-    >
+```
+<aside class="sidebar">
 
-    <button onclick="openFileDialog()">
-        新規読み込み
-    </button>
+    <div class="app-title">
 
-    <button onclick="addPdf()">
-        指定位置へ追加
-    </button>
+        <div class="logo">
+            📄
+        </div>
 
-    <input
-        id="insertPageInput"
-        class="number-input"
-        type="number"
-        min="1"
-        placeholder="追加位置"
-    >
+        <div class="title-text">
 
-    <button onclick="moveSelectedPages()">
-        選択ページ移動
-    </button>
+            <h1>
+                PDF Architect
+            </h1>
 
-    <input
-        id="movePageInput"
-        class="number-input"
-        type="number"
-        min="1"
-        placeholder="移動先"
-    >
+            <p>
+                Ultimate Edition
+            </p>
 
-    <button onclick="rotateSelected(90)">
-        ↻ 右回転
-    </button>
+        </div>
 
-    <button onclick="rotateSelected(-90)">
-        ↺ 左回転
-    </button>
-
-    <button onclick="undo()">
-        Undo
-    </button>
-
-    <button
-        class="danger"
-        onclick="deleteSelected()"
-    >
-        削除
-    </button>
-
-    <button onclick="clearSelection()">
-        選択解除
-    </button>
-
-    <button
-        class="primary"
-        onclick="exportSelected()"
-        style="background:#8b5cf6;"
-    >
-        抽出保存
-    </button>
-
-    <button
-        class="primary"
-        onclick="exportPdf()"
-    >
-        全保存
-    </button>
-
-    <div id="status">
-        Ready
     </div>
+
+    <div class="side-section">
+
+        <div class="side-label">
+            PDF操作
+        </div>
+
+        <div class="side-card">
+
+            <button
+                class="primary"
+                onclick="openFileDialog()"
+            >
+                新規読み込み
+            </button>
+
+            <button onclick="addPdf()">
+                指定位置へ追加
+            </button>
+
+            <input
+                id="insertPageInput"
+                class="number-input"
+                type="number"
+                min="1"
+                placeholder="追加位置"
+            >
+
+        </div>
+
+    </div>
+
+    <div class="side-section">
+
+        <div class="side-label">
+            ページ操作
+        </div>
+
+        <div class="side-card">
+
+            <button onclick="moveSelectedPages()">
+                選択ページ移動
+            </button>
+
+            <input
+                id="movePageInput"
+                class="number-input"
+                type="number"
+                min="1"
+                placeholder="移動先"
+            >
+
+            <button onclick="rotateSelected(90)">
+                ↻ 右回転
+            </button>
+
+            <button onclick="rotateSelected(-90)">
+                ↺ 左回転
+            </button>
+
+            <button
+                class="danger"
+                onclick="deleteSelected()"
+            >
+                削除
+            </button>
+
+            <button onclick="clearSelection()">
+                選択解除
+            </button>
+
+            <button onclick="undo()">
+                Undo
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="side-section">
+
+        <div class="side-label">
+            保存
+        </div>
+
+        <div class="side-card">
+
+            <button
+                class="primary"
+                onclick="exportSelected()"
+                style="background:#8b5cf6;"
+            >
+                抽出保存
+            </button>
+
+            <button
+                class="primary"
+                onclick="exportPdf()"
+            >
+                全保存
+            </button>
+
+        </div>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <div class="titlebar">
+
+        <div class="window-buttons">
+
+            <div class="window-dot red"></div>
+            <div class="window-dot yellow"></div>
+            <div class="window-dot green"></div>
+
+        </div>
+
+        <div class="titlebar-right">
+
+            <div class="status-pill">
+                ローカル動作
+            </div>
+
+            <div class="status-pill">
+                PDFセキュア
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="content">
+
+        <input
+            type="file"
+            id="fileInput"
+            hidden
+            accept="application/pdf"
+        >
+
+        <div id="pages"></div>
+
+    </div>
+
+    <div class="statusbar">
+
+        <div id="status">
+            Ready
+        </div>
+
+        <div>
+            最適化レンダリング有効
+        </div>
+
+    </div>
+
+</main>
+```
 
 </div>
 
-<div id="pages"></div>
-
-<script>
-
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-const pagesContainer =
-    document.getElementById('pages');
-
-let pageList = [];
-
-let historyStack = [];
-
-let lastSelectedIndex = -1;
-
-let renderVersion = 0;
-
-const renderQueue = [];
-
-const MAX_HISTORY = 10;
-
-const MAX_RENDERERS = 1;
-
-let activeRenderers = 0;
-
-let observer;
-
-const thumbCache = new Map();
-
-function setStatus(text){
-
-    document
-        .getElementById('status')
-        .textContent = text;
-
-}
-
-function bumpRenderVersion(){
-
-    renderVersion++;
-
-}
-
-function cleanupMemory(){
-
-    if(historyStack.length > MAX_HISTORY){
-
-        historyStack.shift();
-
-    }
-
-}
-
-function saveHistory(){
-
-    historyStack.push(
-
-        pageList.map(p => ({
-
-            id:p.id,
-
-            pageIndex:p.pageIndex,
-
-            selected:p.selected,
-
-            thumb:p.thumb,
-
-            pdfBytes:p.pdfBytes,
-
-            doc:p.doc,
-
-            cacheKey:p.cacheKey,
-
-            rotation:p.rotation
-
-        }))
-
-    );
-
-    cleanupMemory();
-
-}
-
-function openFileDialog(){
-
-    document
-        .getElementById('fileInput')
-        .click();
-
-}
-
-document
-.getElementById('fileInput')
-.onchange = e => {
-
-    const file = e.target.files[0];
-
-    if(file){
-
-        processFile(file,true);
-
-    }
-
-};
-
-async function processFile(file,isReset){
-
-    try{
-
-        bumpRenderVersion();
-
-        renderQueue.length = 0;
-
-        if(isReset){
-
-            pageList = [];
-
-            historyStack = [];
-
-            pagesContainer.innerHTML='';
-
-        }
-
-        setStatus('PDF読み込み中...');
-
-        const pdfBytes =
-            await file.arrayBuffer();
-
-        const pdfDoc =
-            await PDFLib.PDFDocument.load(
-                pdfBytes
-            );
-
-        const total =
-            pdfDoc.getPageCount();
-
-        for(let i = 0; i < total; i++){
-
-            const cacheKey =
-                `${file.name}_${i}`;
-
-            pageList.push({
-
-                id:crypto.randomUUID(),
-
-                doc:pdfDoc,
-
-                pdfBytes,
-
-                pageIndex:i,
-
-                selected:false,
-
-                thumb:
-                    thumbCache.get(cacheKey)
-                    || null,
-
-                rendering:false,
-
-                cacheKey,
-
-                rotation:0
-
-            });
-
-        }
-
-        render();
-
-        setStatus(
-            `${total}ページ読み込み`
-        );
-
-    }catch(e){
-
-        console.error(e);
-
-        setStatus('エラー');
-
-    }
-
-}
-
-async function addPdf(){
-
-    const input =
-        document.createElement('input');
-
-    input.type='file';
-
-    input.accept='application/pdf';
-
-    input.onchange = async(e)=>{
-
-        const file =
-            e.target.files[0];
-
-        if(!file) return;
-
-        saveHistory();
-
-        setStatus('PDF追加中...');
-
-        const pdfBytes =
-            await file.arrayBuffer();
-
-        const pdfDoc =
-            await PDFLib.PDFDocument.load(
-                pdfBytes
-            );
-
-        const total =
-            pdfDoc.getPageCount();
-
-        let insertPos =
-            Number(
-                document.getElementById(
-                    'insertPageInput'
-                ).value
-            ) - 1;
-
-        if(isNaN(insertPos)){
-
-            alert('追加位置を入力してください');
-
-            return;
-
-        }
-
-        if(insertPos < 0){
-
-            insertPos = 0;
-
-        }
-
-        if(insertPos > pageList.length){
-
-            insertPos = pageList.length;
-
-        }
-
-        const newPages = [];
-
-        for(let i = 0; i < total; i++){
-
-            const cacheKey =
-                `${file.name}_${i}`;
-
-            newPages.push({
-
-                id:crypto.randomUUID(),
-
-                doc:pdfDoc,
-
-                pdfBytes,
-
-                pageIndex:i,
-
-                selected:false,
-
-                thumb:
-                    thumbCache.get(cacheKey)
-                    || null,
-
-                rendering:false,
-
-                cacheKey,
-
-                rotation:0
-
-            });
-
-        }
-
-        pageList.splice(
-            insertPos,
-            0,
-            ...newPages
-        );
-
-        render();
-
-        setStatus(
-            `${total}ページ追加`
-        );
-
-    };
-
-    input.click();
-
-}
-
-function render(){
-
-    if(observer){
-
-        observer.disconnect();
-
-    }
-
-    if(pageList.length===0){
-
-        pagesContainer.innerHTML = `
-
-            <div class="empty">
-
-                <h2>
-                    PDFを読み込んでください
-                </h2>
-
-                <p>
-                    上のボタンからPDFを選択してください
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-    pagesContainer.innerHTML='';
-
-    const fragment =
-        document.createDocumentFragment();
-
-    pageList.forEach((p,index)=>{
-
-        const div =
-            document.createElement('div');
-
-        div.className='page-item';
-
-        div.dataset.index=index;
-
-        if(p.selected){
-
-            div.classList.add('selected');
-
-        }
-
-        div.innerHTML=`
-
-            <div class="preview-wrap">
-
-                ${
-                    p.thumb
-                    ?
-                    `
-                    <img
-                        src="${p.thumb}"
-                        style="
-                            transform:
-                                rotate(${p.rotation}deg);
-                        "
-                    >
-                    `
-                    :
-                    `
-                    <div class="loading">
-                        Loading...
-                    </div>
-                    `
-                }
-
-            </div>
-
-            <div class="badge">
-                PDF
-            </div>
-
-            ${
-                p.rotation !== 0
-                ?
-                `
-                <div class="rotate-badge">
-                    ${p.rotation}°
-                </div>
-                `
-                :
-                ''
-            }
-
-            <div class="page-footer">
-
-                <div>
-
-                    <div class="page-num">
-                        Page ${index + 1}
-                    </div>
-
-                    <div class="page-meta">
-                        元ページ ${p.pageIndex + 1}
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-        div.onclick = e => {
-
-            const idx =
-                Number(div.dataset.index);
-
-            if(
-                e.shiftKey &&
-                lastSelectedIndex !== -1
-            ){
-
-                const start =
-                    Math.min(
-                        idx,
-                        lastSelectedIndex
-                    );
-
-                const end =
-                    Math.max(
-                        idx,
-                        lastSelectedIndex
-                    );
-
-                for(let i=start;i<=end;i++){
-
-                    pageList[i].selected=true;
-
-                }
-
-            }else{
-
-                pageList[idx].selected =
-                    !pageList[idx].selected;
-
-            }
-
-            lastSelectedIndex = idx;
-
-            updateSelectionUI();
-
-        };
-
-        fragment.appendChild(div);
-
-    });
-
-    pagesContainer.appendChild(fragment);
-
-    setupIntersectionObserver();
-
-}
-
-function setupIntersectionObserver(){
-
-    observer =
-        new IntersectionObserver(
-
-        entries => {
-
-            entries.forEach(entry => {
-
-                if(entry.isIntersecting){
-
-                    const index =
-                        Number(
-                            entry.target.dataset.index
-                        );
-
-                    queueThumbnail(index);
-
-                }
-
-            });
-
-        },
-
-        {
-            rootMargin:'500px'
-        }
-
-    );
-
-    Array.from(
-        pagesContainer.children
-    ).forEach(div => {
-
-        observer.observe(div);
-
-    });
-
-}
-
-function queueThumbnail(index){
-
-    const p = pageList[index];
-
-    if(!p) return;
-
-    if(p.thumb) return;
-
-    if(p.rendering) return;
-
-    renderQueue.push({
-
-        index,
-
-        version:renderVersion
-
-    });
-
-    processRenderQueue();
-
-}
-
-function processRenderQueue(){
-
-    while(
-
-        activeRenderers < MAX_RENDERERS &&
-        renderQueue.length > 0
-
-    ){
-
-        const item =
-            renderQueue.shift();
-
-        if(!item) return;
-
-        activeRenderers++;
-
-        generateThumbnail(
-            item.index,
-            item.version
-        ).finally(()=>{
-
-            activeRenderers--;
-
-            processRenderQueue();
-
-        });
-
-    }
-
-}
-
-async function generateThumbnail(index,version){
-
-    const p = pageList[index];
-
-    if(!p) return;
-
-    if(p.thumb) return;
-
-    if(version !== renderVersion){
-
-        return;
-
-    }
-
-    p.rendering = true;
-
-    try{
-
-        const loadingTask =
-            pdfjsLib.getDocument({
-
-                data:p.pdfBytes.slice(0)
-
-            });
-
-        const pdf =
-            await loadingTask.promise;
-
-        const page =
-            await pdf.getPage(
-                p.pageIndex + 1
-            );
-
-        const viewport =
-            page.getViewport({
-                scale:0.16
-            });
-
-        const canvas =
-            document.createElement('canvas');
-
-        const ctx =
-            canvas.getContext(
-                '2d',
-                {
-                    alpha:false
-                }
-            );
-
-        canvas.width =
-            viewport.width;
-
-        canvas.height =
-            viewport.height;
-
-        await page.render({
-
-            canvasContext:ctx,
-
-            viewport
-
-        }).promise;
-
-        p.thumb =
-            canvas.toDataURL(
-                'image/webp',
-                0.60
-            );
-
-        thumbCache.set(
-            p.cacheKey,
-            p.thumb
-        );
-
-        canvas.width = 1;
-        canvas.height = 1;
-
-        page.cleanup();
-
-        pdf.cleanup();
-
-        pdf.destroy();
-
-        updateThumbnail(index);
-
-    }catch(e){
-
-        console.error(e);
-
-    }finally{
-
-        p.rendering = false;
-
-    }
-
-}
-
-function updateThumbnail(index){
-
-    const div =
-        pagesContainer.children[index];
-
-    if(!div) return;
-
-    const p =
-        pageList[index];
-
-    if(!p) return;
-
-    if(!p.thumb) return;
-
-    const wrap =
-        div.querySelector('.preview-wrap');
-
-    wrap.innerHTML = `
-
-        <img
-            src="${p.thumb}"
-            style="
-                transform:
-                    rotate(${p.rotation}deg);
-            "
-        >
-
-    `;
-
-}
-
-function updateSelectionUI(){
-
-    Array.from(
-        pagesContainer.children
-    ).forEach((div,index)=>{
-
-        div.classList.toggle(
-            'selected',
-            pageList[index].selected
-        );
-
-    });
-
-}
-
-function clearSelection(){
-
-    pageList.forEach(
-        p=>p.selected=false
-    );
-
-    updateSelectionUI();
-
-}
-
-function rotateSelected(deg){
-
-    const selected =
-        pageList.filter(
-            p=>p.selected
-        );
-
-    if(selected.length===0){
-
-        alert('回転ページを選択してください');
-
-        return;
-
-    }
-
-    saveHistory();
-
-    pageList.forEach(p=>{
-
-        if(p.selected){
-
-            p.rotation += deg;
-
-            if(p.rotation >= 360){
-
-                p.rotation = 0;
-
-            }
-
-            if(p.rotation <= -360){
-
-                p.rotation = 0;
-
-            }
-
-        }
-
-    });
-
-    render();
-
-    setStatus(
-        `${selected.length}ページ回転`
-    );
-
-}
-
-function deleteSelected(){
-
-    const selected =
-        pageList.filter(
-            p=>p.selected
-        );
-
-    if(selected.length===0){
-
-        alert(
-            '削除ページを選択してください'
-        );
-
-        return;
-
-    }
-
-    saveHistory();
-
-    pageList =
-        pageList.filter(
-            p=>!p.selected
-        );
-
-    render();
-
-    setStatus(
-        `${selected.length}ページ削除`
-    );
-
-}
-
-function moveSelectedPages(){
-
-    const input =
-        document.getElementById(
-            'movePageInput'
-        );
-
-    const inputValue =
-        input.value.trim();
-
-    if(inputValue.length === 0){
-
-        alert(
-            '移動先ページ番号を入力してください'
-        );
-
-        return;
-
-    }
-
-    const target =
-        parseInt(inputValue,10) - 1;
-
-    if(
-        Number.isNaN(target)
-    ){
-
-        alert('数値を入力してください');
-
-        return;
-
-    }
-
-    const selected =
-        pageList.filter(
-            p=>p.selected
-        );
-
-    if(selected.length===0){
-
-        alert(
-            '移動するページを選択してください'
-        );
-
-        return;
-
-    }
-
-    saveHistory();
-
-    pageList =
-        pageList.filter(
-            p=>!p.selected
-        );
-
-    pageList.splice(
-        target,
-        0,
-        ...selected
-    );
-
-    render();
-
-    setStatus(
-        `${selected.length}ページ移動`
-    );
-
-}
-
-function undo(){
-
-    if(historyStack.length===0){
-
-        return;
-
-    }
-
-    pageList =
-        historyStack.pop();
-
-    render();
-
-    setStatus('Undo');
-
-}
-
-async function exportPdf(){
-
-    const name =
-        prompt(
-            'ファイル名',
-            'edited.pdf'
-        );
-
-    if(!name) return;
-
-    setStatus('PDF生成中...');
-
-    const newPdf =
-        await PDFLib.PDFDocument.create();
-
-    for(const p of pageList){
-
-        const [page] =
-            await newPdf.copyPages(
-                p.doc,
-                [p.pageIndex]
-            );
-
-        if(p.rotation !== 0){
-
-            page.setRotation(
-                PDFLib.degrees(
-                    p.rotation
-                )
-            );
-
-        }
-
-        newPdf.addPage(page);
-
-    }
-
-    const blob =
-        new Blob(
-            [await newPdf.save()],
-            {
-                type:'application/pdf'
-            }
-        );
-
-    const a =
-        document.createElement('a');
-
-    a.href =
-        URL.createObjectURL(blob);
-
-    a.download =
-        name.endsWith('.pdf')
-        ? name
-        : name + '.pdf';
-
-    a.click();
-
-    setStatus('保存完了');
-
-}
-
-async function exportSelected(){
-
-    const selected =
-        pageList.filter(
-            p=>p.selected
-        );
-
-    if(selected.length===0){
-
-        alert(
-            '抽出ページを選択してください'
-        );
-
-        return;
-
-    }
-
-    const name =
-        prompt(
-            'ファイル名',
-            'selected.pdf'
-        );
-
-    if(!name) return;
-
-    setStatus('抽出中...');
-
-    const newPdf =
-        await PDFLib.PDFDocument.create();
-
-    for(const p of selected){
-
-        const [page] =
-            await newPdf.copyPages(
-                p.doc,
-                [p.pageIndex]
-            );
-
-        if(p.rotation !== 0){
-
-            page.setRotation(
-                PDFLib.degrees(
-                    p.rotation
-                )
-            );
-
-        }
-
-        newPdf.addPage(page);
-
-    }
-
-    const blob =
-        new Blob(
-            [await newPdf.save()],
-            {
-                type:'application/pdf'
-            }
-        );
-
-    const a =
-        document.createElement('a');
-
-    a.href =
-        URL.createObjectURL(blob);
-
-    a.download =
-        name.endsWith('.pdf')
-        ? name
-        : name + '.pdf';
-
-    a.click();
-
-    setStatus('抽出完了');
-
-}
-
-new Sortable(pagesContainer,{
-
-    animation:180,
-
-    ghostClass:'selected',
-
-    onEnd:(evt)=>{
-
-        saveHistory();
-
-        const moved =
-            pageList.splice(
-                evt.oldIndex,
-                1
-            )[0];
-
-        pageList.splice(
-            evt.newIndex,
-            0,
-            moved
-        );
-
-        render();
-
-        setStatus('並び替え完了');
-
-    }
-
-});
-
-document.addEventListener(
-    'keydown',
-    e=>{
-
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase()==='a'
-        ){
-
-            e.preventDefault();
-
-            pageList.forEach(
-                p=>p.selected=true
-            );
-
-            updateSelectionUI();
-
-        }
-
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase()==='z'
-        ){
-
-            e.preventDefault();
-
-            undo();
-
-        }
-
-        if(e.key==='Delete'){
-
-            deleteSelected();
-
-        }
-
-        if(e.key==='Escape'){
-
-            clearSelection();
-
-        }
-
-    }
-);
-
-</script>
 </body>
 </html>
