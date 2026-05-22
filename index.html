@@ -688,13 +688,21 @@ function createPageElement(p,index){
 
     visibleObserver.observe(div);
 
-    if(p.thumb){
+if(p.thumb){
+
+    requestAnimationFrame(()=>{
 
         drawThumb(index);
 
-    }
+    });
 
-    return div;
+}else{
+
+    queueRender(index);
+
+}
+
+return div;
 
 }
 
