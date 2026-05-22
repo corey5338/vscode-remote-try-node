@@ -361,7 +361,7 @@ const renderQueue = [];
 
 const MAX_HISTORY = 10;
 
-const MAX_RENDERERS = 2;
+const MAX_RENDERERS = 1;
 
 let activeRenderers = 0;
 
@@ -869,7 +869,7 @@ async function generateThumbnail(index,version){
 
         const viewport =
             page.getViewport({
-                scale:0.12
+                scale:0.16
             });
 
         const canvas =
