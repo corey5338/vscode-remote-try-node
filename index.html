@@ -1022,16 +1022,29 @@ function deleteSelected(){
 
 function moveSelectedPages(){
 
+    const inputValue =
+        document.getElementById(
+            'movePageInput'
+        ).value.trim();
+
+    if(inputValue === ''){
+
+        alert('移動先ページ番号を入力してください');
+
+        return;
+
+    }
+
     const target =
-        Number(
-            document.getElementById(
-                'movePageInput'
-            ).value
-        ) - 1;
+        Number(inputValue) - 1;
 
-    if(isNaN(target)){
+    if(
+        isNaN(target) ||
+        target < 0 ||
+        target > pageList.length
+    ){
 
-        alert('移動先を入力してください');
+        alert('正しい移動先ページ番号を入力してください');
 
         return;
 
@@ -1044,7 +1057,7 @@ function moveSelectedPages(){
 
     if(selected.length===0){
 
-        alert('移動ページを選択してください');
+        alert('移動するページを選択してください');
 
         return;
 
