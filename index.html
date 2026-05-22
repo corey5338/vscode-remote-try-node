@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>PDF Architect Pro Phase6</title>
+<title>PDF Architect Pro Ultimate</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -13,14 +13,24 @@
 <style>
 
 :root{
+
     --bg:#020617;
-    --panel:#1e293b;
-    --panel2:#334155;
+    --bg2:#0f172a;
+
+    --panel:rgba(15,23,42,.88);
+    --panel2:#1e293b;
+
     --accent:#3b82f6;
     --accent2:#60a5fa;
+
     --danger:#ef4444;
+
     --text:#f8fafc;
     --muted:#94a3b8;
+
+    --shadow:
+        0 12px 40px rgba(0,0,0,.35);
+
 }
 
 *{
@@ -28,19 +38,24 @@
 }
 
 body{
+
     margin:0;
     padding:20px;
 
+    min-height:100vh;
+
     background:
         radial-gradient(circle at top left,#1e293b 0%,#020617 45%),
-        #020617;
+        linear-gradient(to bottom,#020617,#0f172a);
 
     color:var(--text);
 
     font-family:
+        Inter,
         "Segoe UI",
         system-ui,
         sans-serif;
+
 }
 
 .toolbar{
@@ -54,16 +69,17 @@ body{
     gap:10px;
     align-items:center;
 
-    padding:16px 20px;
+    padding:18px;
 
-    border-radius:18px;
+    border-radius:24px;
 
-    background:rgba(15,23,42,.92);
+    background:rgba(15,23,42,.82);
 
-    backdrop-filter:blur(12px);
+    backdrop-filter:blur(14px);
 
-    box-shadow:
-        0 10px 40px rgba(0,0,0,.35);
+    border:1px solid rgba(255,255,255,.05);
+
+    box-shadow:var(--shadow);
 
 }
 
@@ -71,25 +87,31 @@ button{
 
     border:none;
 
-    color:white;
+    border-radius:14px;
 
-    background:var(--panel2);
-
-    padding:10px 16px;
-
-    border-radius:10px;
+    padding:11px 18px;
 
     cursor:pointer;
 
-    transition:.15s;
+    color:white;
 
-    font-weight:600;
+    background:#334155;
+
+    transition:
+        transform .12s,
+        background .12s,
+        box-shadow .12s;
+
+    font-weight:700;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.2);
 
 }
 
 button:hover{
 
-    transform:translateY(-1px);
+    transform:translateY(-2px);
 
     background:#475569;
 
@@ -97,35 +119,48 @@ button:hover{
 
 button.primary{
 
-    background:var(--accent);
+    background:linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent2)
+    );
 
 }
 
 button.primary:hover{
 
-    background:var(--accent2);
+    filter:brightness(1.06);
 
 }
 
 button.danger{
 
-    background:var(--danger);
+    background:linear-gradient(
+        135deg,
+        #ef4444,
+        #dc2626
+    );
 
 }
 
-input.number-input{
+.number-input{
 
-    width:90px;
+    width:110px;
 
-    padding:10px;
+    padding:11px;
 
     border:none;
 
-    border-radius:10px;
+    border-radius:12px;
 
     background:#0f172a;
 
     color:white;
+
+    outline:none;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.06);
 
 }
 
@@ -137,6 +172,8 @@ input.number-input{
 
     font-size:.9rem;
 
+    font-weight:600;
+
 }
 
 #pages{
@@ -144,11 +181,11 @@ input.number-input{
     display:grid;
 
     grid-template-columns:
-        repeat(auto-fill,minmax(180px,1fr));
+        repeat(auto-fill,minmax(190px,1fr));
 
-    gap:18px;
+    gap:22px;
 
-    margin-top:22px;
+    margin-top:24px;
 
 }
 
@@ -156,30 +193,36 @@ input.number-input{
 
     position:relative;
 
-    background:rgba(30,41,59,.92);
+    overflow:hidden;
+
+    border-radius:22px;
+
+    background:rgba(30,41,59,.85);
 
     border:2px solid transparent;
 
-    border-radius:16px;
-
     padding:12px;
-
-    overflow:hidden;
 
     cursor:move;
 
-    transition:.12s;
+    transition:
+        transform .12s,
+        border-color .12s,
+        box-shadow .12s;
 
     box-shadow:
-        0 8px 24px rgba(0,0,0,.25);
+        0 10px 26px rgba(0,0,0,.25);
 
 }
 
 .page-item:hover{
 
-    transform:translateY(-3px);
+    transform:translateY(-4px);
 
     border-color:#64748b;
+
+    box-shadow:
+        0 16px 36px rgba(0,0,0,.35);
 
 }
 
@@ -187,7 +230,12 @@ input.number-input{
 
     border-color:var(--accent);
 
-    background:#1e3a8a;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(37,99,235,.32),
+            rgba(30,41,59,.92)
+        );
 
 }
 
@@ -197,9 +245,9 @@ input.number-input{
 
     aspect-ratio:0.7;
 
-    border-radius:10px;
-
     overflow:hidden;
+
+    border-radius:14px;
 
     background:#0f172a;
 
@@ -214,6 +262,14 @@ input.number-input{
 
     display:block;
 
+    transition:transform .15s;
+
+}
+
+.page-item:hover img{
+
+    transform:scale(1.015);
+
 }
 
 .loading{
@@ -222,43 +278,102 @@ input.number-input{
     inset:0;
 
     display:flex;
-
     align-items:center;
     justify-content:center;
-
-    background:rgba(15,23,42,.5);
 
     color:#cbd5e1;
 
     font-size:.85rem;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.02),
+            rgba(255,255,255,.06),
+            rgba(255,255,255,.02)
+        );
+
+    background-size:200% 100%;
+
+    animation:loadingAnim 1.2s linear infinite;
+
+}
+
+@keyframes loadingAnim{
+
+    0%{
+        background-position:200% 0;
+    }
+
+    100%{
+        background-position:-200% 0;
+    }
+
+}
+
+.page-footer{
+
+    margin-top:12px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 
 }
 
 .page-num{
 
-    margin-top:10px;
+    font-size:.9rem;
 
-    text-align:center;
+    font-weight:700;
 
-    color:#cbd5e1;
+}
 
-    font-size:.85rem;
+.page-meta{
+
+    color:var(--muted);
+
+    font-size:.75rem;
 
 }
 
 .empty{
 
-    margin-top:40px;
+    margin-top:50px;
 
-    padding:50px;
+    padding:60px;
 
-    border-radius:20px;
+    border-radius:28px;
 
-    background:rgba(30,41,59,.45);
+    background:rgba(30,41,59,.5);
 
     text-align:center;
 
     color:#94a3b8;
+
+    box-shadow:var(--shadow);
+
+}
+
+.badge{
+
+    position:absolute;
+    top:10px;
+    right:10px;
+
+    background:rgba(15,23,42,.75);
+
+    backdrop-filter:blur(10px);
+
+    padding:6px 10px;
+
+    border-radius:999px;
+
+    font-size:.72rem;
+
+    color:#cbd5e1;
+
+    font-weight:700;
 
 }
 
@@ -367,6 +482,12 @@ let activeRenderers = 0;
 
 let observer;
 
+/* ========= サムネ永続キャッシュ ========= */
+
+const thumbCache = new Map();
+
+/* ====================================== */
+
 function setStatus(text){
 
     document
@@ -407,7 +528,9 @@ function saveHistory(){
 
             pdfBytes:p.pdfBytes,
 
-            doc:p.doc
+            doc:p.doc,
+
+            cacheKey:p.cacheKey
 
         }))
 
@@ -472,6 +595,9 @@ async function processFile(file,isReset){
 
         for(let i = 0; i < total; i++){
 
+            const cacheKey =
+                `${file.name}_${i}`;
+
             pageList.push({
 
                 id:crypto.randomUUID(),
@@ -484,9 +610,13 @@ async function processFile(file,isReset){
 
                 selected:false,
 
-                thumb:null,
+                thumb:
+                    thumbCache.get(cacheKey)
+                    || null,
 
-                rendering:false
+                rendering:false,
+
+                cacheKey
 
             });
 
@@ -550,19 +680,21 @@ async function addPdf(){
                 ).value
             ) - 1;
 
-        if(
-            isNaN(insertPos) ||
-            insertPos < 0
-        ){
+        if(isNaN(insertPos)){
 
-            insertPos =
-                pageList.findLastIndex(
-                    p=>p.selected
-                ) + 1;
+            alert('追加位置を入力してください');
+
+            return;
 
         }
 
         if(insertPos < 0){
+
+            insertPos = 0;
+
+        }
+
+        if(insertPos > pageList.length){
 
             insertPos = pageList.length;
 
@@ -571,6 +703,9 @@ async function addPdf(){
         const newPages = [];
 
         for(let i = 0; i < total; i++){
+
+            const cacheKey =
+                `${file.name}_${i}`;
 
             newPages.push({
 
@@ -584,9 +719,13 @@ async function addPdf(){
 
                 selected:false,
 
-                thumb:null,
+                thumb:
+                    thumbCache.get(cacheKey)
+                    || null,
 
-                rendering:false
+                rendering:false,
+
+                cacheKey
 
             });
 
@@ -676,8 +815,24 @@ function render(){
 
             </div>
 
-            <div class="page-num">
-                Page ${index + 1}
+            <div class="badge">
+                PDF
+            </div>
+
+            <div class="page-footer">
+
+                <div>
+
+                    <div class="page-num">
+                        Page ${index + 1}
+                    </div>
+
+                    <div class="page-meta">
+                        元ページ ${p.pageIndex + 1}
+                    </div>
+
+                </div>
+
             </div>
 
         `;
@@ -758,7 +913,7 @@ function setupIntersectionObserver(){
         },
 
         {
-            rootMargin:'400px'
+            rootMargin:'500px'
         }
 
     );
@@ -906,8 +1061,13 @@ async function generateThumbnail(index,version){
         p.thumb =
             canvas.toDataURL(
                 'image/webp',
-                0.55
+                0.60
             );
+
+        thumbCache.set(
+            p.cacheKey,
+            p.thumb
+        );
 
         canvas.width = 1;
         canvas.height = 1;
@@ -1027,35 +1187,14 @@ function moveSelectedPages(){
             'movePageInput'
         );
 
-    if(!input){
-
-        alert('移動先入力欄が見つかりません');
-
-        return;
-
-    }
-
-    const rawValue = input.value;
-
-    if(
-        rawValue === null ||
-        rawValue === undefined
-    ){
-
-        alert('移動先ページ番号を入力してください');
-
-        return;
-
-    }
-
     const inputValue =
-        rawValue.trim();
+        input.value.trim();
 
     if(inputValue.length === 0){
 
-        alert('移動先ページ番号を入力してください');
-
-        input.focus();
+        alert(
+            '移動先ページ番号を入力してください'
+        );
 
         return;
 
@@ -1070,33 +1209,20 @@ function moveSelectedPages(){
 
         alert('数値を入力してください');
 
-        input.focus();
-
-        return;
-
-    }
-
-    if(
-        target < 0 ||
-        target > pageList.length
-    ){
-
-        alert('正しいページ番号を入力してください');
-
-        input.focus();
-
         return;
 
     }
 
     const selected =
         pageList.filter(
-            p => p.selected
+            p=>p.selected
         );
 
-    if(selected.length === 0){
+    if(selected.length===0){
 
-        alert('移動するページを選択してください');
+        alert(
+            '移動するページを選択してください'
+        );
 
         return;
 
@@ -1106,7 +1232,7 @@ function moveSelectedPages(){
 
     pageList =
         pageList.filter(
-            p => !p.selected
+            p=>!p.selected
         );
 
     pageList.splice(
