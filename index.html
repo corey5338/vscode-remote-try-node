@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>PDF Architect Pro - Phase5</title>
+<title>PDF Architect Pro - Phase5 Stable</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -688,21 +688,21 @@ function createPageElement(p,index){
 
     visibleObserver.observe(div);
 
-if(p.thumb){
+    if(p.thumb){
 
-    requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{
 
-        drawThumb(index);
+            drawThumb(index);
 
-    });
+        });
 
-}else{
+    }else{
 
-    queueRender(index);
+        queueRender(index);
 
-}
+    }
 
-return div;
+    return div;
 
 }
 
@@ -868,10 +868,14 @@ function drawThumb(index){
 
     const p = pageList[index];
 
+    if(!p) return;
+
     if(!p.thumb) return;
 
     const canvas =
         div.querySelector('canvas');
+
+    if(!canvas) return;
 
     const loading =
         div.querySelector('.loading');
@@ -898,6 +902,8 @@ function drawThumb(index){
             loading.remove();
 
         }
+
+        p.rendering = false;
 
     };
 
@@ -971,6 +977,8 @@ function setZoom(size){
     pageList.forEach(p=>{
 
         p.thumb=null;
+
+        p.rendering=false;
 
     });
 
