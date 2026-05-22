@@ -1,9 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>PDF Architect Pro Ultimate</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -14,626 +14,545 @@
 
 :root{
 
-```
---bg:#020617;
---bg2:#0f172a;
+    --bg:#020617;
+    --bg2:#0f172a;
 
---panel:rgba(15,23,42,.92);
---panel2:#1e293b;
+    --panel:rgba(15,23,42,.92);
 
---accent:#3b82f6;
---accent2:#60a5fa;
+    --accent:#3b82f6;
+    --accent2:#60a5fa;
 
---danger:#ef4444;
+    --danger:#ef4444;
 
---text:#f8fafc;
---muted:#94a3b8;
+    --text:#f8fafc;
+    --muted:#94a3b8;
 
---border:rgba(255,255,255,.06);
-
---shadow:
-    0 12px 40px rgba(0,0,0,.35);
-```
+    --border:rgba(255,255,255,.06);
 
 }
 
 *{
-box-sizing:border-box;
+    box-sizing:border-box;
 }
 
 body{
 
-```
-margin:0;
+    margin:0;
 
-background:
-    radial-gradient(circle at top left,#1e293b 0%,#020617 45%),
-    linear-gradient(to bottom,#020617,#0f172a);
+    background:
+        radial-gradient(circle at top left,#1e293b 0%,#020617 45%),
+        linear-gradient(to bottom,#020617,#0f172a);
 
-color:var(--text);
+    color:var(--text);
 
-font-family:
-    Inter,
-    "Segoe UI",
-    system-ui,
-    sans-serif;
+    font-family:
+        Inter,
+        "Segoe UI",
+        system-ui,
+        sans-serif;
 
-height:100vh;
+    height:100vh;
 
-overflow:hidden;
-```
+    overflow:hidden;
 
 }
 
 .app{
 
-```
-display:grid;
+    display:grid;
 
-grid-template-columns:
-    280px 1fr;
+    grid-template-columns:
+        280px 1fr;
 
-height:100vh;
-```
+    height:100vh;
 
 }
 
 .sidebar{
 
-```
-background:rgba(15,23,42,.95);
+    background:rgba(15,23,42,.95);
 
-border-right:1px solid var(--border);
+    border-right:1px solid var(--border);
 
-backdrop-filter:blur(20px);
+    backdrop-filter:blur(20px);
 
-display:flex;
-flex-direction:column;
+    display:flex;
+    flex-direction:column;
 
-padding:20px;
+    padding:20px;
 
-gap:18px;
+    gap:18px;
 
-overflow:auto;
-```
+    overflow:auto;
 
 }
 
 .app-title{
 
-```
-display:flex;
-align-items:center;
-gap:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
 
-padding-bottom:16px;
+    padding-bottom:16px;
 
-border-bottom:1px solid var(--border);
-```
+    border-bottom:1px solid var(--border);
 
 }
 
 .logo{
 
-```
-width:54px;
-height:54px;
+    width:54px;
+    height:54px;
 
-border-radius:18px;
+    border-radius:18px;
 
-background:
-    linear-gradient(
-        135deg,
-        var(--accent),
-        #2563eb
-    );
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            #2563eb
+        );
 
-display:flex;
-align-items:center;
-justify-content:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-font-size:1.6rem;
-
-box-shadow:
-    0 12px 24px rgba(37,99,235,.35);
-```
+    font-size:1.6rem;
 
 }
 
 .title-text h1{
 
-```
-margin:0;
+    margin:0;
 
-font-size:1.1rem;
-```
+    font-size:1.1rem;
 
 }
 
 .title-text p{
 
-```
-margin:4px 0 0;
+    margin:4px 0 0;
 
-color:var(--muted);
+    color:var(--muted);
 
-font-size:.8rem;
-```
+    font-size:.8rem;
 
 }
 
 .side-section{
 
-```
-display:flex;
-flex-direction:column;
+    display:flex;
+    flex-direction:column;
 
-gap:10px;
-```
+    gap:10px;
 
 }
 
 .side-label{
 
-```
-font-size:.78rem;
+    font-size:.78rem;
 
-color:var(--muted);
+    color:var(--muted);
 
-text-transform:uppercase;
+    text-transform:uppercase;
 
-letter-spacing:.08em;
+    letter-spacing:.08em;
 
-font-weight:700;
-```
+    font-weight:700;
 
 }
 
 .side-card{
 
-```
-background:rgba(30,41,59,.7);
+    background:rgba(30,41,59,.7);
 
-border:1px solid var(--border);
+    border:1px solid var(--border);
 
-border-radius:18px;
+    border-radius:18px;
 
-padding:14px;
+    padding:14px;
 
-display:flex;
-flex-direction:column;
+    display:flex;
+    flex-direction:column;
 
-gap:10px;
-```
+    gap:10px;
 
 }
 
 button{
 
-```
-border:none;
+    border:none;
 
-border-radius:14px;
+    border-radius:14px;
 
-padding:12px 16px;
+    padding:12px 16px;
 
-cursor:pointer;
+    cursor:pointer;
 
-color:white;
+    color:white;
 
-background:#334155;
+    background:#334155;
 
-transition:
-    transform .12s,
-    background .12s;
+    transition:
+        transform .12s,
+        background .12s;
 
-font-weight:700;
+    font-weight:700;
 
-font-size:.92rem;
-```
+    font-size:.92rem;
 
 }
 
 button:hover{
 
-```
-transform:translateY(-2px);
+    transform:translateY(-2px);
 
-background:#475569;
-```
+    background:#475569;
 
 }
 
 button.primary{
 
-```
-background:
-    linear-gradient(
-        135deg,
-        var(--accent),
-        var(--accent2)
-    );
-```
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
 
 }
 
 button.danger{
 
-```
-background:
-    linear-gradient(
-        135deg,
-        #ef4444,
-        #dc2626
-    );
-```
+    background:
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #dc2626
+        );
 
 }
 
 .number-input{
 
-```
-width:100%;
+    width:100%;
 
-padding:12px;
+    padding:12px;
 
-border:none;
+    border:none;
 
-border-radius:14px;
+    border-radius:14px;
 
-background:#0f172a;
+    background:#0f172a;
 
-color:white;
+    color:white;
 
-outline:none;
+    outline:none;
 
-border:1px solid var(--border);
-```
+    border:1px solid var(--border);
 
 }
 
 .main{
 
-```
-display:flex;
-flex-direction:column;
+    display:flex;
+    flex-direction:column;
 
-overflow:hidden;
-```
+    overflow:hidden;
 
 }
 
 .titlebar{
 
-```
-height:64px;
+    height:64px;
 
-display:flex;
-align-items:center;
-justify-content:space-between;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
-padding:0 22px;
+    padding:0 22px;
 
-background:rgba(15,23,42,.78);
+    background:rgba(15,23,42,.78);
 
-backdrop-filter:blur(18px);
+    backdrop-filter:blur(18px);
 
-border-bottom:1px solid var(--border);
-```
+    border-bottom:1px solid var(--border);
 
 }
 
 .window-buttons{
 
-```
-display:flex;
-gap:10px;
-```
+    display:flex;
+    gap:10px;
 
 }
 
 .window-dot{
 
-```
-width:14px;
-height:14px;
+    width:14px;
+    height:14px;
 
-border-radius:999px;
-```
+    border-radius:999px;
 
 }
 
 .red{
-background:#ef4444;
+    background:#ef4444;
 }
 
 .yellow{
-background:#f59e0b;
+    background:#f59e0b;
 }
 
 .green{
-background:#22c55e;
+    background:#22c55e;
 }
 
 .titlebar-right{
 
-```
-display:flex;
-align-items:center;
-gap:16px;
-```
+    display:flex;
+    align-items:center;
+    gap:16px;
 
 }
 
 .status-pill{
 
-```
-background:rgba(30,41,59,.85);
+    background:rgba(30,41,59,.85);
 
-border:1px solid var(--border);
+    border:1px solid var(--border);
 
-padding:8px 14px;
+    padding:8px 14px;
 
-border-radius:999px;
+    border-radius:999px;
 
-color:#cbd5e1;
+    color:#cbd5e1;
 
-font-size:.85rem;
+    font-size:.85rem;
 
-font-weight:700;
-```
+    font-weight:700;
 
 }
 
 .content{
 
-```
-flex:1;
+    flex:1;
 
-overflow:auto;
+    overflow:auto;
 
-padding:24px;
-```
+    padding:24px;
 
 }
 
 #pages{
 
-```
-display:grid;
+    display:grid;
 
-grid-template-columns:
-    repeat(auto-fill,minmax(210px,1fr));
+    grid-template-columns:
+        repeat(auto-fill,minmax(210px,1fr));
 
-gap:24px;
-```
+    gap:24px;
 
 }
 
 .page-item{
 
-```
-position:relative;
+    position:relative;
 
-overflow:hidden;
+    overflow:hidden;
 
-border-radius:24px;
+    border-radius:24px;
 
-background:
-    linear-gradient(
-        180deg,
-        rgba(30,41,59,.9),
-        rgba(15,23,42,.92)
-    );
+    background:
+        linear-gradient(
+            180deg,
+            rgba(30,41,59,.9),
+            rgba(15,23,42,.92)
+        );
 
-border:2px solid transparent;
+    border:2px solid transparent;
 
-padding:14px;
+    padding:14px;
 
-cursor:move;
+    cursor:move;
 
-transition:
-    transform .12s,
-    border-color .12s;
-```
+    transition:
+        transform .12s,
+        border-color .12s;
 
 }
 
 .page-item:hover{
 
-```
-transform:translateY(-4px);
+    transform:translateY(-4px);
 
-border-color:#64748b;
-```
+    border-color:#64748b;
 
 }
 
 .page-item.selected{
 
-```
-border-color:var(--accent);
+    border-color:var(--accent);
 
-background:
-    linear-gradient(
-        180deg,
-        rgba(37,99,235,.34),
-        rgba(15,23,42,.95)
-    );
-```
+    background:
+        linear-gradient(
+            180deg,
+            rgba(37,99,235,.34),
+            rgba(15,23,42,.95)
+        );
 
 }
 
 .preview-wrap{
 
-```
-position:relative;
+    position:relative;
 
-aspect-ratio:0.7;
+    aspect-ratio:0.7;
 
-overflow:hidden;
+    overflow:hidden;
 
-border-radius:18px;
+    border-radius:18px;
 
-background:#0f172a;
+    background:#0f172a;
 
-display:flex;
-align-items:center;
-justify-content:center;
-```
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
 }
 
 .preview-wrap img{
 
-```
-width:100%;
-height:100%;
+    width:100%;
+    height:100%;
 
-object-fit:contain;
+    object-fit:contain;
 
-display:block;
-```
+    display:block;
 
 }
 
 .loading{
 
-```
-position:absolute;
-inset:0;
+    position:absolute;
+    inset:0;
 
-display:flex;
-align-items:center;
-justify-content:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-color:#cbd5e1;
+    color:#cbd5e1;
 
-font-size:.86rem;
-```
+    font-size:.86rem;
 
 }
 
 .page-footer{
 
-```
-margin-top:14px;
+    margin-top:14px;
 
-display:flex;
-justify-content:space-between;
-align-items:center;
-```
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 
 }
 
 .page-num{
 
-```
-font-size:.95rem;
+    font-size:.95rem;
 
-font-weight:700;
-```
+    font-weight:700;
 
 }
 
 .page-meta{
 
-```
-color:var(--muted);
+    color:var(--muted);
 
-font-size:.76rem;
-```
+    font-size:.76rem;
 
 }
 
 .badge{
 
-```
-position:absolute;
-top:12px;
-right:12px;
+    position:absolute;
+    top:12px;
+    right:12px;
 
-background:rgba(15,23,42,.82);
+    background:rgba(15,23,42,.82);
 
-padding:6px 10px;
+    padding:6px 10px;
 
-border-radius:999px;
+    border-radius:999px;
 
-font-size:.72rem;
+    font-size:.72rem;
 
-font-weight:700;
+    font-weight:700;
 
-color:#cbd5e1;
-```
+    color:#cbd5e1;
 
 }
 
 .rotate-badge{
 
-```
-position:absolute;
-top:12px;
-left:12px;
+    position:absolute;
+    top:12px;
+    left:12px;
 
-background:rgba(15,23,42,.82);
+    background:rgba(15,23,42,.82);
 
-padding:6px 10px;
+    padding:6px 10px;
 
-border-radius:999px;
+    border-radius:999px;
 
-font-size:.72rem;
+    font-size:.72rem;
 
-font-weight:700;
+    font-weight:700;
 
-color:#cbd5e1;
-```
+    color:#cbd5e1;
 
 }
 
 .empty{
 
-```
-margin-top:80px;
+    margin-top:80px;
 
-padding:80px;
+    padding:80px;
 
-border-radius:32px;
+    border-radius:32px;
 
-background:
-    linear-gradient(
-        180deg,
-        rgba(30,41,59,.6),
-        rgba(15,23,42,.75)
-    );
+    background:
+        linear-gradient(
+            180deg,
+            rgba(30,41,59,.6),
+            rgba(15,23,42,.75)
+        );
 
-border:1px solid var(--border);
+    border:1px solid var(--border);
 
-text-align:center;
+    text-align:center;
 
-color:#94a3b8;
-```
+    color:#94a3b8;
 
 }
 
 .statusbar{
 
-```
-height:42px;
+    height:42px;
 
-display:flex;
-align-items:center;
-justify-content:space-between;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
-padding:0 18px;
+    padding:0 18px;
 
-background:rgba(15,23,42,.88);
+    background:rgba(15,23,42,.88);
 
-border-top:1px solid var(--border);
+    border-top:1px solid var(--border);
 
-color:#cbd5e1;
+    color:#cbd5e1;
 
-font-size:.82rem;
-```
+    font-size:.82rem;
 
 }
 
@@ -643,191 +562,526 @@ font-size:.82rem;
 
 <div class="app">
 
-```
-<aside class="sidebar">
+    <aside class="sidebar">
 
-    <div class="app-title">
+        <div class="app-title">
 
-        <div class="logo">
-            📄
-        </div>
-
-        <div class="title-text">
-
-            <h1>
-                PDF Architect
-            </h1>
-
-            <p>
-                Ultimate Edition
-            </p>
-
-        </div>
-
-    </div>
-
-    <div class="side-section">
-
-        <div class="side-label">
-            PDF操作
-        </div>
-
-        <div class="side-card">
-
-            <button
-                class="primary"
-                onclick="openFileDialog()"
-            >
-                新規読み込み
-            </button>
-
-            <button onclick="addPdf()">
-                指定位置へ追加
-            </button>
-
-            <input
-                id="insertPageInput"
-                class="number-input"
-                type="number"
-                min="1"
-                placeholder="追加位置"
-            >
-
-        </div>
-
-    </div>
-
-    <div class="side-section">
-
-        <div class="side-label">
-            ページ操作
-        </div>
-
-        <div class="side-card">
-
-            <button onclick="moveSelectedPages()">
-                選択ページ移動
-            </button>
-
-            <input
-                id="movePageInput"
-                class="number-input"
-                type="number"
-                min="1"
-                placeholder="移動先"
-            >
-
-            <button onclick="rotateSelected(90)">
-                ↻ 右回転
-            </button>
-
-            <button onclick="rotateSelected(-90)">
-                ↺ 左回転
-            </button>
-
-            <button
-                class="danger"
-                onclick="deleteSelected()"
-            >
-                削除
-            </button>
-
-            <button onclick="clearSelection()">
-                選択解除
-            </button>
-
-            <button onclick="undo()">
-                Undo
-            </button>
-
-        </div>
-
-    </div>
-
-    <div class="side-section">
-
-        <div class="side-label">
-            保存
-        </div>
-
-        <div class="side-card">
-
-            <button
-                class="primary"
-                onclick="exportSelected()"
-                style="background:#8b5cf6;"
-            >
-                抽出保存
-            </button>
-
-            <button
-                class="primary"
-                onclick="exportPdf()"
-            >
-                全保存
-            </button>
-
-        </div>
-
-    </div>
-
-</aside>
-
-<main class="main">
-
-    <div class="titlebar">
-
-        <div class="window-buttons">
-
-            <div class="window-dot red"></div>
-            <div class="window-dot yellow"></div>
-            <div class="window-dot green"></div>
-
-        </div>
-
-        <div class="titlebar-right">
-
-            <div class="status-pill">
-                ローカル動作
+            <div class="logo">
+                📄
             </div>
 
-            <div class="status-pill">
-                PDFセキュア
+            <div class="title-text">
+
+                <h1>
+                    PDF Architect
+                </h1>
+
+                <p>
+                    Ultimate Edition
+                </p>
+
             </div>
 
         </div>
 
-    </div>
+        <div class="side-section">
 
-    <div class="content">
+            <div class="side-label">
+                PDF操作
+            </div>
 
-        <input
-            type="file"
-            id="fileInput"
-            hidden
-            accept="application/pdf"
-        >
+            <div class="side-card">
 
-        <div id="pages"></div>
+                <input
+                    type="file"
+                    id="fileInput"
+                    hidden
+                    accept="application/pdf"
+                >
 
-    </div>
+                <button
+                    class="primary"
+                    onclick="openFileDialog()"
+                >
+                    新規読み込み
+                </button>
 
-    <div class="statusbar">
+                <button onclick="addPdf()">
+                    指定位置へ追加
+                </button>
 
-        <div id="status">
-            Ready
+                <input
+                    id="insertPageInput"
+                    class="number-input"
+                    type="number"
+                    min="1"
+                    placeholder="追加位置"
+                >
+
+            </div>
+
         </div>
-
-        <div>
-            最適化レンダリング有効
-        </div>
-
-    </div>
-
-</main>
 ```
+```html
+        <div class="side-section">
+
+            <div class="side-label">
+                ページ操作
+            </div>
+
+            <div class="side-card">
+
+                <button onclick="moveSelectedPages()">
+                    選択ページ移動
+                </button>
+
+                <input
+                    id="movePageInput"
+                    class="number-input"
+                    type="number"
+                    min="1"
+                    placeholder="移動先"
+                >
+
+                <button onclick="rotateSelected(90)">
+                    ↻ 右回転
+                </button>
+
+                <button onclick="rotateSelected(-90)">
+                    ↺ 左回転
+                </button>
+
+                <button
+                    class="danger"
+                    onclick="deleteSelected()"
+                >
+                    削除
+                </button>
+
+                <button onclick="clearSelection()">
+                    選択解除
+                </button>
+
+                <button onclick="undo()">
+                    Undo
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="side-section">
+
+            <div class="side-label">
+                保存
+            </div>
+
+            <div class="side-card">
+
+                <button
+                    class="primary"
+                    onclick="exportSelected()"
+                    style="background:#8b5cf6;"
+                >
+                    抽出保存
+                </button>
+
+                <button
+                    class="primary"
+                    onclick="exportPdf()"
+                >
+                    全保存
+                </button>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="titlebar">
+
+            <div class="window-buttons">
+
+                <div class="window-dot red"></div>
+                <div class="window-dot yellow"></div>
+                <div class="window-dot green"></div>
+
+            </div>
+
+            <div class="titlebar-right">
+
+                <div class="status-pill">
+                    ローカル動作
+                </div>
+
+                <div class="status-pill">
+                    PDFセキュア
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="content">
+
+            <div id="pages"></div>
+
+        </div>
+
+        <div class="statusbar">
+
+            <div id="status">
+                Ready
+            </div>
+
+            <div>
+                最適化レンダリング有効
+            </div>
+
+        </div>
+
+    </main>
 
 </div>
 
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const pagesContainer =
+    document.getElementById('pages');
+
+let pageList = [];
+
+function setStatus(text){
+
+    document
+        .getElementById('status')
+        .textContent = text;
+
+}
+
+function openFileDialog(){
+
+    document
+        .getElementById('fileInput')
+        .click();
+
+}
+
+document
+.getElementById('fileInput')
+.onchange = async e => {
+
+    const file =
+        e.target.files[0];
+
+    if(!file) return;
+
+    setStatus('PDF読み込み中...');
+
+    const pdfBytes =
+        await file.arrayBuffer();
+
+    const pdfDoc =
+        await PDFLib.PDFDocument.load(
+            pdfBytes
+        );
+
+    pageList = [];
+
+    for(
+        let i=0;
+        i<pdfDoc.getPageCount();
+        i++
+    ){
+
+        pageList.push({
+
+            id:crypto.randomUUID(),
+
+            doc:pdfDoc,
+
+            pdfBytes,
+
+            pageIndex:i,
+
+            selected:false,
+
+            rotation:0,
+
+            thumb:null
+
+        });
+
+    }
+
+    render();
+
+    setStatus(
+        `${pdfDoc.getPageCount()}ページ読み込み`
+    );
+
+};
+
+function render(){
+
+    if(pageList.length===0){
+
+        pagesContainer.innerHTML = `
+
+            <div class="empty">
+
+                <h2>
+                    PDFを読み込んでください
+                </h2>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    pagesContainer.innerHTML='';
+
+    pageList.forEach((p,index)=>{
+
+        const div =
+            document.createElement('div');
+
+        div.className='page-item';
+
+        if(p.selected){
+
+            div.classList.add('selected');
+
+        }
+
+        div.innerHTML=`
+
+            <div class="preview-wrap">
+
+                <div class="loading">
+                    Page ${index+1}
+                </div>
+
+            </div>
+
+            <div class="badge">
+                PDF
+            </div>
+
+            ${
+                p.rotation !== 0
+                ?
+                `
+                <div class="rotate-badge">
+                    ${p.rotation}°
+                </div>
+                `
+                :
+                ''
+            }
+
+            <div class="page-footer">
+
+                <div>
+
+                    <div class="page-num">
+                        Page ${index+1}
+                    </div>
+
+                    <div class="page-meta">
+                        元ページ ${p.pageIndex+1}
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+        div.onclick = ()=>{
+
+            p.selected =
+                !p.selected;
+
+            render();
+
+        };
+
+        pagesContainer.appendChild(div);
+
+    });
+
+}
+
+function clearSelection(){
+
+    pageList.forEach(
+        p=>p.selected=false
+    );
+
+    render();
+
+}
+
+function rotateSelected(deg){
+
+    const selected =
+        pageList.filter(
+            p=>p.selected
+        );
+
+    if(selected.length===0){
+
+        alert(
+            '回転ページを選択してください'
+        );
+
+        return;
+
+    }
+
+    selected.forEach(p=>{
+
+        p.rotation += deg;
+
+    });
+
+    render();
+
+}
+
+function deleteSelected(){
+
+    const selected =
+        pageList.filter(
+            p=>p.selected
+        );
+
+    if(selected.length===0){
+
+        alert(
+            '削除ページを選択してください'
+        );
+
+        return;
+
+    }
+
+    pageList =
+        pageList.filter(
+            p=>!p.selected
+        );
+
+    render();
+
+}
+
+function undo(){
+
+    alert(
+        'Undoは次段階で再実装してください'
+    );
+
+}
+
+function moveSelectedPages(){
+
+    alert(
+        '移動機能は次段階で再実装してください'
+    );
+
+}
+
+async function addPdf(){
+
+    alert(
+        '追加機能は次段階で再実装してください'
+    );
+
+}
+
+async function exportPdf(){
+
+    if(pageList.length===0){
+
+        return;
+
+    }
+
+    const newPdf =
+        await PDFLib.PDFDocument.create();
+
+    for(const p of pageList){
+
+        const [page] =
+            await newPdf.copyPages(
+                p.doc,
+                [p.pageIndex]
+            );
+
+        if(p.rotation !== 0){
+
+            page.setRotation(
+                PDFLib.degrees(
+                    p.rotation
+                )
+            );
+
+        }
+
+        newPdf.addPage(page);
+
+    }
+
+    const blob =
+        new Blob(
+
+            [await newPdf.save()],
+
+            {
+                type:'application/pdf'
+            }
+
+        );
+
+    const a =
+        document.createElement('a');
+
+    a.href =
+        URL.createObjectURL(blob);
+
+    a.download =
+        'edited.pdf';
+
+    a.click();
+
+}
+
+async function exportSelected(){
+
+    alert(
+        '抽出保存は次段階で再実装してください'
+    );
+
+}
+
+new Sortable(pagesContainer,{
+
+    animation:180
+
+});
+
+</script>
+
 </body>
 </html>
+```
