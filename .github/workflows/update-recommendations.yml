@@ -29,13 +29,13 @@ jobs:
       - name: Run Script
         run: node scripts/updateRecommendations.js
 
-      - name: Commit Changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+- name: Commit Changes
+  run: |
+    git config user.name "github-actions"
+    git config user.email "github-actions@github.com"
 
-          git add stock-pwa/public/data/recommendations.json
+    git add public/data/recommendations.json
 
-          git diff --cached --quiet || git commit -m "Auto update recommendations"
+    git diff --cached --quiet || git commit -m "Auto update recommendations"
 
-          git push
+    git push
