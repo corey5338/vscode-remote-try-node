@@ -1,0 +1,87 @@
+{
+  "dataDate": "2026/05/29",
+  "generatedAt": "2026-05-31T23:29:33.044Z",
+  "stockCount": 10,
+  "stocks": [
+    {
+      "ticker": "APA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "34.93",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CF",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "108.46",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DOW",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "32.67",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HAL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "37.92",
+      "signalCount": 1
+    },
+    {
+      "ticker": "INTC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "109.81",
+      "signalCount": 1
+    },
+    {
+      "ticker": "LITE",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "784.82",
+      "signalCount": 1
+    },
+    {
+      "ticker": "LYB",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "64.8",
+      "signalCount": 1
+    },
+    {
+      "ticker": "OGN",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "13.2",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CASY",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "742.47",
+      "signalCount": 1
+    },
+    {
+      "ticker": "GEV",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "929.39",
+      "signalCount": 1
+    }
+  ]
+}
