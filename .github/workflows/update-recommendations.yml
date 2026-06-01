@@ -36,5 +36,5 @@ jobs:
           git add public/data/recommendations.json
 
           git diff --cached --quiet || git commit -m "Auto update recommendations"
-
+          git pull --rebase origin main
           git push
