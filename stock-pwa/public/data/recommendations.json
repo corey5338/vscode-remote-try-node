@@ -1,38 +1,59 @@
 {
-  "dataDate": "2026/05/29",
-  "generatedAt": "2026-06-02T00:27:39.001Z",
-  "stockCount": 10,
+  "dataDate": "2026/06/01",
+  "generatedAt": "2026-06-02T05:10:34.752Z",
+  "stockCount": 12,
   "stocks": [
     {
-      "ticker": "APA",
+      "ticker": "RKLB",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "115.92",
+      "signalCount": 3
+    },
+    {
+      "ticker": "ALB",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "165.3",
+      "signalCount": 2
+    },
+    {
+      "ticker": "ENPH",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "59.78",
+      "signalCount": 2
+    },
+    {
+      "ticker": "FIX",
+      "rules": [
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "1708.29",
+      "signalCount": 2
+    },
+    {
+      "ticker": "CAT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "34.93",
+      "limitPrice": "839.81",
       "signalCount": 1
     },
     {
-      "ticker": "CF",
+      "ticker": "CMI",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "108.46",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DOW",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "32.67",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HAL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "37.92",
+      "limitPrice": "617.59",
       "signalCount": 1
     },
     {
@@ -40,31 +61,31 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "109.81",
+      "limitPrice": "102.58",
       "signalCount": 1
     },
     {
-      "ticker": "LITE",
+      "ticker": "IRDM",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "784.82",
+      "limitPrice": "46.4",
       "signalCount": 1
     },
     {
-      "ticker": "LYB",
+      "ticker": "JAZZ",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "64.8",
+      "limitPrice": "227.59",
       "signalCount": 1
     },
     {
-      "ticker": "OGN",
+      "ticker": "ROIV",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "13.2",
+      "limitPrice": "28.53",
       "signalCount": 1
     },
     {
@@ -72,7 +93,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "742.47",
+      "limitPrice": "727.38",
       "signalCount": 1
     },
     {
@@ -80,7 +101,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "929.39",
+      "limitPrice": "916.71",
       "signalCount": 1
     }
   ]
