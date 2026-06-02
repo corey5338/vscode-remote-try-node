@@ -14,21 +14,26 @@ type RecommendationData = {
   stocks: Stock[];
 };
 
-export default function App() {
+function App() {
   const [data, setData] = useState<RecommendationData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadRecommendations();
+    loadData();
   }, []);
 
-  async function loadRecommendations() {
+  async function loadData() {
     try {
       const response = await fetch(
-        "/data/recommendations.json?t=" + Date.now()
+        `/data/recommendations.json?${Date.now()}`
       );
 
       const json = await response.json();
+
+      json.stocks.sort(
+        (a: Stock, b: Stock) =>
+          b.signalCount - a.signalCount
+      );
 
       setData(json);
     } catch (error) {
@@ -39,24 +44,60 @@ export default function App() {
   }
 
   function isToday(dateString: string) {
-    if (!dateString) return false;
-
     const today = new Date();
 
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, "0");
+    const d = String(today.getDate()).padStart(2, "0");
 
-    const todayString = `${yyyy}/${mm}/${dd}`;
+    const todayString = `${y}/${m}/${d}`;
 
     return dateString === todayString;
   }
 
+  function signalStars(count: number) {
+    if (count >= 3) return "★★★";
+    if (count === 2) return "★★";
+    return "★";
+  }
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          background: "#111827",
+          color: "white",
+          minHeight: "100vh",
+          padding: "20px",
+        }}
+      >
+        読み込み中...
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div
+        style={{
+          background: "#111827",
+          color: "white",
+          minHeight: "100vh",
+          padding: "20px",
+        }}
+      >
+        データ取得失敗
+      </div>
+    );
+  }
+
+  const todayData = isToday(data.dataDate);
+
   return (
     <div
       style={{
+        background: "#111827",
         minHeight: "100vh",
-        backgroundColor: "#111827",
         color: "white",
         padding: "16px",
         fontFamily: "sans-serif",
@@ -64,104 +105,91 @@ export default function App() {
     >
       <h1
         style={{
-          fontSize: "30px",
+          fontSize: "32px",
           fontWeight: "bold",
-          marginBottom: "20px",
+          marginBottom: "12px",
         }}
       >
-        📈 本日の推奨銘柄
+        本日の推奨銘柄
       </h1>
 
-      {loading && <p>読み込み中...</p>}
+      <div
+        style={{
+          background: todayData
+            ? "#14532d"
+            : "#7f1d1d",
+          padding: "12px",
+          borderRadius: "10px",
+          marginBottom: "16px",
+          fontWeight: "bold",
+        }}
+      >
+        {todayData
+          ? `🟢 本日のデータ (${data.dataDate})`
+          : `🔴 古いデータ (${data.dataDate})`}
+      </div>
 
-      {!loading && data && (
-        <>
+      <div
+        style={{
+          marginBottom: "20px",
+          color: "#d1d5db",
+        }}
+      >
+        推奨銘柄数: {data.stockCount}
+      </div>
+
+      {data.stocks.map((stock) => (
+        <div
+          key={stock.ticker}
+          style={{
+            background: "#1f2937",
+            borderRadius: "14px",
+            padding: "16px",
+            marginBottom: "12px",
+          }}
+        >
           <div
             style={{
-              background: "#1f2937",
-              borderRadius: "12px",
-              padding: "16px",
-              marginBottom: "20px",
+              fontSize: "14px",
+              color: "#fbbf24",
+              marginBottom: "4px",
             }}
           >
-            <div style={{ marginBottom: "8px" }}>
-              <strong>データ日付:</strong>
-              <br />
-              {data.dataDate}
-            </div>
-
-            <div style={{ marginBottom: "8px" }}>
-              <strong>銘柄数:</strong>
-              <br />
-              {data.stockCount}
-            </div>
-
-            <div>
-              <strong>状態:</strong>
-              <br />
-              {isToday(data.dataDate)
-                ? "🟢 本日のデータ"
-                : "🔴 本日のCSV未更新"}
-            </div>
+            {signalStars(stock.signalCount)}
           </div>
 
-          {data.stocks.map((stock) => (
-            <div
-              key={stock.ticker}
-              style={{
-                background: "#1f2937",
-                borderRadius: "12px",
-                padding: "16px",
-                marginBottom: "12px",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "bold",
-                }}
-              >
-                {stock.signalCount >= 3
-                  ? "⭐⭐⭐ "
-                  : stock.signalCount === 2
-                  ? "⭐⭐ "
-                  : "⭐ "}
-                {stock.ticker}
-              </div>
+          <div
+            style={{
+              fontSize: "28px",
+              fontWeight: "bold",
+            }}
+          >
+            {stock.ticker}
+          </div>
 
-              <div
-                style={{
-                  marginTop: "10px",
-                  color: "#d1d5db",
-                }}
-              >
-                シグナル数: {stock.signalCount}
-              </div>
+          <div
+            style={{
+              fontSize: "32px",
+              fontWeight: "bold",
+              color: "#4ade80",
+              marginTop: "8px",
+            }}
+          >
+            ${stock.limitPrice}
+          </div>
 
-              <div
-                style={{
-                  marginTop: "10px",
-                }}
-              >
-                {stock.rules.map((rule) => (
-                  <div key={rule}>・{rule}</div>
-                ))}
-              </div>
-
-              <div
-                style={{
-                  marginTop: "12px",
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  color: "#34d399",
-                }}
-              >
-                指値: {stock.limitPrice}
-              </div>
-            </div>
-          ))}
-        </>
-      )}
+          <div
+            style={{
+              marginTop: "10px",
+              color: "#9ca3af",
+            }}
+          >
+            {stock.rules.join(" / ")}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
+
+export default App;

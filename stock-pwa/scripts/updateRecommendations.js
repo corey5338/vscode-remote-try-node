@@ -53,6 +53,10 @@ async function main() {
     dowRows[0]?.["日付"] ||
     "";
 
+　console.log("shortRows =", shortRows[0]);
+　console.log("sectorRows =", sectorRows[0]);
+　console.log("dowRows =", dowRows[0]);
+
   const masterMap = new Map();
 
   masterRows.forEach((row) => {
