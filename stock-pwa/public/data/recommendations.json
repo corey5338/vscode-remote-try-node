@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/06/01",
-  "generatedAt": "2026-06-02T23:44:24.585Z",
-  "stockCount": 12,
+  "dataDate": "2026/06/02",
+  "generatedAt": "2026-06-03T03:57:40.674Z",
+  "stockCount": 5,
   "stocks": [
     {
       "ticker": "RKLB",
@@ -10,74 +10,15 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "115.92",
+      "limitPrice": "117.58",
       "signalCount": 3
-    },
-    {
-      "ticker": "ALB",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "165.3",
-      "signalCount": 2
-    },
-    {
-      "ticker": "ENPH",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "59.78",
-      "signalCount": 2
-    },
-    {
-      "ticker": "FIX",
-      "rules": [
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "1708.29",
-      "signalCount": 2
-    },
-    {
-      "ticker": "CAT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "839.81",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CMI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "617.59",
-      "signalCount": 1
-    },
-    {
-      "ticker": "INTC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "102.58",
-      "signalCount": 1
-    },
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "46.4",
-      "signalCount": 1
     },
     {
       "ticker": "JAZZ",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "227.59",
+      "limitPrice": "221.14",
       "signalCount": 1
     },
     {
@@ -85,23 +26,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "28.53",
+      "limitPrice": "27.39",
       "signalCount": 1
     },
     {
-      "ticker": "CASY",
+      "ticker": "VTRS",
       "rules": [
-        "セクター別RS"
+        "短期逆張り"
       ],
-      "limitPrice": "727.38",
+      "limitPrice": "15.37",
       "signalCount": 1
     },
     {
-      "ticker": "GEV",
+      "ticker": "FIX",
       "rules": [
-        "セクター別RS"
+        "ダウ理論"
       ],
-      "limitPrice": "916.71",
+      "limitPrice": "1921.6",
       "signalCount": 1
     }
   ]
