@@ -1,49 +1,63 @@
 {
-  "dataDate": "2026/06/03",
-  "generatedAt": "2026-06-05T01:36:32.789Z",
-  "stockCount": 5,
+  "dataDate": "2026/06/04",
+  "generatedAt": "2026-06-05T06:21:42.857Z",
+  "stockCount": 7,
   "stocks": [
-    {
-      "ticker": "RKLB",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "108.69",
-      "signalCount": 3
-    },
     {
       "ticker": "ALB",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "162.15",
+      "limitPrice": "159.16",
       "signalCount": 2
+    },
+    {
+      "ticker": "CIEN",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "471.38",
+      "signalCount": 1
+    },
+    {
+      "ticker": "F",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "14.9",
+      "signalCount": 1
     },
     {
       "ticker": "HUN",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "14.39",
+      "limitPrice": "13.82",
       "signalCount": 1
     },
     {
-      "ticker": "VTRS",
+      "ticker": "LYB",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "15.27",
+      "limitPrice": "64.4",
       "signalCount": 1
     },
     {
-      "ticker": "PFG",
+      "ticker": "ASTS",
       "rules": [
-        "セクター別RS"
+        "ダウ理論"
       ],
-      "limitPrice": "99.83",
+      "limitPrice": "118.75",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RKLB",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "151.01",
       "signalCount": 1
     }
   ]
