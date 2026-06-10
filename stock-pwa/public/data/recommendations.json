@@ -1,24 +1,25 @@
 {
-  "dataDate": "2026/06/08",
-  "generatedAt": "2026-06-10T00:19:42.198Z",
+  "dataDate": "2026/06/09",
+  "generatedAt": "2026-06-10T04:57:00.414Z",
   "stockCount": 12,
   "stocks": [
     {
-      "ticker": "ALB",
+      "ticker": "IRDM",
       "rules": [
         "短期逆張り",
-        "セクター別RS"
+        "セクター別RS",
+        "ダウ理論"
       ],
-      "limitPrice": "144.47",
-      "signalCount": 2
+      "limitPrice": "42.0",
+      "signalCount": 3
     },
     {
-      "ticker": "RVMD",
+      "ticker": "ENPH",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "144.17",
+      "limitPrice": "45.92",
       "signalCount": 2
     },
     {
@@ -26,7 +27,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "85.6",
+      "limitPrice": "80.17",
       "signalCount": 1
     },
     {
@@ -34,7 +35,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "106.67",
+      "limitPrice": "103.69",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DOW",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "31.85",
       "signalCount": 1
     },
     {
@@ -42,15 +51,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "267.0",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HUN",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "13.84",
+      "limitPrice": "242.28",
       "signalCount": 1
     },
     {
@@ -58,7 +59,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "62.4",
+      "limitPrice": "60.74",
       "signalCount": 1
     },
     {
@@ -66,7 +67,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "291.43",
+      "limitPrice": "267.4",
       "signalCount": 1
     },
     {
@@ -74,7 +75,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "57.25",
+      "limitPrice": "56.11",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DDOG",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "213.0",
       "signalCount": 1
     },
     {
@@ -82,23 +91,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "910.58",
+      "limitPrice": "856.07",
       "signalCount": 1
     },
     {
-      "ticker": "IRDM",
+      "ticker": "FIX",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "53.84",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RKLB",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "151.01",
+      "limitPrice": "1972.69",
       "signalCount": 1
     }
   ]
