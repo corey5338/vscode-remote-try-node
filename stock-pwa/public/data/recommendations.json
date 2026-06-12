@@ -1,138 +1,22 @@
 {
-  "dataDate": "2026/06/10",
-  "generatedAt": "2026-06-12T01:55:55.832Z",
-  "stockCount": 17,
+  "dataDate": "2026/06/11",
+  "generatedAt": "2026-06-12T06:42:51.544Z",
+  "stockCount": 4,
   "stocks": [
     {
-      "ticker": "ALB",
+      "ticker": "DAR",
       "rules": [
-        "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "142.28",
-      "signalCount": 2
-    },
-    {
-      "ticker": "ENPH",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "48.05",
-      "signalCount": 2
-    },
-    {
-      "ticker": "RVMD",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "138.19",
-      "signalCount": 2
+      "limitPrice": "55.92",
+      "signalCount": 1
     },
     {
       "ticker": "FIX",
       "rules": [
-        "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "1657.27",
-      "signalCount": 2
-    },
-    {
-      "ticker": "AA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "63.6",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ASTS",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "81.9",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CAT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "838.76",
-      "signalCount": 1
-    },
-    {
-      "ticker": "EQIX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "1021.51",
-      "signalCount": 1
-    },
-    {
-      "ticker": "FSLR",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "240.98",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HST",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "23.67",
-      "signalCount": 1
-    },
-    {
-      "ticker": "NUE",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "246.24",
-      "signalCount": 1
-    },
-    {
-      "ticker": "NVT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "149.24",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RKLB",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "99.27",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VRT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "266.05",
-      "signalCount": 1
-    },
-    {
-      "ticker": "WDC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "468.66",
-      "signalCount": 1
-    },
-    {
-      "ticker": "GEV",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "833.6",
+      "limitPrice": "1972.69",
       "signalCount": 1
     },
     {
@@ -141,6 +25,14 @@
         "ダウ理論"
       ],
       "limitPrice": "53.84",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RKLB",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "151.01",
       "signalCount": 1
     }
   ]
