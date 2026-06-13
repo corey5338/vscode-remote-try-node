@@ -1,14 +1,14 @@
 {
-  "dataDate": "2026/06/11",
-  "generatedAt": "2026-06-13T00:21:13.935Z",
-  "stockCount": 4,
+  "dataDate": "2026/06/12",
+  "generatedAt": "2026-06-13T05:00:46.171Z",
+  "stockCount": 3,
   "stocks": [
     {
       "ticker": "DAR",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "55.92",
+      "limitPrice": "55.56",
       "signalCount": 1
     },
     {
@@ -25,14 +25,6 @@
         "ダウ理論"
       ],
       "limitPrice": "53.84",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RKLB",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "151.01",
       "signalCount": 1
     }
   ]
