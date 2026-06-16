@@ -1,30 +1,46 @@
 {
-  "dataDate": "2026/06/12",
-  "generatedAt": "2026-06-16T02:07:07.587Z",
-  "stockCount": 3,
+  "dataDate": "2026/06/15",
+  "generatedAt": "2026-06-16T08:26:40.761Z",
+  "stockCount": 5,
   "stocks": [
+    {
+      "ticker": "AA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "59.6",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CBC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "27.53",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HAL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "37.42",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VLO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "236.35",
+      "signalCount": 1
+    },
     {
       "ticker": "DAR",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "55.56",
-      "signalCount": 1
-    },
-    {
-      "ticker": "FIX",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "1972.69",
-      "signalCount": 1
-    },
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "53.84",
+      "limitPrice": "54.15",
       "signalCount": 1
     }
   ]
