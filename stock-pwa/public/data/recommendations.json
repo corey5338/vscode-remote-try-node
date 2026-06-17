@@ -1,14 +1,41 @@
 {
-  "dataDate": "2026/06/15",
-  "generatedAt": "2026-06-17T02:01:00.063Z",
-  "stockCount": 5,
+  "dataDate": "2026/06/16",
+  "generatedAt": "2026-06-17T07:32:45.170Z",
+  "stockCount": 16,
   "stocks": [
+    {
+      "ticker": "FTI",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "65.71",
+      "signalCount": 2
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "40.56",
+      "signalCount": 2
+    },
+    {
+      "ticker": "JBHT",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "272.32",
+      "signalCount": 2
+    },
     {
       "ticker": "AA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "59.6",
+      "limitPrice": "60.18",
       "signalCount": 1
     },
     {
@@ -16,7 +43,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "27.53",
+      "limitPrice": "27.19",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ENPH",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "47.73",
       "signalCount": 1
     },
     {
@@ -24,7 +59,55 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "37.42",
+      "limitPrice": "36.51",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HUN",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "12.16",
+      "signalCount": 1
+    },
+    {
+      "ticker": "JAZZ",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "222.27",
+      "signalCount": 1
+    },
+    {
+      "ticker": "KNX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "75.56",
+      "signalCount": 1
+    },
+    {
+      "ticker": "LSTR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "211.08",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MUSA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "557.62",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TRGP",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "252.91",
       "signalCount": 1
     },
     {
@@ -32,7 +115,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "236.35",
+      "limitPrice": "235.21",
       "signalCount": 1
     },
     {
@@ -40,7 +123,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "54.15",
+      "limitPrice": "53.82",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MSGS",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "368.56",
       "signalCount": 1
     }
   ]
