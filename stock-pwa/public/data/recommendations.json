@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/06/17",
-  "generatedAt": "2026-06-18T23:44:18.503Z",
-  "stockCount": 21,
+  "dataDate": "2026/06/18",
+  "generatedAt": "2026-06-19T04:09:58.569Z",
+  "stockCount": 17,
   "stocks": [
     {
       "ticker": "FTI",
@@ -9,16 +9,7 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "65.2",
-      "signalCount": 2
-    },
-    {
-      "ticker": "JBHT",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "260.91",
+      "limitPrice": "62.68",
       "signalCount": 2
     },
     {
@@ -26,23 +17,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "59.26",
-      "signalCount": 1
-    },
-    {
-      "ticker": "BWA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "69.01",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CAR",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "168.14",
+      "limitPrice": "57.15",
       "signalCount": 1
     },
     {
@@ -50,23 +25,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "31.74",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ENPH",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "45.25",
-      "signalCount": 1
-    },
-    {
-      "ticker": "F",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "13.62",
+      "limitPrice": "30.63",
       "signalCount": 1
     },
     {
@@ -74,7 +33,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "35.5",
+      "limitPrice": "33.91",
       "signalCount": 1
     },
     {
@@ -82,23 +41,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "12.32",
+      "limitPrice": "11.61",
       "signalCount": 1
     },
     {
-      "ticker": "KNX",
+      "ticker": "JAZZ",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "71.27",
-      "signalCount": 1
-    },
-    {
-      "ticker": "LEA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "134.87",
+      "limitPrice": "217.48",
       "signalCount": 1
     },
     {
@@ -106,7 +57,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "203.65",
+      "limitPrice": "199.88",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MUSA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "530.18",
       "signalCount": 1
     },
     {
@@ -114,7 +73,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "246.38",
+      "limitPrice": "238.31",
       "signalCount": 1
     },
     {
@@ -122,15 +81,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "261.66",
+      "limitPrice": "259.03",
       "signalCount": 1
     },
     {
-      "ticker": "SNDR",
+      "ticker": "STLD",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "34.53",
+      "limitPrice": "243.37",
       "signalCount": 1
     },
     {
@@ -138,7 +97,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "232.19",
+      "limitPrice": "228.08",
       "signalCount": 1
     },
     {
@@ -146,7 +105,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "15.42",
+      "limitPrice": "14.7",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CASY",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "817.24",
       "signalCount": 1
     },
     {
@@ -154,23 +121,23 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "52.59",
+      "limitPrice": "51.18",
       "signalCount": 1
     },
     {
-      "ticker": "MSGS",
+      "ticker": "DDOG",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "352.27",
+      "limitPrice": "209.38",
       "signalCount": 1
     },
     {
-      "ticker": "IRDM",
+      "ticker": "HUM",
       "rules": [
-        "ダウ理論"
+        "セクター別RS"
       ],
-      "limitPrice": "50.27",
+      "limitPrice": "351.68",
       "signalCount": 1
     }
   ]
