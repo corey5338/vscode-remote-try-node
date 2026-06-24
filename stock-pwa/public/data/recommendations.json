@@ -1,14 +1,14 @@
 {
-  "dataDate": "2026/06/22",
-  "generatedAt": "2026-06-24T01:24:56.052Z",
-  "stockCount": 8,
+  "dataDate": "2026/06/23",
+  "generatedAt": "2026-06-24T05:35:58.122Z",
+  "stockCount": 12,
   "stocks": [
     {
       "ticker": "AA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "55.54",
+      "limitPrice": "52.66",
       "signalCount": 1
     },
     {
@@ -16,7 +16,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "147.93",
+      "limitPrice": "144.46",
       "signalCount": 1
     },
     {
@@ -24,7 +24,31 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "29.94",
+      "limitPrice": "29.47",
+      "signalCount": 1
+    },
+    {
+      "ticker": "FCX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "62.14",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MUSA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "535.97",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NUE",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "233.84",
       "signalCount": 1
     },
     {
@@ -32,7 +56,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "91.41",
+      "limitPrice": "89.88",
       "signalCount": 1
     },
     {
@@ -40,15 +64,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "244.72",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VTRS",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "14.83",
+      "limitPrice": "238.14",
       "signalCount": 1
     },
     {
@@ -56,7 +72,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "815.68",
+      "limitPrice": "811.51",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CROX",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "115.76",
       "signalCount": 1
     },
     {
@@ -64,7 +88,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "50.87",
+      "limitPrice": "51.32",
+      "signalCount": 1
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "46.52",
       "signalCount": 1
     }
   ]
