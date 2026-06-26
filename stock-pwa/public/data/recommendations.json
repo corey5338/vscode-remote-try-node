@@ -1,54 +1,14 @@
 {
-  "dataDate": "2026/06/24",
-  "generatedAt": "2026-06-25T23:52:11.019Z",
-  "stockCount": 8,
+  "dataDate": "2026/06/25",
+  "generatedAt": "2026-06-26T03:33:39.126Z",
+  "stockCount": 5,
   "stocks": [
-    {
-      "ticker": "ALB",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "141.98",
-      "signalCount": 1
-    },
-    {
-      "ticker": "AMG",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "332.24",
-      "signalCount": 1
-    },
     {
       "ticker": "IBKR",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "90.55",
-      "signalCount": 1
-    },
-    {
-      "ticker": "R",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "256.78",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STLD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "235.06",
-      "signalCount": 1
-    },
-    {
-      "ticker": "WDC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "590.35",
+      "limitPrice": "90.17",
       "signalCount": 1
     },
     {
@@ -56,7 +16,23 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "747.23",
+      "limitPrice": "761.96",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CROX",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "115.23",
+      "signalCount": 1
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "39.02",
       "signalCount": 1
     },
     {
