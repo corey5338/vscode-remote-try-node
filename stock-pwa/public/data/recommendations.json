@@ -1,14 +1,22 @@
 {
-  "dataDate": "2026/06/25",
-  "generatedAt": "2026-06-27T00:05:34.506Z",
-  "stockCount": 5,
+  "dataDate": "2026/06/26",
+  "generatedAt": "2026-06-27T04:34:00.646Z",
+  "stockCount": 6,
   "stocks": [
     {
-      "ticker": "IBKR",
+      "ticker": "FSLR",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "90.17",
+      "limitPrice": "229.63",
+      "signalCount": 1
+    },
+    {
+      "ticker": "WDC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "555.29",
       "signalCount": 1
     },
     {
@@ -16,23 +24,23 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "761.96",
+      "limitPrice": "747.89",
       "signalCount": 1
     },
     {
-      "ticker": "CROX",
+      "ticker": "FIX",
       "rules": [
-        "セクター別RS"
+        "ダウ理論"
       ],
-      "limitPrice": "115.23",
+      "limitPrice": "2039.57",
       "signalCount": 1
     },
     {
       "ticker": "IRDM",
       "rules": [
-        "セクター別RS"
+        "ダウ理論"
       ],
-      "limitPrice": "39.02",
+      "limitPrice": "44.93",
       "signalCount": 1
     },
     {
@@ -40,7 +48,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "2354.4",
+      "limitPrice": "2348.01",
       "signalCount": 1
     }
   ]
