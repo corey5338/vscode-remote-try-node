@@ -1,22 +1,47 @@
 {
-  "dataDate": "2026/06/26",
-  "generatedAt": "2026-06-30T00:04:30.099Z",
-  "stockCount": 6,
+  "dataDate": "2026/06/29",
+  "generatedAt": "2026-06-30T04:43:57.548Z",
+  "stockCount": 8,
   "stocks": [
     {
-      "ticker": "FSLR",
+      "ticker": "VIRT",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "55.71",
+      "signalCount": 2
+    },
+    {
+      "ticker": "FCX",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "229.63",
+      "limitPrice": "59.03",
       "signalCount": 1
     },
     {
-      "ticker": "WDC",
+      "ticker": "IBKR",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "555.29",
+      "limitPrice": "86.07",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NUE",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "224.14",
+      "signalCount": 1
+    },
+    {
+      "ticker": "STLD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "226.85",
       "signalCount": 1
     },
     {
@@ -24,7 +49,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "747.89",
+      "limitPrice": "750.07",
       "signalCount": 1
     },
     {
@@ -33,14 +58,6 @@
         "ダウ理論"
       ],
       "limitPrice": "2039.57",
-      "signalCount": 1
-    },
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "44.93",
       "signalCount": 1
     },
     {
