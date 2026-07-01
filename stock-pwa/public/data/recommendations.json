@@ -1,31 +1,32 @@
 {
-  "dataDate": "2026/06/29",
-  "generatedAt": "2026-07-01T01:39:33.814Z",
-  "stockCount": 8,
+  "dataDate": "2026/06/30",
+  "generatedAt": "2026-07-01T06:25:21.553Z",
+  "stockCount": 9,
   "stocks": [
     {
-      "ticker": "VIRT",
+      "ticker": "WULF",
       "rules": [
         "短期逆張り",
-        "セクター別RS"
+        "セクター別RS",
+        "ダウ理論"
       ],
-      "limitPrice": "55.71",
-      "signalCount": 2
+      "limitPrice": "23.01",
+      "signalCount": 3
     },
     {
-      "ticker": "FCX",
+      "ticker": "APLD",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "59.03",
+      "limitPrice": "35.25",
       "signalCount": 1
     },
     {
-      "ticker": "IBKR",
+      "ticker": "LSTR",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "86.07",
+      "limitPrice": "202.2",
       "signalCount": 1
     },
     {
@@ -33,7 +34,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "224.14",
+      "limitPrice": "217.54",
       "signalCount": 1
     },
     {
@@ -41,23 +42,31 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "226.85",
+      "limitPrice": "224.38",
       "signalCount": 1
     },
     {
-      "ticker": "CASY",
+      "ticker": "M",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "750.07",
+      "limitPrice": "22.58",
       "signalCount": 1
     },
     {
-      "ticker": "FIX",
+      "ticker": "BE",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "2039.57",
+      "limitPrice": "351.29",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DOCN",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "187.51",
       "signalCount": 1
     },
     {
