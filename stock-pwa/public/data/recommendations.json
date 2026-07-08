@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/07/02",
-  "generatedAt": "2026-07-08T01:03:05.504Z",
-  "stockCount": 18,
+  "dataDate": "2026/07/07",
+  "generatedAt": "2026-07-08T04:44:42.528Z",
+  "stockCount": 19,
   "stocks": [
     {
       "ticker": "SNDK",
@@ -10,67 +10,64 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "1600.83",
+      "limitPrice": "1392.41",
       "signalCount": 3
     },
     {
-      "ticker": "ALM",
+      "ticker": "JBHT",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "14.57",
+      "limitPrice": "268.82",
       "signalCount": 2
     },
     {
-      "ticker": "MOD",
+      "ticker": "AAL",
       "rules": [
-        "短期逆張り",
-        "セクター別RS"
+        "短期逆張り"
       ],
-      "limitPrice": "215.27",
-      "signalCount": 2
-    },
-    {
-      "ticker": "DOCN",
-      "rules": [
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "119.48",
-      "signalCount": 2
-    },
-    {
-      "ticker": "WULF",
-      "rules": [
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "19.55",
-      "signalCount": 2
+      "limitPrice": "16.69",
+      "signalCount": 1
     },
     {
       "ticker": "AAOI",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "103.1",
+      "limitPrice": "101.5",
       "signalCount": 1
     },
     {
-      "ticker": "BWA",
+      "ticker": "DAL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "61.3",
+      "limitPrice": "86.71",
       "signalCount": 1
     },
     {
-      "ticker": "ENPH",
+      "ticker": "GSAT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "39.98",
+      "limitPrice": "78.88",
+      "signalCount": 1
+    },
+    {
+      "ticker": "INTC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "103.34",
+      "signalCount": 1
+    },
+    {
+      "ticker": "KNX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "72.75",
       "signalCount": 1
     },
     {
@@ -78,7 +75,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "670.35",
+      "limitPrice": "642.52",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MKSI",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "316.72",
       "signalCount": 1
     },
     {
@@ -86,7 +91,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "906.87",
+      "limitPrice": "849.08",
+      "signalCount": 1
+    },
+    {
+      "ticker": "PL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "26.85",
       "signalCount": 1
     },
     {
@@ -94,23 +107,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "233.38",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SNDR",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "34.85",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STLD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "211.76",
+      "limitPrice": "216.07",
       "signalCount": 1
     },
     {
@@ -118,15 +115,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "264.88",
-      "signalCount": 1
-    },
-    {
-      "ticker": "WDC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "500.62",
+      "limitPrice": "231.31",
       "signalCount": 1
     },
     {
@@ -134,7 +123,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "41.78",
+      "limitPrice": "37.0",
+      "signalCount": 1
+    },
+    {
+      "ticker": "REYN",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "25.77",
       "signalCount": 1
     },
     {
@@ -142,7 +139,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "659.12",
+      "limitPrice": "615.02",
       "signalCount": 1
     },
     {
@@ -151,6 +148,14 @@
         "ダウ理論"
       ],
       "limitPrice": "320.01",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DOCN",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "158.17",
       "signalCount": 1
     }
   ]
