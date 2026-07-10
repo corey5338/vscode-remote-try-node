@@ -1,97 +1,14 @@
 {
-  "dataDate": "2026/07/07",
-  "generatedAt": "2026-07-10T00:03:17.534Z",
-  "stockCount": 19,
+  "dataDate": "2026/07/09",
+  "generatedAt": "2026-07-10T04:32:45.663Z",
+  "stockCount": 6,
   "stocks": [
     {
-      "ticker": "SNDK",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "1392.41",
-      "signalCount": 3
-    },
-    {
-      "ticker": "JBHT",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "268.82",
-      "signalCount": 2
-    },
-    {
-      "ticker": "AAL",
+      "ticker": "ALM",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "16.69",
-      "signalCount": 1
-    },
-    {
-      "ticker": "AAOI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "101.5",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DAL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "86.71",
-      "signalCount": 1
-    },
-    {
-      "ticker": "GSAT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "78.88",
-      "signalCount": 1
-    },
-    {
-      "ticker": "INTC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "103.34",
-      "signalCount": 1
-    },
-    {
-      "ticker": "KNX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "72.75",
-      "signalCount": 1
-    },
-    {
-      "ticker": "LITE",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "642.52",
-      "signalCount": 1
-    },
-    {
-      "ticker": "MKSI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "316.72",
-      "signalCount": 1
-    },
-    {
-      "ticker": "MU",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "849.08",
+      "limitPrice": "13.93",
       "signalCount": 1
     },
     {
@@ -99,47 +16,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "26.85",
-      "signalCount": 1
-    },
-    {
-      "ticker": "POWL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "216.07",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VICR",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "231.31",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ESI",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "37.0",
-      "signalCount": 1
-    },
-    {
-      "ticker": "REYN",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "25.77",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STRL",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "615.02",
+      "limitPrice": "25.52",
       "signalCount": 1
     },
     {
@@ -151,11 +28,27 @@
       "signalCount": 1
     },
     {
-      "ticker": "DOCN",
+      "ticker": "SNDK",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "158.17",
+      "limitPrice": "2280.81",
+      "signalCount": 1
+    },
+    {
+      "ticker": "STRL",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "925.85",
+      "signalCount": 1
+    },
+    {
+      "ticker": "WULF",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "25.16",
       "signalCount": 1
     }
   ]
