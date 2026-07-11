@@ -1,14 +1,50 @@
 {
-  "dataDate": "2026/07/09",
-  "generatedAt": "2026-07-11T00:57:44.754Z",
-  "stockCount": 6,
+  "dataDate": "2026/07/10",
+  "generatedAt": "2026-07-11T04:16:47.229Z",
+  "stockCount": 11,
   "stocks": [
     {
-      "ticker": "ALM",
+      "ticker": "BE",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "214.47",
+      "signalCount": 3
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "47.82",
+      "signalCount": 2
+    },
+    {
+      "ticker": "DOCN",
+      "rules": [
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "122.56",
+      "signalCount": 2
+    },
+    {
+      "ticker": "ARWR",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "13.93",
+      "limitPrice": "74.12",
+      "signalCount": 1
+    },
+    {
+      "ticker": "AXSM",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "225.51",
       "signalCount": 1
     },
     {
@@ -16,15 +52,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "25.52",
+      "limitPrice": "23.74",
       "signalCount": 1
     },
     {
-      "ticker": "BE",
+      "ticker": "MSGS",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "373.07",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RVMD",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "320.01",
+      "limitPrice": "193.84",
       "signalCount": 1
     },
     {
@@ -32,7 +76,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "2280.81",
+      "limitPrice": "1952.6",
       "signalCount": 1
     },
     {
@@ -40,7 +84,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "925.85",
+      "limitPrice": "715.78",
       "signalCount": 1
     },
     {
@@ -48,7 +92,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "25.16",
+      "limitPrice": "24.59",
       "signalCount": 1
     }
   ]
