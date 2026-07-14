@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/07/10",
-  "generatedAt": "2026-07-14T00:54:30.094Z",
-  "stockCount": 11,
+  "dataDate": "2026/07/13",
+  "generatedAt": "2026-07-14T03:55:26.906Z",
+  "stockCount": 16,
   "stocks": [
     {
       "ticker": "BE",
@@ -10,8 +10,27 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "214.47",
+      "limitPrice": "213.5",
       "signalCount": 3
+    },
+    {
+      "ticker": "RVMD",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "176.7",
+      "signalCount": 3
+    },
+    {
+      "ticker": "CRS",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "553.09",
+      "signalCount": 2
     },
     {
       "ticker": "IRDM",
@@ -19,7 +38,7 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "47.82",
+      "limitPrice": "46.87",
       "signalCount": 2
     },
     {
@@ -28,7 +47,7 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "122.56",
+      "limitPrice": "116.72",
       "signalCount": 2
     },
     {
@@ -36,7 +55,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "74.12",
+      "limitPrice": "70.61",
       "signalCount": 1
     },
     {
@@ -44,7 +63,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "225.51",
+      "limitPrice": "220.08",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CORT",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "83.11",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MRNA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "63.14",
       "signalCount": 1
     },
     {
@@ -52,23 +87,31 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "23.74",
+      "limitPrice": "24.14",
       "signalCount": 1
     },
     {
-      "ticker": "MSGS",
+      "ticker": "POWL",
       "rules": [
-        "セクター別RS"
+        "短期逆張り"
       ],
-      "limitPrice": "373.07",
+      "limitPrice": "213.89",
       "signalCount": 1
     },
     {
-      "ticker": "RVMD",
+      "ticker": "ROIV",
       "rules": [
-        "ダウ理論"
+        "短期逆張り"
       ],
-      "limitPrice": "193.84",
+      "limitPrice": "33.79",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VICR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "236.57",
       "signalCount": 1
     },
     {
