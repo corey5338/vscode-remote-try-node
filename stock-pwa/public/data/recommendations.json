@@ -1,15 +1,15 @@
 {
-  "dataDate": "2026/07/14",
-  "generatedAt": "2026-07-16T00:55:20.620Z",
-  "stockCount": 9,
+  "dataDate": "2026/07/15",
+  "generatedAt": "2026-07-16T04:07:36.198Z",
+  "stockCount": 8,
   "stocks": [
     {
-      "ticker": "VIRT",
+      "ticker": "DOCN",
       "rules": [
-        "短期逆張り",
-        "セクター別RS"
+        "セクター別RS",
+        "ダウ理論"
       ],
-      "limitPrice": "57.36",
+      "limitPrice": "106.01",
       "signalCount": 2
     },
     {
@@ -17,23 +17,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "69.77",
+      "limitPrice": "67.87",
       "signalCount": 1
     },
     {
-      "ticker": "PL",
+      "ticker": "WDC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "23.91",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SON",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "52.22",
+      "limitPrice": "471.45",
       "signalCount": 1
     },
     {
@@ -41,7 +33,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "17.52",
+      "limitPrice": "17.56",
       "signalCount": 1
     },
     {
@@ -49,15 +41,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "276.09",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DOCN",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "148.41",
+      "limitPrice": "252.01",
       "signalCount": 1
     },
     {
@@ -65,7 +49,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "193.84",
+      "limitPrice": "188.7",
       "signalCount": 1
     },
     {
@@ -73,7 +57,15 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "1952.6",
+      "limitPrice": "1812.55",
+      "signalCount": 1
+    },
+    {
+      "ticker": "STRL",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "709.68",
       "signalCount": 1
     }
   ]
