@@ -1,15 +1,63 @@
 {
-  "dataDate": "2026/07/15",
-  "generatedAt": "2026-07-17T01:00:18.378Z",
-  "stockCount": 8,
+  "dataDate": "2026/07/16",
+  "generatedAt": "2026-07-17T04:39:24.272Z",
+  "stockCount": 23,
   "stocks": [
+    {
+      "ticker": "BE",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "189.9",
+      "signalCount": 3
+    },
+    {
+      "ticker": "RVMD",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "173.85",
+      "signalCount": 3
+    },
+    {
+      "ticker": "SNDK",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "1293.82",
+      "signalCount": 3
+    },
+    {
+      "ticker": "CRS",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "539.62",
+      "signalCount": 2
+    },
     {
       "ticker": "DOCN",
       "rules": [
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "106.01",
+      "limitPrice": "107.91",
+      "signalCount": 2
+    },
+    {
+      "ticker": "STRL",
+      "rules": [
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "604.09",
       "signalCount": 2
     },
     {
@@ -17,7 +65,111 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "67.87",
+      "limitPrice": "67.97",
+      "signalCount": 1
+    },
+    {
+      "ticker": "BWA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "60.94",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CMI",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "627.39",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CNC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "62.58",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ENPH",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "38.86",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HUM",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "378.1",
+      "signalCount": 1
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "44.95",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MKSI",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "315.05",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MRNA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "60.49",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MU",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "799.91",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ROIV",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "33.11",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VICR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "213.49",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VIRT",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "55.86",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VRT",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "277.44",
       "signalCount": 1
     },
     {
@@ -25,7 +177,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "471.45",
+      "limitPrice": "428.65",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ESI",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "36.57",
       "signalCount": 1
     },
     {
@@ -33,39 +193,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "17.56",
-      "signalCount": 1
-    },
-    {
-      "ticker": "BE",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "252.01",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RVMD",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "188.7",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "1812.55",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STRL",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "709.68",
+      "limitPrice": "16.63",
       "signalCount": 1
     }
   ]
