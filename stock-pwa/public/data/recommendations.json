@@ -1,98 +1,46 @@
 {
-  "dataDate": "2026/07/20",
-  "generatedAt": "2026-07-22T00:58:39.257Z",
-  "stockCount": 12,
+  "dataDate": "2026/07/21",
+  "generatedAt": "2026-07-22T04:22:20.328Z",
+  "stockCount": 7,
   "stocks": [
-    {
-      "ticker": "BE",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "180.54",
-      "signalCount": 3
-    },
-    {
-      "ticker": "GH",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "143.9",
-      "signalCount": 3
-    },
-    {
-      "ticker": "BWA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "60.29",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CMI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "625.65",
-      "signalCount": 1
-    },
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "44.68",
-      "signalCount": 1
-    },
-    {
-      "ticker": "MKSI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "310.61",
-      "signalCount": 1
-    },
     {
       "ticker": "MRNA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "57.08",
+      "limitPrice": "56.44",
       "signalCount": 1
     },
     {
-      "ticker": "RS",
+      "ticker": "PFG",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "375.93",
+      "limitPrice": "106.64",
       "signalCount": 1
     },
     {
-      "ticker": "STLD",
+      "ticker": "VICR",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "224.6",
+      "limitPrice": "189.03",
       "signalCount": 1
     },
     {
-      "ticker": "DOCN",
+      "ticker": "BE",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "134.57",
+      "limitPrice": "252.01",
       "signalCount": 1
     },
     {
-      "ticker": "FIX",
+      "ticker": "GH",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "1824.99",
+      "limitPrice": "174.09",
       "signalCount": 1
     },
     {
@@ -101,6 +49,14 @@
         "ダウ理論"
       ],
       "limitPrice": "1812.55",
+      "signalCount": 1
+    },
+    {
+      "ticker": "STRL",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "709.68",
       "signalCount": 1
     }
   ]
