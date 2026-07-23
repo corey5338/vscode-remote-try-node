@@ -1,14 +1,14 @@
 {
-  "dataDate": "2026/07/21",
-  "generatedAt": "2026-07-23T00:59:34.854Z",
-  "stockCount": 7,
+  "dataDate": "2026/07/22",
+  "generatedAt": "2026-07-23T04:22:27.635Z",
+  "stockCount": 6,
   "stocks": [
     {
-      "ticker": "MRNA",
+      "ticker": "AIZ",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "56.44",
+      "limitPrice": "269.47",
       "signalCount": 1
     },
     {
@@ -16,15 +16,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "106.64",
+      "limitPrice": "106.92",
       "signalCount": 1
     },
     {
-      "ticker": "VICR",
+      "ticker": "GEV",
       "rules": [
-        "短期逆張り"
+        "セクター別RS"
       ],
-      "limitPrice": "189.03",
+      "limitPrice": "955.49",
       "signalCount": 1
     },
     {
@@ -49,14 +49,6 @@
         "ダウ理論"
       ],
       "limitPrice": "1812.55",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STRL",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "709.68",
       "signalCount": 1
     }
   ]
