@@ -1,14 +1,14 @@
 {
-  "dataDate": "2026/07/22",
-  "generatedAt": "2026-07-23T23:58:39.634Z",
-  "stockCount": 6,
+  "dataDate": "2026/07/23",
+  "generatedAt": "2026-07-24T03:30:37.341Z",
+  "stockCount": 7,
   "stocks": [
     {
-      "ticker": "AIZ",
+      "ticker": "GL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "269.47",
+      "limitPrice": "166.09",
       "signalCount": 1
     },
     {
@@ -16,15 +16,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "106.92",
+      "limitPrice": "105.09",
       "signalCount": 1
     },
     {
-      "ticker": "GEV",
+      "ticker": "CROX",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "955.49",
+      "limitPrice": "129.16",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VVV",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "37.41",
       "signalCount": 1
     },
     {
