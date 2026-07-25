@@ -1,54 +1,82 @@
 {
-  "dataDate": "2026/07/23",
-  "generatedAt": "2026-07-25T00:01:46.823Z",
-  "stockCount": 7,
+  "dataDate": "2026/07/24",
+  "generatedAt": "2026-07-25T03:47:45.090Z",
+  "stockCount": 10,
   "stocks": [
-    {
-      "ticker": "GL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "166.09",
-      "signalCount": 1
-    },
-    {
-      "ticker": "PFG",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "105.09",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CROX",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "129.16",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VVV",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "37.41",
-      "signalCount": 1
-    },
     {
       "ticker": "BE",
       "rules": [
+        "短期逆張り",
+        "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "252.01",
-      "signalCount": 1
+      "limitPrice": "169.12",
+      "signalCount": 3
     },
     {
       "ticker": "GH",
       "rules": [
+        "短期逆張り",
+        "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "174.09",
+      "limitPrice": "141.83",
+      "signalCount": 3
+    },
+    {
+      "ticker": "CNC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "61.8",
+      "signalCount": 1
+    },
+    {
+      "ticker": "GSAT",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "78.09",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HUM",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "380.69",
+      "signalCount": 1
+    },
+    {
+      "ticker": "KNX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "69.58",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MKSI",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "314.45",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TIGO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "92.72",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VLO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "295.9",
       "signalCount": 1
     },
     {
@@ -56,7 +84,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "1812.55",
+      "limitPrice": "1696.38",
       "signalCount": 1
     }
   ]
