@@ -1,39 +1,31 @@
 {
-  "dataDate": "2026/07/30",
-  "generatedAt": "2026-08-01T00:04:43.623Z",
-  "stockCount": 10,
+  "dataDate": "2026/07/31",
+  "generatedAt": "2026-08-01T03:59:55.648Z",
+  "stockCount": 9,
   "stocks": [
     {
-      "ticker": "JBHT",
+      "ticker": "TRV",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "259.94",
+      "limitPrice": "367.19",
       "signalCount": 2
     },
     {
-      "ticker": "CNC",
+      "ticker": "DOC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "58.51",
+      "limitPrice": "21.45",
       "signalCount": 1
     },
     {
-      "ticker": "CRS",
+      "ticker": "HUM",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "459.44",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CSX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "49.22",
+      "limitPrice": "355.43",
       "signalCount": 1
     },
     {
@@ -41,15 +33,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "250.63",
+      "limitPrice": "252.33",
       "signalCount": 1
     },
     {
-      "ticker": "BE",
+      "ticker": "WELL",
       "rules": [
-        "ダウ理論"
+        "短期逆張り"
       ],
-      "limitPrice": "229.91",
+      "limitPrice": "229.79",
       "signalCount": 1
     },
     {
