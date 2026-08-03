@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/07/31",
-  "generatedAt": "2026-08-03T21:39:01.546Z",
-  "stockCount": 9,
+  "dataDate": "2026/08/03",
+  "generatedAt": "2026-08-03T22:57:43.594Z",
+  "stockCount": 6,
   "stocks": [
     {
       "ticker": "TRV",
@@ -9,39 +9,23 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "367.19",
+      "limitPrice": "368.02",
       "signalCount": 2
     },
     {
-      "ticker": "DOC",
+      "ticker": "DVA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "21.45",
+      "limitPrice": "228.83",
       "signalCount": 1
     },
     {
-      "ticker": "HUM",
+      "ticker": "KNX",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "355.43",
-      "signalCount": 1
-    },
-    {
-      "ticker": "R",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "252.33",
-      "signalCount": 1
-    },
-    {
-      "ticker": "WELL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "229.79",
+      "limitPrice": "66.73",
       "signalCount": 1
     },
     {
@@ -49,15 +33,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "144.53",
-      "signalCount": 1
-    },
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "48.44",
+      "limitPrice": "129.53",
       "signalCount": 1
     },
     {
@@ -65,7 +41,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "194.57",
+      "limitPrice": "192.78",
       "signalCount": 1
     },
     {
@@ -73,7 +49,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "1696.38",
+      "limitPrice": "1405.0",
       "signalCount": 1
     }
   ]
