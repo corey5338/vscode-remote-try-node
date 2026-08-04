@@ -1,55 +1,38 @@
 {
-  "dataDate": "2026/08/03",
-  "generatedAt": "2026-08-04T21:48:00.727Z",
-  "stockCount": 6,
+  "dataDate": "2026/08/04",
+  "generatedAt": "2026-08-04T23:01:32.979Z",
+  "stockCount": 4,
   "stocks": [
-    {
-      "ticker": "TRV",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "368.02",
-      "signalCount": 2
-    },
     {
       "ticker": "DVA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "228.83",
+      "limitPrice": "219.54",
       "signalCount": 1
     },
     {
-      "ticker": "KNX",
+      "ticker": "TIGO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "66.73",
+      "limitPrice": "89.88",
       "signalCount": 1
     },
     {
-      "ticker": "DOCN",
+      "ticker": "VIRT",
       "rules": [
-        "ダウ理論"
+        "短期逆張り"
       ],
-      "limitPrice": "129.53",
+      "limitPrice": "55.57",
       "signalCount": 1
     },
     {
-      "ticker": "RVMD",
+      "ticker": "CASY",
       "rules": [
-        "ダウ理論"
+        "セクター別RS"
       ],
-      "limitPrice": "192.78",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "1405.0",
+      "limitPrice": "836.53",
       "signalCount": 1
     }
   ]
