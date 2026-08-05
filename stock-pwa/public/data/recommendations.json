@@ -1,14 +1,22 @@
 {
-  "dataDate": "2026/08/04",
-  "generatedAt": "2026-08-05T21:45:47.708Z",
+  "dataDate": "2026/08/05",
+  "generatedAt": "2026-08-05T22:56:13.243Z",
   "stockCount": 4,
   "stocks": [
     {
-      "ticker": "DVA",
+      "ticker": "DINO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "219.54",
+      "limitPrice": "81.25",
+      "signalCount": 1
+    },
+    {
+      "ticker": "PSX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "197.2",
       "signalCount": 1
     },
     {
@@ -16,23 +24,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "89.88",
+      "limitPrice": "89.81",
       "signalCount": 1
     },
     {
-      "ticker": "VIRT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "55.57",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CASY",
+      "ticker": "DAR",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "836.53",
+      "limitPrice": "56.72",
       "signalCount": 1
     }
   ]
