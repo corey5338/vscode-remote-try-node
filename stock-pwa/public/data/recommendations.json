@@ -1,6 +1,6 @@
 {
-  "dataDate": "2026/08/05",
-  "generatedAt": "2026-08-06T14:03:35.518Z",
+  "dataDate": "2026/08/06",
+  "generatedAt": "2026-08-07T00:23:09.107Z",
   "stockCount": 4,
   "stocks": [
     {
@@ -8,31 +8,31 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "81.25",
+      "limitPrice": "79.63",
       "signalCount": 1
     },
     {
-      "ticker": "PSX",
+      "ticker": "WDC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "197.2",
+      "limitPrice": "380.83",
       "signalCount": 1
     },
     {
-      "ticker": "TIGO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "89.81",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DAR",
+      "ticker": "CASY",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "56.72",
+      "limitPrice": "796.98",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HST",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "22.93",
       "signalCount": 1
     }
   ]
