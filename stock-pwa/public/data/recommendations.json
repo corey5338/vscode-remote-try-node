@@ -1,39 +1,47 @@
 {
-  "dataDate": "2026/08/07",
-  "generatedAt": "2026-08-10T22:06:00.164Z",
-  "stockCount": 5,
+  "dataDate": "2026/08/10",
+  "generatedAt": "2026-08-10T23:05:35.701Z",
+  "stockCount": 6,
   "stocks": [
     {
-      "ticker": "VLO",
+      "ticker": "BE",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "286.0",
+      "limitPrice": "196.22",
       "signalCount": 2
     },
     {
-      "ticker": "DINO",
+      "ticker": "AMG",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "78.79",
+      "limitPrice": "355.67",
       "signalCount": 1
     },
     {
-      "ticker": "ILMN",
+      "ticker": "DAL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "183.57",
+      "limitPrice": "87.61",
       "signalCount": 1
     },
     {
-      "ticker": "WDC",
+      "ticker": "R",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "396.28",
+      "limitPrice": "256.5",
+      "signalCount": 1
+    },
+    {
+      "ticker": "THG",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "222.44",
       "signalCount": 1
     },
     {
@@ -41,7 +49,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "22.89",
+      "limitPrice": "22.22",
       "signalCount": 1
     }
   ]
