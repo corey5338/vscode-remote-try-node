@@ -1,14 +1,23 @@
 {
-  "dataDate": "2026/08/11",
-  "generatedAt": "2026-08-12T21:42:09.337Z",
-  "stockCount": 7,
+  "dataDate": "2026/08/12",
+  "generatedAt": "2026-08-12T22:37:55.637Z",
+  "stockCount": 5,
   "stocks": [
     {
-      "ticker": "AMG",
+      "ticker": "TRV",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "364.84",
+      "signalCount": 2
+    },
+    {
+      "ticker": "AIZ",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "352.82",
+      "limitPrice": "275.18",
       "signalCount": 1
     },
     {
@@ -16,7 +25,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "523.77",
+      "limitPrice": "515.23",
       "signalCount": 1
     },
     {
@@ -24,7 +33,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "178.92",
+      "limitPrice": "175.79",
       "signalCount": 1
     },
     {
@@ -32,31 +41,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "219.48",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VIRT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "53.47",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HST",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "21.97",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ROST",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "248.71",
+      "limitPrice": "216.79",
       "signalCount": 1
     }
   ]
