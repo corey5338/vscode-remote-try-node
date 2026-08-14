@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/08/13",
-  "generatedAt": "2026-08-14T22:20:12.643Z",
-  "stockCount": 6,
+  "dataDate": "2026/08/14",
+  "generatedAt": "2026-08-14T22:49:01.343Z",
+  "stockCount": 5,
   "stocks": [
     {
       "ticker": "GH",
@@ -9,39 +9,31 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "155.01",
+      "limitPrice": "152.39",
       "signalCount": 2
-    },
-    {
-      "ticker": "AIZ",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "277.04",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ARWR",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "82.8",
-      "signalCount": 1
     },
     {
       "ticker": "GSAT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "81.87",
+      "limitPrice": "81.29",
       "signalCount": 1
     },
     {
-      "ticker": "TRV",
+      "ticker": "NUE",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "364.59",
+      "limitPrice": "263.89",
+      "signalCount": 1
+    },
+    {
+      "ticker": "STLD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "250.98",
       "signalCount": 1
     },
     {
