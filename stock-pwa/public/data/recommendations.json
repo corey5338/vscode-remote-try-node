@@ -1,47 +1,46 @@
 {
-  "dataDate": "2026/08/14",
-  "generatedAt": "2026-08-17T22:21:08.740Z",
+  "dataDate": "2026/08/17",
+  "generatedAt": "2026-08-17T22:49:50.789Z",
   "stockCount": 5,
   "stocks": [
     {
-      "ticker": "GH",
+      "ticker": "CBC",
       "rules": [
-        "短期逆張り",
+        "短期逆張り"
+      ],
+      "limitPrice": "31.73",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DAL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "86.24",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TRV",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "360.12",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TWLO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "221.88",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SON",
+      "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "152.39",
-      "signalCount": 2
-    },
-    {
-      "ticker": "GSAT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "81.29",
-      "signalCount": 1
-    },
-    {
-      "ticker": "NUE",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "263.89",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STLD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "250.98",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RVMD",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "208.5",
+      "limitPrice": "55.81",
       "signalCount": 1
     }
   ]
