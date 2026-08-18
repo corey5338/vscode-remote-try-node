@@ -1,46 +1,87 @@
 {
-  "dataDate": "2026/08/17",
-  "generatedAt": "2026-08-18T22:20:34.853Z",
-  "stockCount": 5,
+  "dataDate": "2026/08/18",
+  "generatedAt": "2026-08-18T22:50:02.346Z",
+  "stockCount": 10,
   "stocks": [
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "47.76",
+      "signalCount": 2
+    },
+    {
+      "ticker": "BE",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "192.42",
+      "signalCount": 1
+    },
     {
       "ticker": "CBC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "31.73",
+      "limitPrice": "31.93",
       "signalCount": 1
     },
     {
-      "ticker": "DAL",
+      "ticker": "CRWD",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "86.24",
+      "limitPrice": "204.58",
       "signalCount": 1
     },
     {
-      "ticker": "TRV",
+      "ticker": "STLD",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "360.12",
+      "limitPrice": "244.92",
       "signalCount": 1
     },
     {
-      "ticker": "TWLO",
+      "ticker": "TIGO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "221.88",
+      "limitPrice": "84.11",
       "signalCount": 1
     },
     {
-      "ticker": "SON",
+      "ticker": "UHAL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "71.45",
+      "signalCount": 1
+    },
+    {
+      "ticker": "UHAL.B",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "62.91",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SN",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "55.81",
+      "limitPrice": "175.85",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DOCN",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "138.32",
       "signalCount": 1
     }
   ]
