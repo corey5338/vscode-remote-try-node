@@ -1,18 +1,8 @@
 {
-  "dataDate": "2026/08/24",
-  "generatedAt": "2026-08-25T22:24:08.220Z",
-  "stockCount": 12,
+  "dataDate": "2026/08/25",
+  "generatedAt": "2026-08-25T22:54:43.222Z",
+  "stockCount": 9,
   "stocks": [
-    {
-      "ticker": "DOCN",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "102.65",
-      "signalCount": 3
-    },
     {
       "ticker": "IRDM",
       "rules": [
@@ -20,17 +10,8 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "46.32",
+      "limitPrice": "46.01",
       "signalCount": 3
-    },
-    {
-      "ticker": "JBHT",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "252.3",
-      "signalCount": 2
     },
     {
       "ticker": "SNDK",
@@ -38,7 +19,7 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "1335.47",
+      "limitPrice": "1387.45",
       "signalCount": 2
     },
     {
@@ -46,23 +27,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "73.07",
+      "limitPrice": "73.79",
       "signalCount": 1
     },
     {
-      "ticker": "MKSI",
+      "ticker": "PANW",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "254.06",
+      "limitPrice": "327.94",
       "signalCount": 1
     },
     {
-      "ticker": "MU",
+      "ticker": "PSX",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "852.14",
+      "limitPrice": "233.28",
       "signalCount": 1
     },
     {
@@ -70,23 +51,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "69.63",
-      "signalCount": 1
-    },
-    {
-      "ticker": "WDC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "397.2",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DAR",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "60.83",
+      "limitPrice": "68.58",
       "signalCount": 1
     },
     {
@@ -94,7 +59,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "900.36",
+      "limitPrice": "898.21",
       "signalCount": 1
     },
     {
@@ -103,6 +68,14 @@
         "ダウ理論"
       ],
       "limitPrice": "253.32",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DOCN",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "138.32",
       "signalCount": 1
     }
   ]
