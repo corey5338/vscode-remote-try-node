@@ -1,49 +1,14 @@
 {
-  "dataDate": "2026/08/25",
-  "generatedAt": "2026-08-26T20:32:34.527Z",
-  "stockCount": 9,
+  "dataDate": "2026/08/26",
+  "generatedAt": "2026-08-27T00:27:01.694Z",
+  "stockCount": 7,
   "stocks": [
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "46.01",
-      "signalCount": 3
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "1387.45",
-      "signalCount": 2
-    },
-    {
-      "ticker": "FTI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "73.79",
-      "signalCount": 1
-    },
     {
       "ticker": "PANW",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "327.94",
-      "signalCount": 1
-    },
-    {
-      "ticker": "PSX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "233.28",
+      "limitPrice": "320.46",
       "signalCount": 1
     },
     {
@@ -51,15 +16,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "68.58",
+      "limitPrice": "67.29",
       "signalCount": 1
     },
     {
-      "ticker": "GEV",
+      "ticker": "DAR",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "898.21",
+      "limitPrice": "59.31",
       "signalCount": 1
     },
     {
@@ -76,6 +41,22 @@
         "ダウ理論"
       ],
       "limitPrice": "138.32",
+      "signalCount": 1
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "49.12",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VLO",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "353.01",
       "signalCount": 1
     }
   ]
