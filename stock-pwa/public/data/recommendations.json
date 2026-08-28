@@ -1,14 +1,14 @@
 {
-  "dataDate": "2026/08/26",
-  "generatedAt": "2026-08-27T20:40:33.844Z",
-  "stockCount": 7,
+  "dataDate": "2026/08/27",
+  "generatedAt": "2026-08-28T05:06:19.342Z",
+  "stockCount": 9,
   "stocks": [
     {
-      "ticker": "PANW",
+      "ticker": "CORT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "320.46",
+      "limitPrice": "114.48",
       "signalCount": 1
     },
     {
@@ -16,7 +16,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "67.29",
+      "limitPrice": "67.25",
       "signalCount": 1
     },
     {
@@ -24,7 +24,31 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "59.31",
+      "limitPrice": "59.16",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HRB",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "51.51",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SON",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "55.82",
+      "signalCount": 1
+    },
+    {
+      "ticker": "USFD",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "105.05",
       "signalCount": 1
     },
     {
@@ -49,14 +73,6 @@
         "ダウ理論"
       ],
       "limitPrice": "49.12",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VLO",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "353.01",
       "signalCount": 1
     }
   ]
