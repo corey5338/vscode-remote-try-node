@@ -1,30 +1,46 @@
 {
-  "dataDate": "2026/08/27",
-  "generatedAt": "2026-08-28T17:36:17.509Z",
-  "stockCount": 9,
+  "dataDate": "2026/08/28",
+  "generatedAt": "2026-08-29T01:27:54.855Z",
+  "stockCount": 14,
   "stocks": [
+    {
+      "ticker": "ARWR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "82.45",
+      "signalCount": 1
+    },
     {
       "ticker": "CORT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "114.48",
+      "limitPrice": "110.72",
       "signalCount": 1
     },
     {
-      "ticker": "UHAL",
+      "ticker": "NTRA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "67.25",
+      "limitPrice": "319.6",
       "signalCount": 1
     },
     {
-      "ticker": "DAR",
+      "ticker": "ROIV",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "34.06",
+      "signalCount": 1
+    },
+    {
+      "ticker": "GEV",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "59.16",
+      "limitPrice": "886.77",
       "signalCount": 1
     },
     {
@@ -32,7 +48,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "51.51",
+      "limitPrice": "51.25",
+      "signalCount": 1
+    },
+    {
+      "ticker": "JLL",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "372.63",
       "signalCount": 1
     },
     {
@@ -40,7 +64,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "55.82",
+      "limitPrice": "55.57",
       "signalCount": 1
     },
     {
@@ -48,7 +72,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "105.05",
+      "limitPrice": "105.36",
       "signalCount": 1
     },
     {
@@ -56,7 +80,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "253.32",
+      "limitPrice": "228.0",
       "signalCount": 1
     },
     {
@@ -64,7 +88,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "138.32",
+      "limitPrice": "124.01",
       "signalCount": 1
     },
     {
@@ -72,7 +96,23 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "49.12",
+      "limitPrice": "47.71",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SNDK",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "1557.9",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VLO",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "353.01",
       "signalCount": 1
     }
   ]
