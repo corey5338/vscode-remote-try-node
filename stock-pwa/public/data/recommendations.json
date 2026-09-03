@@ -1,95 +1,14 @@
 {
-  "dataDate": "2026/09/02",
-  "generatedAt": "2026-09-03T20:30:47.034Z",
-  "stockCount": 14,
+  "dataDate": "2026/09/03",
+  "generatedAt": "2026-09-03T22:58:26.843Z",
+  "stockCount": 3,
   "stocks": [
-    {
-      "ticker": "VIRT",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "60.63",
-      "signalCount": 2
-    },
-    {
-      "ticker": "CORT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "106.43",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CSX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "47.39",
-      "signalCount": 1
-    },
-    {
-      "ticker": "EXPD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "183.95",
-      "signalCount": 1
-    },
-    {
-      "ticker": "PANW",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "312.15",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ROIV",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "32.81",
-      "signalCount": 1
-    },
-    {
-      "ticker": "TWLO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "217.37",
-      "signalCount": 1
-    },
-    {
-      "ticker": "UHAL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "65.49",
-      "signalCount": 1
-    },
     {
       "ticker": "WDC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "418.39",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HRB",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "49.74",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RHI",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "41.62",
+      "limitPrice": "402.09",
       "signalCount": 1
     },
     {
@@ -97,15 +16,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "167.01",
-      "signalCount": 1
-    },
-    {
-      "ticker": "BE",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "228.0",
+      "limitPrice": "169.43",
       "signalCount": 1
     },
     {
