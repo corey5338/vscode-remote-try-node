@@ -1,72 +1,23 @@
 {
-  "dataDate": "2026/09/01",
-  "generatedAt": "2026-09-02T22:21:42.688Z",
-  "stockCount": 25,
+  "dataDate": "2026/09/02",
+  "generatedAt": "2026-09-03T00:29:45.784Z",
+  "stockCount": 14,
   "stocks": [
     {
-      "ticker": "EXPD",
+      "ticker": "VIRT",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "184.95",
+      "limitPrice": "60.63",
       "signalCount": 2
-    },
-    {
-      "ticker": "TRV",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "359.6",
-      "signalCount": 2
-    },
-    {
-      "ticker": "AMG",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "354.72",
-      "signalCount": 1
-    },
-    {
-      "ticker": "BNY",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "157.93",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CBC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "30.92",
-      "signalCount": 1
     },
     {
       "ticker": "CORT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "108.9",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CRL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "276.1",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CRS",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "455.14",
+      "limitPrice": "106.43",
       "signalCount": 1
     },
     {
@@ -74,39 +25,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "47.3",
+      "limitPrice": "47.39",
       "signalCount": 1
     },
     {
-      "ticker": "DELL",
+      "ticker": "EXPD",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "407.53",
+      "limitPrice": "183.95",
       "signalCount": 1
     },
     {
-      "ticker": "FCX",
+      "ticker": "PANW",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "70.96",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ILMN",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "202.56",
-      "signalCount": 1
-    },
-    {
-      "ticker": "NTRA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "312.46",
+      "limitPrice": "312.15",
       "signalCount": 1
     },
     {
@@ -114,47 +49,31 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "33.65",
+      "limitPrice": "32.81",
       "signalCount": 1
     },
     {
-      "ticker": "STT",
+      "ticker": "TWLO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "184.62",
+      "limitPrice": "217.37",
       "signalCount": 1
     },
     {
-      "ticker": "THG",
+      "ticker": "UHAL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "222.39",
+      "limitPrice": "65.49",
       "signalCount": 1
     },
     {
-      "ticker": "BWA",
+      "ticker": "WDC",
       "rules": [
-        "セクター別RS"
+        "短期逆張り"
       ],
-      "limitPrice": "61.94",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CHYM",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "30.85",
-      "signalCount": 1
-    },
-    {
-      "ticker": "GEV",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "850.44",
+      "limitPrice": "418.39",
       "signalCount": 1
     },
     {
@@ -162,7 +81,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "49.93",
+      "limitPrice": "49.74",
       "signalCount": 1
     },
     {
@@ -170,7 +89,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "42.62",
+      "limitPrice": "41.62",
       "signalCount": 1
     },
     {
@@ -178,7 +97,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "171.17",
+      "limitPrice": "167.01",
       "signalCount": 1
     },
     {
@@ -187,14 +106,6 @@
         "ダウ理論"
       ],
       "limitPrice": "228.0",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DOCN",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "124.01",
       "signalCount": 1
     },
     {
