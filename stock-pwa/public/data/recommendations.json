@@ -1,14 +1,22 @@
 {
-  "dataDate": "2026/09/03",
-  "generatedAt": "2026-09-04T20:55:04.233Z",
-  "stockCount": 3,
+  "dataDate": "2026/09/04",
+  "generatedAt": "2026-09-04T22:46:27.016Z",
+  "stockCount": 5,
   "stocks": [
     {
-      "ticker": "WDC",
+      "ticker": "CCK",
       "rules": [
-        "短期逆張り"
+        "セクター別RS"
       ],
-      "limitPrice": "402.09",
+      "limitPrice": "113.35",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HRB",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "47.71",
       "signalCount": 1
     },
     {
@@ -16,7 +24,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "169.43",
+      "limitPrice": "169.72",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DOCN",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "124.01",
       "signalCount": 1
     },
     {
