@@ -1,14 +1,39 @@
 {
-  "dataDate": "2026/09/04",
-  "generatedAt": "2026-09-08T21:18:40.549Z",
-  "stockCount": 5,
+  "dataDate": "2026/09/08",
+  "generatedAt": "2026-09-08T23:31:07.814Z",
+  "stockCount": 6,
   "stocks": [
+    {
+      "ticker": "MRNA",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "133.8",
+      "signalCount": 2
+    },
+    {
+      "ticker": "CNC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "63.38",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NEU",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "854.97",
+      "signalCount": 1
+    },
     {
       "ticker": "CCK",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "113.35",
+      "limitPrice": "111.83",
       "signalCount": 1
     },
     {
@@ -16,31 +41,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "47.71",
+      "limitPrice": "44.89",
       "signalCount": 1
     },
     {
-      "ticker": "SN",
+      "ticker": "USFD",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "169.72",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DOCN",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "124.01",
-      "signalCount": 1
-    },
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "47.71",
+      "limitPrice": "101.25",
       "signalCount": 1
     }
   ]
