@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/09/08",
-  "generatedAt": "2026-09-09T22:18:41.755Z",
-  "stockCount": 6,
+  "dataDate": "2026/09/09",
+  "generatedAt": "2026-09-10T00:25:11.096Z",
+  "stockCount": 15,
   "stocks": [
     {
       "ticker": "MRNA",
@@ -9,23 +9,71 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "133.8",
+      "limitPrice": "129.7",
       "signalCount": 2
+    },
+    {
+      "ticker": "ARWR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "80.41",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CBC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "31.48",
+      "signalCount": 1
     },
     {
       "ticker": "CNC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "63.38",
+      "limitPrice": "60.67",
       "signalCount": 1
     },
     {
-      "ticker": "NEU",
+      "ticker": "CRL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "854.97",
+      "limitPrice": "270.32",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CSX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "47.77",
+      "signalCount": 1
+    },
+    {
+      "ticker": "FTI",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "76.59",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ILMN",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "199.31",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RGA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "242.09",
       "signalCount": 1
     },
     {
@@ -33,7 +81,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "111.83",
+      "limitPrice": "109.91",
       "signalCount": 1
     },
     {
@@ -41,7 +89,23 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "44.89",
+      "limitPrice": "43.99",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SN",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "165.18",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TGT",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "155.2",
       "signalCount": 1
     },
     {
@@ -49,7 +113,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "101.25",
+      "limitPrice": "95.37",
+      "signalCount": 1
+    },
+    {
+      "ticker": "GH",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "168.98",
       "signalCount": 1
     }
   ]
