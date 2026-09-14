@@ -1,49 +1,91 @@
 {
-  "dataDate": "2026/09/11",
-  "generatedAt": "2026-09-14T20:44:13.066Z",
-  "stockCount": 9,
+  "dataDate": "2026/09/14",
+  "generatedAt": "2026-09-14T23:41:03.801Z",
+  "stockCount": 18,
   "stocks": [
     {
-      "ticker": "GH",
+      "ticker": "IRDM",
       "rules": [
         "短期逆張り",
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "152.39",
+      "limitPrice": "45.27",
       "signalCount": 3
     },
     {
-      "ticker": "ALM",
+      "ticker": "SNDK",
       "rules": [
+        "短期逆張り",
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "14.28",
+      "limitPrice": "1439.54",
+      "signalCount": 3
+    },
+    {
+      "ticker": "VIRT",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "58.51",
       "signalCount": 2
+    },
+    {
+      "ticker": "ARWR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "78.19",
+      "signalCount": 1
     },
     {
       "ticker": "ATI",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "194.0",
+      "limitPrice": "182.84",
       "signalCount": 1
     },
     {
-      "ticker": "RNG",
+      "ticker": "BEN",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "66.49",
+      "limitPrice": "32.49",
       "signalCount": 1
     },
     {
-      "ticker": "VIRT",
+      "ticker": "BNY",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "59.51",
+      "limitPrice": "155.13",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CORT",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "108.74",
+      "signalCount": 1
+    },
+    {
+      "ticker": "FCX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "65.43",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MU",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "873.58",
       "signalCount": 1
     },
     {
@@ -51,23 +93,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "425.23",
+      "limitPrice": "398.55",
       "signalCount": 1
     },
     {
-      "ticker": "SN",
+      "ticker": "CF",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "153.81",
+      "limitPrice": "127.7",
       "signalCount": 1
     },
     {
-      "ticker": "TGT",
+      "ticker": "DAR",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "152.18",
+      "limitPrice": "63.58",
       "signalCount": 1
     },
     {
@@ -75,7 +117,39 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "92.42",
+      "limitPrice": "93.16",
+      "signalCount": 1
+    },
+    {
+      "ticker": "WELL",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "231.68",
+      "signalCount": 1
+    },
+    {
+      "ticker": "AUGO",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "88.64",
+      "signalCount": 1
+    },
+    {
+      "ticker": "BE",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "277.29",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RNG",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "77.96",
       "signalCount": 1
     }
   ]
