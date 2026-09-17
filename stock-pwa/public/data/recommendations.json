@@ -1,41 +1,32 @@
 {
-  "dataDate": "2026/09/15",
-  "generatedAt": "2026-09-16T21:31:37.942Z",
+  "dataDate": "2026/09/16",
+  "generatedAt": "2026-09-17T00:04:58.680Z",
   "stockCount": 15,
   "stocks": [
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "1445.11",
-      "signalCount": 3
-    },
     {
       "ticker": "VIRT",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "56.02",
+      "limitPrice": "55.14",
       "signalCount": 2
     },
     {
-      "ticker": "ATI",
+      "ticker": "SNDK",
       "rules": [
-        "短期逆張り"
+        "セクター別RS",
+        "ダウ理論"
       ],
-      "limitPrice": "178.44",
-      "signalCount": 1
+      "limitPrice": "1441.88",
+      "signalCount": 2
     },
     {
       "ticker": "BEN",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "32.54",
+      "limitPrice": "31.66",
       "signalCount": 1
     },
     {
@@ -43,15 +34,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "150.96",
+      "limitPrice": "150.76",
       "signalCount": 1
     },
     {
-      "ticker": "CORT",
+      "ticker": "CBC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "107.07",
+      "limitPrice": "30.49",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CSX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "47.16",
       "signalCount": 1
     },
     {
@@ -59,7 +58,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "66.81",
+      "limitPrice": "66.28",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RVMD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "189.7",
       "signalCount": 1
     },
     {
@@ -67,7 +74,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "179.36",
+      "limitPrice": "178.26",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VOYA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "97.8",
       "signalCount": 1
     },
     {
@@ -75,31 +90,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "61.14",
+      "limitPrice": "60.4",
       "signalCount": 1
     },
     {
-      "ticker": "USFD",
+      "ticker": "CHYM",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "88.7",
-      "signalCount": 1
-    },
-    {
-      "ticker": "WELL",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "227.22",
-      "signalCount": 1
-    },
-    {
-      "ticker": "AUGO",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "88.64",
+      "limitPrice": "30.1",
       "signalCount": 1
     },
     {
