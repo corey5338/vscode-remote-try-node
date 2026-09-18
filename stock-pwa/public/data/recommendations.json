@@ -1,31 +1,14 @@
 {
-  "dataDate": "2026/09/17",
-  "generatedAt": "2026-09-18T21:06:32.462Z",
+  "dataDate": "2026/09/18",
+  "generatedAt": "2026-09-18T23:28:17.865Z",
   "stockCount": 11,
   "stocks": [
-    {
-      "ticker": "VIRT",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "55.59",
-      "signalCount": 2
-    },
-    {
-      "ticker": "BNY",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "150.34",
-      "signalCount": 1
-    },
     {
       "ticker": "CSX",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "47.04",
+      "limitPrice": "46.51",
       "signalCount": 1
     },
     {
@@ -33,7 +16,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "243.3",
+      "limitPrice": "239.53",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RVMD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "184.28",
       "signalCount": 1
     },
     {
@@ -41,15 +32,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "180.03",
+      "limitPrice": "178.37",
       "signalCount": 1
     },
     {
-      "ticker": "VOYA",
+      "ticker": "THG",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "97.82",
+      "limitPrice": "223.05",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TIGO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "91.48",
       "signalCount": 1
     },
     {
@@ -57,7 +56,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "29.94",
+      "limitPrice": "29.3",
       "signalCount": 1
     },
     {
@@ -65,7 +64,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "43.39",
+      "limitPrice": "42.88",
+      "signalCount": 1
+    },
+    {
+      "ticker": "WELL",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "225.5",
       "signalCount": 1
     },
     {
@@ -73,15 +80,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "48.24",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RNG",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "77.96",
+      "limitPrice": "48.04",
       "signalCount": 1
     },
     {
