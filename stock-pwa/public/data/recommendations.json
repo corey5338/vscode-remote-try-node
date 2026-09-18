@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/09/16",
-  "generatedAt": "2026-09-17T22:20:05.297Z",
-  "stockCount": 15,
+  "dataDate": "2026/09/17",
+  "generatedAt": "2026-09-18T00:36:41.836Z",
+  "stockCount": 11,
   "stocks": [
     {
       "ticker": "VIRT",
@@ -9,40 +9,15 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "55.14",
+      "limitPrice": "55.59",
       "signalCount": 2
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "1441.88",
-      "signalCount": 2
-    },
-    {
-      "ticker": "BEN",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "31.66",
-      "signalCount": 1
     },
     {
       "ticker": "BNY",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "150.76",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CBC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "30.49",
+      "limitPrice": "150.34",
       "signalCount": 1
     },
     {
@@ -50,23 +25,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "47.16",
+      "limitPrice": "47.04",
       "signalCount": 1
     },
     {
-      "ticker": "FCX",
+      "ticker": "RGA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "66.28",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RVMD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "189.7",
+      "limitPrice": "243.3",
       "signalCount": 1
     },
     {
@@ -74,7 +41,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "178.26",
+      "limitPrice": "180.03",
       "signalCount": 1
     },
     {
@@ -82,15 +49,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "97.8",
-      "signalCount": 1
-    },
-    {
-      "ticker": "BWA",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "60.4",
+      "limitPrice": "97.82",
       "signalCount": 1
     },
     {
@@ -98,15 +57,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "30.1",
+      "limitPrice": "29.94",
       "signalCount": 1
     },
     {
-      "ticker": "BE",
+      "ticker": "HRB",
       "rules": [
-        "ダウ理論"
+        "セクター別RS"
       ],
-      "limitPrice": "277.29",
+      "limitPrice": "43.39",
       "signalCount": 1
     },
     {
@@ -123,6 +82,14 @@
         "ダウ理論"
       ],
       "limitPrice": "77.96",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SNDK",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "1807.39",
       "signalCount": 1
     }
   ]
