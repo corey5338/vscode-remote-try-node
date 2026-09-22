@@ -1,14 +1,30 @@
 {
-  "dataDate": "2026/09/18",
-  "generatedAt": "2026-09-21T22:06:19.443Z",
-  "stockCount": 11,
+  "dataDate": "2026/09/21",
+  "generatedAt": "2026-09-22T00:59:50.907Z",
+  "stockCount": 10,
   "stocks": [
     {
-      "ticker": "CSX",
+      "ticker": "DINO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "46.51",
+      "limitPrice": "106.52",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MET",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "95.65",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NUE",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "237.82",
       "signalCount": 1
     },
     {
@@ -16,23 +32,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "239.53",
+      "limitPrice": "242.17",
       "signalCount": 1
     },
     {
-      "ticker": "RVMD",
+      "ticker": "ROIV",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "184.28",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "178.37",
+      "limitPrice": "37.99",
       "signalCount": 1
     },
     {
@@ -40,15 +48,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "223.05",
+      "limitPrice": "220.72",
       "signalCount": 1
     },
     {
-      "ticker": "TIGO",
+      "ticker": "TRV",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "91.48",
+      "limitPrice": "367.2",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CF",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "119.56",
       "signalCount": 1
     },
     {
@@ -56,39 +72,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "29.3",
+      "limitPrice": "28.97",
       "signalCount": 1
     },
     {
-      "ticker": "HRB",
+      "ticker": "DAR",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "42.88",
-      "signalCount": 1
-    },
-    {
-      "ticker": "WELL",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "225.5",
-      "signalCount": 1
-    },
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "48.04",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "1807.39",
+      "limitPrice": "61.52",
       "signalCount": 1
     }
   ]
