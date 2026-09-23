@@ -1,15 +1,15 @@
 {
-  "dataDate": "2026/09/22",
-  "generatedAt": "2026-09-23T19:44:45.054Z",
-  "stockCount": 18,
+  "dataDate": "2026/09/23",
+  "generatedAt": "2026-09-23T22:40:45.113Z",
+  "stockCount": 15,
   "stocks": [
     {
-      "ticker": "PFG",
+      "ticker": "STT",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "111.45",
+      "limitPrice": "176.69",
       "signalCount": 2
     },
     {
@@ -18,15 +18,15 @@
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "368.31",
+      "limitPrice": "358.01",
       "signalCount": 2
     },
     {
-      "ticker": "APA",
+      "ticker": "CBC",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "41.5",
+      "limitPrice": "30.82",
       "signalCount": 1
     },
     {
@@ -34,7 +34,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "61.28",
+      "limitPrice": "60.68",
       "signalCount": 1
     },
     {
@@ -42,31 +42,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "103.69",
-      "signalCount": 1
-    },
-    {
-      "ticker": "FTI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "68.55",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HUM",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "363.51",
-      "signalCount": 1
-    },
-    {
-      "ticker": "MET",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "94.11",
+      "limitPrice": "100.77",
       "signalCount": 1
     },
     {
@@ -74,7 +50,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "380.35",
+      "limitPrice": "371.99",
       "signalCount": 1
     },
     {
@@ -82,7 +58,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "250.61",
+      "limitPrice": "246.17",
       "signalCount": 1
     },
     {
@@ -90,15 +66,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "37.39",
+      "limitPrice": "36.06",
       "signalCount": 1
     },
     {
-      "ticker": "THG",
+      "ticker": "TIGO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "215.64",
+      "limitPrice": "89.47",
       "signalCount": 1
     },
     {
@@ -106,7 +82,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "355.72",
+      "limitPrice": "356.33",
       "signalCount": 1
     },
     {
@@ -114,7 +90,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "52.44",
+      "limitPrice": "51.64",
       "signalCount": 1
     },
     {
@@ -122,7 +98,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "59.77",
+      "limitPrice": "58.38",
       "signalCount": 1
     },
     {
@@ -130,7 +106,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "115.65",
+      "limitPrice": "117.89",
       "signalCount": 1
     },
     {
@@ -138,7 +114,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "27.84",
+      "limitPrice": "25.54",
       "signalCount": 1
     },
     {
@@ -146,7 +122,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "59.98",
+      "limitPrice": "58.74",
       "signalCount": 1
     }
   ]
