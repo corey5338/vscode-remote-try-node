@@ -1,47 +1,14 @@
 {
-  "dataDate": "2026/09/24",
-  "generatedAt": "2026-09-25T19:07:22.309Z",
-  "stockCount": 10,
+  "dataDate": "2026/09/25",
+  "generatedAt": "2026-09-25T22:38:52.191Z",
+  "stockCount": 4,
   "stocks": [
     {
-      "ticker": "EXPD",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS"
-      ],
-      "limitPrice": "181.37",
-      "signalCount": 2
-    },
-    {
-      "ticker": "BEN",
+      "ticker": "IBKR",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "31.75",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CNC",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "60.08",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DELL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "514.83",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DINO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "103.29",
+      "limitPrice": "87.02",
       "signalCount": 1
     },
     {
@@ -49,7 +16,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "251.54",
+      "limitPrice": "246.03",
       "signalCount": 1
     },
     {
@@ -57,31 +24,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "215.35",
+      "limitPrice": "214.11",
       "signalCount": 1
     },
     {
-      "ticker": "TIGO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "88.63",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VIRT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "50.91",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CF",
+      "ticker": "USFD",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "115.22",
+      "limitPrice": "91.33",
       "signalCount": 1
     }
   ]
