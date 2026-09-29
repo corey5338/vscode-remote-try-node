@@ -1,14 +1,31 @@
 {
-  "dataDate": "2026/09/25",
-  "generatedAt": "2026-09-28T21:35:24.737Z",
-  "stockCount": 4,
+  "dataDate": "2026/09/28",
+  "generatedAt": "2026-09-29T01:28:32.155Z",
+  "stockCount": 7,
   "stocks": [
     {
-      "ticker": "IBKR",
+      "ticker": "DOCN",
+      "rules": [
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "128.16",
+      "signalCount": 2
+    },
+    {
+      "ticker": "ATI",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "87.02",
+      "limitPrice": "174.24",
+      "signalCount": 1
+    },
+    {
+      "ticker": "FTI",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "69.39",
       "signalCount": 1
     },
     {
@@ -16,23 +33,31 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "246.03",
+      "limitPrice": "247.59",
       "signalCount": 1
     },
     {
-      "ticker": "THG",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "214.11",
-      "signalCount": 1
-    },
-    {
-      "ticker": "USFD",
+      "ticker": "AUGO",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "91.33",
+      "limitPrice": "74.67",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DAR",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "58.88",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SNDK",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "1815.01",
       "signalCount": 1
     }
   ]
