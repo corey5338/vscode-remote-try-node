@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/09/28",
-  "generatedAt": "2026-09-30T02:17:20.458Z",
-  "stockCount": 7,
+  "dataDate": "2026/09/29",
+  "generatedAt": "2026-09-30T08:51:55.212Z",
+  "stockCount": 15,
   "stocks": [
     {
       "ticker": "DOCN",
@@ -9,15 +9,23 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "128.16",
+      "limitPrice": "130.02",
       "signalCount": 2
     },
     {
-      "ticker": "ATI",
+      "ticker": "APA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "174.24",
+      "limitPrice": "40.48",
+      "signalCount": 1
+    },
+    {
+      "ticker": "FCX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "68.91",
       "signalCount": 1
     },
     {
@@ -25,7 +33,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "69.39",
+      "limitPrice": "67.17",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MET",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "93.48",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NUE",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "231.2",
       "signalCount": 1
     },
     {
@@ -33,15 +57,39 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "247.59",
+      "limitPrice": "244.54",
       "signalCount": 1
     },
     {
-      "ticker": "AUGO",
+      "ticker": "RNG",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "70.66",
+      "signalCount": 1
+    },
+    {
+      "ticker": "STT",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "174.4",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VOYA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "92.62",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CHYM",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "74.67",
+      "limitPrice": "25.54",
       "signalCount": 1
     },
     {
@@ -49,7 +97,23 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "58.88",
+      "limitPrice": "58.16",
+      "signalCount": 1
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "47.24",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SW",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "43.4",
       "signalCount": 1
     },
     {
