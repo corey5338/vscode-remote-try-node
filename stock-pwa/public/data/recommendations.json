@@ -1,87 +1,22 @@
 {
-  "dataDate": "2026/10/01",
-  "generatedAt": "2026-10-02T20:04:46.122Z",
-  "stockCount": 12,
+  "dataDate": "2026/10/02",
+  "generatedAt": "2026-10-02T23:56:35.473Z",
+  "stockCount": 4,
   "stocks": [
-    {
-      "ticker": "IRDM",
-      "rules": [
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "47.08",
-      "signalCount": 2
-    },
-    {
-      "ticker": "CRL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "279.72",
-      "signalCount": 1
-    },
-    {
-      "ticker": "FCX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "66.81",
-      "signalCount": 1
-    },
-    {
-      "ticker": "GH",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "170.18",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RGA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "241.29",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ROIV",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "34.74",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "168.0",
-      "signalCount": 1
-    },
-    {
-      "ticker": "TIGO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "81.12",
-      "signalCount": 1
-    },
     {
       "ticker": "MMM",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "160.55",
+      "limitPrice": "159.35",
       "signalCount": 1
     },
     {
-      "ticker": "DOCN",
+      "ticker": "PKG",
       "rules": [
-        "ダウ理論"
+        "セクター別RS"
       ],
-      "limitPrice": "143.07",
+      "limitPrice": "225.67",
       "signalCount": 1
     },
     {
@@ -89,7 +24,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "208.91",
+      "limitPrice": "201.01",
       "signalCount": 1
     },
     {
