@@ -1,23 +1,95 @@
 {
-  "dataDate": "2026/10/06",
-  "generatedAt": "2026-10-07T22:43:13.022Z",
-  "stockCount": 2,
+  "dataDate": "2026/10/07",
+  "generatedAt": "2026-10-08T02:30:44.718Z",
+  "stockCount": 11,
   "stocks": [
     {
-      "ticker": "SNDK",
+      "ticker": "VICR",
       "rules": [
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "1596.6",
+      "limitPrice": "267.51",
       "signalCount": 2
     },
     {
-      "ticker": "RVMD",
+      "ticker": "STT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "191.11",
+      "limitPrice": "169.18",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TWLO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "264.99",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DAR",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "58.82",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HST",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "21.99",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NEU",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "883.8",
+      "signalCount": 1
+    },
+    {
+      "ticker": "PKG",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "223.96",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TGT",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "148.83",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ILMN",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "309.36",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MRNA",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "212.23",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SNDK",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "1815.01",
       "signalCount": 1
     }
   ]
