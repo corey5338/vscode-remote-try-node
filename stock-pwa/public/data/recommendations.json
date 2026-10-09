@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/10/07",
-  "generatedAt": "2026-10-08T22:17:03.952Z",
-  "stockCount": 11,
+  "dataDate": "2026/10/08",
+  "generatedAt": "2026-10-09T02:23:44.255Z",
+  "stockCount": 8,
   "stocks": [
     {
       "ticker": "VICR",
@@ -9,39 +9,31 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "267.51",
+      "limitPrice": "240.92",
       "signalCount": 2
     },
     {
-      "ticker": "STT",
+      "ticker": "GH",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "169.18",
+      "limitPrice": "157.52",
       "signalCount": 1
     },
     {
-      "ticker": "TWLO",
+      "ticker": "NTRA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "264.99",
+      "limitPrice": "372.96",
       "signalCount": 1
     },
     {
-      "ticker": "DAR",
+      "ticker": "RVMD",
       "rules": [
-        "セクター別RS"
+        "短期逆張り"
       ],
-      "limitPrice": "58.82",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HST",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "21.99",
+      "limitPrice": "176.31",
       "signalCount": 1
     },
     {
@@ -49,23 +41,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "883.8",
-      "signalCount": 1
-    },
-    {
-      "ticker": "PKG",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "223.96",
-      "signalCount": 1
-    },
-    {
-      "ticker": "TGT",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "148.83",
+      "limitPrice": "891.46",
       "signalCount": 1
     },
     {
