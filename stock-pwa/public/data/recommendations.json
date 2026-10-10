@@ -1,39 +1,31 @@
 {
-  "dataDate": "2026/10/08",
-  "generatedAt": "2026-10-09T21:07:19.233Z",
-  "stockCount": 8,
+  "dataDate": "2026/10/09",
+  "generatedAt": "2026-10-10T01:05:17.724Z",
+  "stockCount": 6,
   "stocks": [
     {
-      "ticker": "VICR",
+      "ticker": "SNDK",
       "rules": [
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "240.92",
+      "limitPrice": "1523.13",
       "signalCount": 2
     },
     {
-      "ticker": "GH",
+      "ticker": "PFG",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "157.52",
+      "limitPrice": "105.87",
       "signalCount": 1
     },
     {
-      "ticker": "NTRA",
+      "ticker": "IRDM",
       "rules": [
-        "短期逆張り"
+        "セクター別RS"
       ],
-      "limitPrice": "372.96",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RVMD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "176.31",
+      "limitPrice": "46.51",
       "signalCount": 1
     },
     {
@@ -41,7 +33,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "891.46",
+      "limitPrice": "879.27",
       "signalCount": 1
     },
     {
@@ -53,19 +45,11 @@
       "signalCount": 1
     },
     {
-      "ticker": "MRNA",
+      "ticker": "VICR",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "212.23",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "1815.01",
+      "limitPrice": "331.01",
       "signalCount": 1
     }
   ]
