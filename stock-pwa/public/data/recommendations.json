@@ -1,6 +1,6 @@
 {
-  "dataDate": "2026/10/09",
-  "generatedAt": "2026-10-12T19:55:25.546Z",
+  "dataDate": "2026/10/12",
+  "generatedAt": "2026-10-13T01:49:17.720Z",
   "stockCount": 6,
   "stocks": [
     {
@@ -9,15 +9,32 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "1523.13",
+      "limitPrice": "1411.58",
       "signalCount": 2
     },
     {
-      "ticker": "PFG",
+      "ticker": "VICR",
       "rules": [
-        "短期逆張り"
+        "セクター別RS",
+        "ダウ理論"
       ],
-      "limitPrice": "105.87",
+      "limitPrice": "244.7",
+      "signalCount": 2
+    },
+    {
+      "ticker": "BWA",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "59.02",
+      "signalCount": 1
+    },
+    {
+      "ticker": "FIX",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "1593.67",
       "signalCount": 1
     },
     {
@@ -25,15 +42,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "46.51",
-      "signalCount": 1
-    },
-    {
-      "ticker": "NEU",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "879.27",
+      "limitPrice": "46.37",
       "signalCount": 1
     },
     {
@@ -42,14 +51,6 @@
         "ダウ理論"
       ],
       "limitPrice": "309.36",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VICR",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "331.01",
       "signalCount": 1
     }
   ]
