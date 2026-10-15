@@ -1,34 +1,15 @@
 {
-  "dataDate": "2026/10/14",
-  "generatedAt": "2026-10-15T20:56:25.622Z",
-  "stockCount": 17,
+  "dataDate": "2026/10/15",
+  "generatedAt": "2026-10-15T23:33:41.077Z",
+  "stockCount": 13,
   "stocks": [
-    {
-      "ticker": "OKTA",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "206.93",
-      "signalCount": 3
-    },
     {
       "ticker": "SNDK",
       "rules": [
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "1350.21",
-      "signalCount": 2
-    },
-    {
-      "ticker": "VICR",
-      "rules": [
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "231.6",
+      "limitPrice": "1223.63",
       "signalCount": 2
     },
     {
@@ -36,7 +17,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "113.4",
+      "limitPrice": "110.49",
       "signalCount": 1
     },
     {
@@ -44,7 +25,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "242.22",
+      "limitPrice": "234.06",
       "signalCount": 1
     },
     {
@@ -52,15 +33,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "487.06",
-      "signalCount": 1
-    },
-    {
-      "ticker": "FCX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "67.36",
+      "limitPrice": "436.57",
       "signalCount": 1
     },
     {
@@ -68,7 +41,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "180.44",
+      "limitPrice": "175.15",
       "signalCount": 1
     },
     {
@@ -76,7 +49,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "60.81",
+      "limitPrice": "54.76",
       "signalCount": 1
     },
     {
@@ -84,39 +57,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "858.75",
+      "limitPrice": "764.25",
       "signalCount": 1
     },
     {
-      "ticker": "RNG",
+      "ticker": "OKTA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "72.51",
-      "signalCount": 1
-    },
-    {
-      "ticker": "TWLO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "262.62",
-      "signalCount": 1
-    },
-    {
-      "ticker": "AUGO",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "79.12",
-      "signalCount": 1
-    },
-    {
-      "ticker": "GEV",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "901.6",
+      "limitPrice": "198.17",
       "signalCount": 1
     },
     {
@@ -124,7 +73,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "45.06",
+      "limitPrice": "43.22",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NEU",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "863.8",
       "signalCount": 1
     },
     {
@@ -132,7 +89,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "635.64",
+      "limitPrice": "599.81",
       "signalCount": 1
     },
     {
@@ -140,7 +97,15 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "309.36",
+      "limitPrice": "278.6",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RNG",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "81.79",
       "signalCount": 1
     }
   ]
