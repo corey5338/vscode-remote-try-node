@@ -1,15 +1,25 @@
 {
-  "dataDate": "2026/10/15",
-  "generatedAt": "2026-10-16T20:30:45.450Z",
-  "stockCount": 13,
+  "dataDate": "2026/10/16",
+  "generatedAt": "2026-10-16T23:14:31.378Z",
+  "stockCount": 16,
   "stocks": [
+    {
+      "ticker": "ILMN",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "252.93",
+      "signalCount": 3
+    },
     {
       "ticker": "SNDK",
       "rules": [
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "1223.63",
+      "limitPrice": "1243.96",
       "signalCount": 2
     },
     {
@@ -17,7 +27,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "110.49",
+      "limitPrice": "105.24",
       "signalCount": 1
     },
     {
@@ -25,7 +35,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "234.06",
+      "limitPrice": "218.56",
       "signalCount": 1
     },
     {
@@ -33,7 +43,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "436.57",
+      "limitPrice": "434.34",
       "signalCount": 1
     },
     {
@@ -41,7 +51,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "175.15",
+      "limitPrice": "163.4",
       "signalCount": 1
     },
     {
@@ -49,7 +59,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "54.76",
+      "limitPrice": "52.83",
       "signalCount": 1
     },
     {
@@ -57,7 +67,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "764.25",
+      "limitPrice": "786.82",
       "signalCount": 1
     },
     {
@@ -65,7 +75,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "198.17",
+      "limitPrice": "179.68",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RVMD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "171.57",
+      "signalCount": 1
+    },
+    {
+      "ticker": "TWLO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "229.12",
       "signalCount": 1
     },
     {
@@ -73,7 +99,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "43.22",
+      "limitPrice": "42.99",
       "signalCount": 1
     },
     {
@@ -81,7 +107,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "863.8",
+      "limitPrice": "848.12",
       "signalCount": 1
     },
     {
@@ -89,15 +115,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "599.81",
+      "limitPrice": "614.14",
       "signalCount": 1
     },
     {
-      "ticker": "ILMN",
+      "ticker": "XP",
       "rules": [
-        "ダウ理論"
+        "セクター別RS"
       ],
-      "limitPrice": "278.6",
+      "limitPrice": "28.39",
       "signalCount": 1
     },
     {
