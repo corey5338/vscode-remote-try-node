@@ -1,55 +1,17 @@
 {
-  "dataDate": "2026/10/20",
-  "generatedAt": "2026-10-21T20:17:03.116Z",
-  "stockCount": 6,
+  "dataDate": "2026/10/21",
+  "generatedAt": "2026-10-21T23:30:48.715Z",
+  "stockCount": 1,
   "stocks": [
-    {
-      "ticker": "CRWD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "215.46",
-      "signalCount": 1
-    },
-    {
-      "ticker": "LITE",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "750.7",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VLO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "417.57",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ILMN",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "278.6",
-      "signalCount": 1
-    },
     {
       "ticker": "MPC",
       "rules": [
+        "短期逆張り",
+        "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "493.99",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "1407.01",
-      "signalCount": 1
+      "limitPrice": "450.98",
+      "signalCount": 3
     }
   ]
 }
