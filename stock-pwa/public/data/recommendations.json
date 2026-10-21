@@ -1,40 +1,22 @@
 {
-  "dataDate": "2026/10/19",
-  "generatedAt": "2026-10-20T22:05:59.133Z",
-  "stockCount": 7,
+  "dataDate": "2026/10/20",
+  "generatedAt": "2026-10-21T00:45:12.966Z",
+  "stockCount": 6,
   "stocks": [
-    {
-      "ticker": "ILMN",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "253.96",
-      "signalCount": 3
-    },
     {
       "ticker": "CRWD",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "217.95",
+      "limitPrice": "215.46",
       "signalCount": 1
     },
     {
-      "ticker": "DELL",
+      "ticker": "LITE",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "433.08",
-      "signalCount": 1
-    },
-    {
-      "ticker": "STT",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "162.17",
+      "limitPrice": "750.7",
       "signalCount": 1
     },
     {
@@ -42,15 +24,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "423.29",
+      "limitPrice": "417.57",
       "signalCount": 1
     },
     {
-      "ticker": "RNG",
+      "ticker": "ILMN",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "81.79",
+      "limitPrice": "278.6",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MPC",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "493.99",
       "signalCount": 1
     },
     {
@@ -58,7 +48,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "1815.01",
+      "limitPrice": "1407.01",
       "signalCount": 1
     }
   ]
