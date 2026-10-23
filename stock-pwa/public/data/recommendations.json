@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/10/21",
-  "generatedAt": "2026-10-22T22:05:32.724Z",
-  "stockCount": 1,
+  "dataDate": "2026/10/22",
+  "generatedAt": "2026-10-23T00:48:17.720Z",
+  "stockCount": 8,
   "stocks": [
     {
       "ticker": "MPC",
@@ -10,8 +10,67 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "450.98",
+      "limitPrice": "440.45",
       "signalCount": 3
+    },
+    {
+      "ticker": "MRNA",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "171.6",
+      "signalCount": 3
+    },
+    {
+      "ticker": "SNDK",
+      "rules": [
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "1192.77",
+      "signalCount": 2
+    },
+    {
+      "ticker": "CORT",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "104.79",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DINO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "117.61",
+      "signalCount": 1
+    },
+    {
+      "ticker": "PSX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "273.68",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VLO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "408.34",
+      "signalCount": 1
+    },
+    {
+      "ticker": "AUGO",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "74.78",
+      "signalCount": 1
     }
   ]
 }
