@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/10/22",
-  "generatedAt": "2026-10-23T19:46:26.369Z",
-  "stockCount": 8,
+  "dataDate": "2026/10/23",
+  "generatedAt": "2026-10-23T22:53:14.931Z",
+  "stockCount": 10,
   "stocks": [
     {
       "ticker": "MPC",
@@ -10,7 +10,7 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "440.45",
+      "limitPrice": "446.36",
       "signalCount": 3
     },
     {
@@ -20,7 +20,7 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "171.6",
+      "limitPrice": "173.67",
       "signalCount": 3
     },
     {
@@ -29,7 +29,7 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "1192.77",
+      "limitPrice": "1177.83",
       "signalCount": 2
     },
     {
@@ -37,7 +37,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "104.79",
+      "limitPrice": "81.16",
       "signalCount": 1
     },
     {
@@ -45,7 +45,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "117.61",
+      "limitPrice": "118.63",
       "signalCount": 1
     },
     {
@@ -53,7 +53,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "273.68",
+      "limitPrice": "277.7",
       "signalCount": 1
     },
     {
@@ -61,7 +61,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "408.34",
+      "limitPrice": "408.54",
       "signalCount": 1
     },
     {
@@ -69,7 +69,23 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "74.78",
+      "limitPrice": "73.44",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CHYM",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "28.41",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NEU",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "855.5",
       "signalCount": 1
     }
   ]
