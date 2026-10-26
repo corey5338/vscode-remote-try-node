@@ -1,18 +1,8 @@
 {
-  "dataDate": "2026/10/23",
-  "generatedAt": "2026-10-26T19:44:21.053Z",
-  "stockCount": 10,
+  "dataDate": "2026/10/26",
+  "generatedAt": "2026-10-26T23:34:06.890Z",
+  "stockCount": 7,
   "stocks": [
-    {
-      "ticker": "MPC",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "446.36",
-      "signalCount": 3
-    },
     {
       "ticker": "MRNA",
       "rules": [
@@ -20,48 +10,23 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "173.67",
+      "limitPrice": "172.23",
       "signalCount": 3
     },
     {
-      "ticker": "SNDK",
+      "ticker": "CNC",
       "rules": [
-        "セクター別RS",
-        "ダウ理論"
+        "短期逆張り"
       ],
-      "limitPrice": "1177.83",
-      "signalCount": 2
+      "limitPrice": "66.43",
+      "signalCount": 1
     },
     {
       "ticker": "CORT",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "81.16",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DINO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "118.63",
-      "signalCount": 1
-    },
-    {
-      "ticker": "PSX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "277.7",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VLO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "408.54",
+      "limitPrice": "82.89",
       "signalCount": 1
     },
     {
@@ -69,7 +34,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "73.44",
+      "limitPrice": "69.64",
       "signalCount": 1
     },
     {
@@ -77,15 +42,23 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "28.41",
+      "limitPrice": "27.75",
       "signalCount": 1
     },
     {
-      "ticker": "NEU",
+      "ticker": "MPC",
       "rules": [
-        "セクター別RS"
+        "ダウ理論"
       ],
-      "limitPrice": "855.5",
+      "limitPrice": "493.99",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SNDK",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "1424.49",
       "signalCount": 1
     }
   ]
