@@ -1,40 +1,46 @@
 {
-  "dataDate": "2026/10/26",
-  "generatedAt": "2026-10-27T20:25:38.678Z",
-  "stockCount": 7,
+  "dataDate": "2026/10/27",
+  "generatedAt": "2026-10-27T23:54:36.401Z",
+  "stockCount": 10,
   "stocks": [
     {
-      "ticker": "MRNA",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "172.23",
-      "signalCount": 3
-    },
-    {
-      "ticker": "CNC",
+      "ticker": "DINO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "66.43",
+      "limitPrice": "111.16",
       "signalCount": 1
     },
     {
-      "ticker": "CORT",
+      "ticker": "HUM",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "82.89",
+      "limitPrice": "403.76",
       "signalCount": 1
     },
     {
-      "ticker": "AUGO",
+      "ticker": "PSX",
       "rules": [
-        "セクター別RS"
+        "短期逆張り"
       ],
-      "limitPrice": "69.64",
+      "limitPrice": "262.64",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RNR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "335.73",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VLO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "376.98",
       "signalCount": 1
     },
     {
@@ -42,7 +48,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "27.75",
+      "limitPrice": "27.59",
+      "signalCount": 1
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "49.65",
       "signalCount": 1
     },
     {
@@ -50,7 +64,15 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "493.99",
+      "limitPrice": "478.38",
+      "signalCount": 1
+    },
+    {
+      "ticker": "MRNA",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "254.49",
       "signalCount": 1
     },
     {
