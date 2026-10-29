@@ -1,14 +1,14 @@
 {
-  "dataDate": "2026/10/27",
-  "generatedAt": "2026-10-28T21:36:02.308Z",
-  "stockCount": 10,
+  "dataDate": "2026/10/28",
+  "generatedAt": "2026-10-29T01:32:48.032Z",
+  "stockCount": 9,
   "stocks": [
     {
       "ticker": "DINO",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "111.16",
+      "limitPrice": "106.56",
       "signalCount": 1
     },
     {
@@ -16,15 +16,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "403.76",
+      "limitPrice": "403.24",
       "signalCount": 1
     },
     {
-      "ticker": "PSX",
+      "ticker": "RGA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "262.64",
+      "limitPrice": "256.78",
       "signalCount": 1
     },
     {
@@ -32,7 +32,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "335.73",
+      "limitPrice": "314.27",
       "signalCount": 1
     },
     {
@@ -40,15 +40,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "376.98",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CHYM",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "27.59",
+      "limitPrice": "372.14",
       "signalCount": 1
     },
     {
