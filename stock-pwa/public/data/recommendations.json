@@ -1,6 +1,6 @@
 {
-  "dataDate": "2026/10/28",
-  "generatedAt": "2026-10-29T20:25:38.268Z",
+  "dataDate": "2026/10/29",
+  "generatedAt": "2026-10-30T00:05:45.549Z",
   "stockCount": 9,
   "stocks": [
     {
@@ -8,31 +8,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "106.56",
+      "limitPrice": "107.42",
       "signalCount": 1
     },
     {
-      "ticker": "HUM",
+      "ticker": "TEAM",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "403.24",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RGA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "256.78",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RNR",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "314.27",
+      "limitPrice": "195.39",
       "signalCount": 1
     },
     {
@@ -40,7 +24,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "372.14",
+      "limitPrice": "368.89",
+      "signalCount": 1
+    },
+    {
+      "ticker": "LYB",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "63.83",
       "signalCount": 1
     },
     {
@@ -68,11 +60,19 @@
       "signalCount": 1
     },
     {
+      "ticker": "OKTA",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "228.73",
+      "signalCount": 1
+    },
+    {
       "ticker": "SNDK",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "1424.49",
+      "limitPrice": "1408.46",
       "signalCount": 1
     }
   ]
