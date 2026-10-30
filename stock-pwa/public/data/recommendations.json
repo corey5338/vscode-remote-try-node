@@ -1,14 +1,72 @@
 {
-  "dataDate": "2026/10/29",
-  "generatedAt": "2026-10-30T18:43:18.450Z",
-  "stockCount": 9,
+  "dataDate": "2026/10/30",
+  "generatedAt": "2026-10-30T22:46:47.697Z",
+  "stockCount": 13,
   "stocks": [
     {
-      "ticker": "DINO",
+      "ticker": "RNG",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "77.94",
+      "signalCount": 3
+    },
+    {
+      "ticker": "CRWD",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "107.42",
+      "limitPrice": "238.76",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DELL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "397.21",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HPE",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "51.64",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ILMN",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "223.5",
+      "signalCount": 1
+    },
+    {
+      "ticker": "OKTA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "197.06",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RBRK",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "115.59",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RVTY",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "152.95",
       "signalCount": 1
     },
     {
@@ -16,23 +74,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "195.39",
+      "limitPrice": "183.61",
       "signalCount": 1
     },
     {
-      "ticker": "VLO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "368.89",
-      "signalCount": 1
-    },
-    {
-      "ticker": "LYB",
+      "ticker": "CHYM",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "63.83",
+      "limitPrice": "27.07",
       "signalCount": 1
     },
     {
@@ -40,7 +90,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "49.65",
+      "limitPrice": "46.55",
       "signalCount": 1
     },
     {
@@ -57,22 +107,6 @@
         "ダウ理論"
       ],
       "limitPrice": "254.49",
-      "signalCount": 1
-    },
-    {
-      "ticker": "OKTA",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "228.73",
-      "signalCount": 1
-    },
-    {
-      "ticker": "SNDK",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "1408.46",
       "signalCount": 1
     }
   ]
