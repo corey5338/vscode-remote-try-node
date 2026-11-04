@@ -1,131 +1,22 @@
 {
-  "dataDate": "2026/11/02",
-  "generatedAt": "2026-11-03T19:03:07.320Z",
-  "stockCount": 17,
+  "dataDate": "2026/11/03",
+  "generatedAt": "2026-11-04T00:03:55.816Z",
+  "stockCount": 6,
   "stocks": [
     {
-      "ticker": "NTRA",
+      "ticker": "APA",
       "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
+        "短期逆張り"
       ],
-      "limitPrice": "367.45",
-      "signalCount": 3
-    },
-    {
-      "ticker": "RNG",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "74.52",
-      "signalCount": 3
+      "limitPrice": "46.43",
+      "signalCount": 1
     },
     {
       "ticker": "IRDM",
       "rules": [
-        "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "42.87",
-      "signalCount": 2
-    },
-    {
-      "ticker": "CAI",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "31.1",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CRL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "330.33",
-      "signalCount": 1
-    },
-    {
-      "ticker": "CRWD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "233.77",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DELL",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "375.42",
-      "signalCount": 1
-    },
-    {
-      "ticker": "GH",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "163.67",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HPE",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "49.03",
-      "signalCount": 1
-    },
-    {
-      "ticker": "ILMN",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "215.71",
-      "signalCount": 1
-    },
-    {
-      "ticker": "NTAP",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "179.1",
-      "signalCount": 1
-    },
-    {
-      "ticker": "OKTA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "177.04",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RBRK",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "109.7",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RVTY",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "147.68",
-      "signalCount": 1
-    },
-    {
-      "ticker": "TEAM",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "180.96",
+      "limitPrice": "46.55",
       "signalCount": 1
     },
     {
@@ -142,6 +33,22 @@
         "ダウ理論"
       ],
       "limitPrice": "254.49",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NTRA",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "436.2",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RNG",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "89.3",
       "signalCount": 1
     }
   ]
