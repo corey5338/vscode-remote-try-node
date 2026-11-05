@@ -1,14 +1,66 @@
 {
-  "dataDate": "2026/11/03",
-  "generatedAt": "2026-11-04T21:23:38.455Z",
-  "stockCount": 6,
+  "dataDate": "2026/11/04",
+  "generatedAt": "2026-11-05T01:37:46.164Z",
+  "stockCount": 9,
   "stocks": [
+    {
+      "ticker": "MPC",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "369.79",
+      "signalCount": 3
+    },
+    {
+      "ticker": "RNG",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "74.25",
+      "signalCount": 3
+    },
     {
       "ticker": "APA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "46.43",
+      "limitPrice": "42.92",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DELL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "350.69",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DINO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "98.65",
+      "signalCount": 1
+    },
+    {
+      "ticker": "PSX",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "246.18",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RRC",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "50.12",
       "signalCount": 1
     },
     {
@@ -20,35 +72,11 @@
       "signalCount": 1
     },
     {
-      "ticker": "MPC",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "478.38",
-      "signalCount": 1
-    },
-    {
-      "ticker": "MRNA",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "254.49",
-      "signalCount": 1
-    },
-    {
       "ticker": "NTRA",
       "rules": [
         "ダウ理論"
       ],
       "limitPrice": "436.2",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RNG",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "89.3",
       "signalCount": 1
     }
   ]
