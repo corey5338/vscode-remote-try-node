@@ -1,7 +1,7 @@
 {
-  "dataDate": "2026/11/04",
-  "generatedAt": "2026-11-05T17:12:45.677Z",
-  "stockCount": 9,
+  "dataDate": "2026/11/05",
+  "generatedAt": "2026-11-05T22:45:15.826Z",
+  "stockCount": 17,
   "stocks": [
     {
       "ticker": "MPC",
@@ -10,7 +10,17 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "369.79",
+      "limitPrice": "367.08",
+      "signalCount": 3
+    },
+    {
+      "ticker": "NTRA",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "344.39",
       "signalCount": 3
     },
     {
@@ -20,23 +30,40 @@
         "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "74.25",
+      "limitPrice": "71.36",
       "signalCount": 3
+    },
+    {
+      "ticker": "IRDM",
+      "rules": [
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "40.47",
+      "signalCount": 2
     },
     {
       "ticker": "APA",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "42.92",
+      "limitPrice": "42.49",
       "signalCount": 1
     },
     {
-      "ticker": "DELL",
+      "ticker": "CRL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "350.69",
+      "limitPrice": "304.09",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CRWD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "206.47",
       "signalCount": 1
     },
     {
@@ -44,7 +71,39 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "98.65",
+      "limitPrice": "94.8",
+      "signalCount": 1
+    },
+    {
+      "ticker": "EXPD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "185.41",
+      "signalCount": 1
+    },
+    {
+      "ticker": "HALO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "120.99",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ILMN",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "197.13",
+      "signalCount": 1
+    },
+    {
+      "ticker": "OKTA",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "162.06",
       "signalCount": 1
     },
     {
@@ -52,7 +111,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "246.18",
+      "limitPrice": "241.45",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RBRK",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "100.58",
       "signalCount": 1
     },
     {
@@ -60,23 +127,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "50.12",
+      "limitPrice": "49.24",
       "signalCount": 1
     },
     {
-      "ticker": "IRDM",
+      "ticker": "VLO",
       "rules": [
-        "ダウ理論"
+        "短期逆張り"
       ],
-      "limitPrice": "46.55",
+      "limitPrice": "341.42",
       "signalCount": 1
     },
     {
-      "ticker": "NTRA",
+      "ticker": "R",
       "rules": [
-        "ダウ理論"
+        "セクター別RS"
       ],
-      "limitPrice": "436.2",
+      "limitPrice": "264.15",
       "signalCount": 1
     }
   ]
