@@ -1,90 +1,30 @@
 {
-  "dataDate": "2026/11/06",
-  "generatedAt": "2026-11-09T20:56:00.167Z",
-  "stockCount": 12,
+  "dataDate": "2026/11/09",
+  "generatedAt": "2026-11-10T03:13:04.631Z",
+  "stockCount": 6,
   "stocks": [
     {
-      "ticker": "MPC",
+      "ticker": "RRC",
       "rules": [
-        "短期逆張り",
-        "セクター別RS",
+        "短期逆張り"
+      ],
+      "limitPrice": "47.39",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DELL",
+      "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "358.44",
-      "signalCount": 3
+      "limitPrice": "507.4",
+      "signalCount": 1
     },
     {
-      "ticker": "RNG",
+      "ticker": "ELF",
       "rules": [
-        "短期逆張り",
-        "セクター別RS",
         "ダウ理論"
       ],
-      "limitPrice": "68.48",
-      "signalCount": 3
-    },
-    {
-      "ticker": "CRWD",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "209.36",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DINO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "93.38",
-      "signalCount": 1
-    },
-    {
-      "ticker": "OKTA",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "157.81",
-      "signalCount": 1
-    },
-    {
-      "ticker": "PSX",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "237.98",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RBRK",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "100.46",
-      "signalCount": 1
-    },
-    {
-      "ticker": "VLO",
-      "rules": [
-        "短期逆張り"
-      ],
-      "limitPrice": "333.03",
-      "signalCount": 1
-    },
-    {
-      "ticker": "HST",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "24.05",
-      "signalCount": 1
-    },
-    {
-      "ticker": "R",
-      "rules": [
-        "セクター別RS"
-      ],
-      "limitPrice": "262.07",
+      "limitPrice": "123.14",
       "signalCount": 1
     },
     {
@@ -96,11 +36,19 @@
       "signalCount": 1
     },
     {
-      "ticker": "NIQ",
+      "ticker": "MPC",
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "20.7",
+      "limitPrice": "478.38",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RNG",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "80.34",
       "signalCount": 1
     }
   ]
