@@ -1,22 +1,14 @@
 {
-  "dataDate": "2026/11/09",
-  "generatedAt": "2026-11-10T18:46:42.744Z",
-  "stockCount": 6,
+  "dataDate": "2026/11/10",
+  "generatedAt": "2026-11-10T23:54:20.642Z",
+  "stockCount": 5,
   "stocks": [
     {
-      "ticker": "RRC",
+      "ticker": "ETSY",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "47.39",
-      "signalCount": 1
-    },
-    {
-      "ticker": "DELL",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "507.4",
+      "limitPrice": "81.29",
       "signalCount": 1
     },
     {
@@ -48,7 +40,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "80.34",
+      "limitPrice": "74.85",
       "signalCount": 1
     }
   ]
