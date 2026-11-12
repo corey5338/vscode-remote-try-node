@@ -1,22 +1,90 @@
 {
-  "dataDate": "2026/11/11",
-  "generatedAt": "2026-11-12T17:41:14.419Z",
-  "stockCount": 3,
+  "dataDate": "2026/11/12",
+  "generatedAt": "2026-11-12T23:13:32.356Z",
+  "stockCount": 11,
   "stocks": [
+    {
+      "ticker": "NIQ",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "18.15",
+      "signalCount": 3
+    },
+    {
+      "ticker": "MRNA",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS"
+      ],
+      "limitPrice": "219.98",
+      "signalCount": 2
+    },
+    {
+      "ticker": "ELF",
+      "rules": [
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "110.17",
+      "signalCount": 2
+    },
+    {
+      "ticker": "AJG",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "273.05",
+      "signalCount": 1
+    },
+    {
+      "ticker": "RVMD",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "171.12",
+      "signalCount": 1
+    },
+    {
+      "ticker": "SIRI",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "31.28",
+      "signalCount": 1
+    },
+    {
+      "ticker": "VEEV",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "292.21",
+      "signalCount": 1
+    },
+    {
+      "ticker": "BALL",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "63.9",
+      "signalCount": 1
+    },
     {
       "ticker": "HRB",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "48.04",
+      "limitPrice": "49.14",
       "signalCount": 1
     },
     {
-      "ticker": "ELF",
+      "ticker": "WTRG",
       "rules": [
-        "ダウ理論"
+        "セクター別RS"
       ],
-      "limitPrice": "123.14",
+      "limitPrice": "44.17",
       "signalCount": 1
     },
     {
