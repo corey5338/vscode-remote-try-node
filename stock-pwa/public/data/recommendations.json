@@ -1,14 +1,14 @@
 {
-  "dataDate": "2026/11/10",
-  "generatedAt": "2026-11-11T19:47:27.613Z",
-  "stockCount": 5,
+  "dataDate": "2026/11/11",
+  "generatedAt": "2026-11-12T01:47:30.524Z",
+  "stockCount": 3,
   "stocks": [
     {
-      "ticker": "ETSY",
+      "ticker": "HRB",
       "rules": [
-        "短期逆張り"
+        "セクター別RS"
       ],
-      "limitPrice": "81.29",
+      "limitPrice": "48.04",
       "signalCount": 1
     },
     {
@@ -20,27 +20,11 @@
       "signalCount": 1
     },
     {
-      "ticker": "IRDM",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "46.55",
-      "signalCount": 1
-    },
-    {
       "ticker": "MPC",
       "rules": [
         "ダウ理論"
       ],
       "limitPrice": "478.38",
-      "signalCount": 1
-    },
-    {
-      "ticker": "RNG",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "74.85",
       "signalCount": 1
     }
   ]
