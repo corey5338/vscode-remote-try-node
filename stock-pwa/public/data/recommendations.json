@@ -1,42 +1,31 @@
 {
-  "dataDate": "2026/11/12",
-  "generatedAt": "2026-11-13T19:13:14.607Z",
+  "dataDate": "2026/11/13",
+  "generatedAt": "2026-11-14T00:24:52.278Z",
   "stockCount": 11,
   "stocks": [
-    {
-      "ticker": "NIQ",
-      "rules": [
-        "短期逆張り",
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "18.15",
-      "signalCount": 3
-    },
     {
       "ticker": "MRNA",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "219.98",
+      "limitPrice": "212.22",
       "signalCount": 2
     },
     {
-      "ticker": "ELF",
-      "rules": [
-        "セクター別RS",
-        "ダウ理論"
-      ],
-      "limitPrice": "110.17",
-      "signalCount": 2
-    },
-    {
-      "ticker": "AJG",
+      "ticker": "EXEL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "273.05",
+      "limitPrice": "67.69",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ILMN",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "195.29",
       "signalCount": 1
     },
     {
@@ -44,15 +33,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "171.12",
+      "limitPrice": "163.79",
       "signalCount": 1
     },
     {
-      "ticker": "SIRI",
+      "ticker": "RVTY",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "31.28",
+      "limitPrice": "147.56",
       "signalCount": 1
     },
     {
@@ -60,15 +49,15 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "292.21",
+      "limitPrice": "294.84",
       "signalCount": 1
     },
     {
-      "ticker": "BALL",
+      "ticker": "GM",
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "63.9",
+      "limitPrice": "84.54",
       "signalCount": 1
     },
     {
@@ -76,15 +65,15 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "49.14",
+      "limitPrice": "48.94",
       "signalCount": 1
     },
     {
-      "ticker": "WTRG",
+      "ticker": "ELF",
       "rules": [
-        "セクター別RS"
+        "ダウ理論"
       ],
-      "limitPrice": "44.17",
+      "limitPrice": "122.27",
       "signalCount": 1
     },
     {
@@ -93,6 +82,14 @@
         "ダウ理論"
       ],
       "limitPrice": "478.38",
+      "signalCount": 1
+    },
+    {
+      "ticker": "NIQ",
+      "rules": [
+        "ダウ理論"
+      ],
+      "limitPrice": "21.53",
       "signalCount": 1
     }
   ]
