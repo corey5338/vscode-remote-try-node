@@ -1,31 +1,73 @@
 {
-  "dataDate": "2026/11/13",
-  "generatedAt": "2026-11-16T18:46:15.444Z",
-  "stockCount": 11,
+  "dataDate": "2026/11/16",
+  "generatedAt": "2026-11-17T02:18:14.030Z",
+  "stockCount": 16,
   "stocks": [
+    {
+      "ticker": "NIQ",
+      "rules": [
+        "短期逆張り",
+        "セクター別RS",
+        "ダウ理論"
+      ],
+      "limitPrice": "18.28",
+      "signalCount": 3
+    },
     {
       "ticker": "MRNA",
       "rules": [
         "短期逆張り",
         "セクター別RS"
       ],
-      "limitPrice": "212.22",
+      "limitPrice": "203.21",
       "signalCount": 2
+    },
+    {
+      "ticker": "AVTR",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "15.01",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CRL",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "321.11",
+      "signalCount": 1
+    },
+    {
+      "ticker": "DINO",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "95.84",
+      "signalCount": 1
+    },
+    {
+      "ticker": "ETSY",
+      "rules": [
+        "短期逆張り"
+      ],
+      "limitPrice": "82.96",
+      "signalCount": 1
     },
     {
       "ticker": "EXEL",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "67.69",
+      "limitPrice": "65.83",
       "signalCount": 1
     },
     {
-      "ticker": "ILMN",
+      "ticker": "HPE",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "195.29",
+      "limitPrice": "43.43",
       "signalCount": 1
     },
     {
@@ -33,7 +75,7 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "163.79",
+      "limitPrice": "161.17",
       "signalCount": 1
     },
     {
@@ -41,15 +83,23 @@
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "147.56",
+      "limitPrice": "143.67",
       "signalCount": 1
     },
     {
-      "ticker": "VEEV",
+      "ticker": "TREX",
       "rules": [
         "短期逆張り"
       ],
-      "limitPrice": "294.84",
+      "limitPrice": "50.09",
+      "signalCount": 1
+    },
+    {
+      "ticker": "CF",
+      "rules": [
+        "セクター別RS"
+      ],
+      "limitPrice": "117.43",
       "signalCount": 1
     },
     {
@@ -57,7 +107,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "84.54",
+      "limitPrice": "81.7",
       "signalCount": 1
     },
     {
@@ -65,7 +115,7 @@
       "rules": [
         "セクター別RS"
       ],
-      "limitPrice": "48.94",
+      "limitPrice": "48.39",
       "signalCount": 1
     },
     {
@@ -81,15 +131,7 @@
       "rules": [
         "ダウ理論"
       ],
-      "limitPrice": "478.38",
-      "signalCount": 1
-    },
-    {
-      "ticker": "NIQ",
-      "rules": [
-        "ダウ理論"
-      ],
-      "limitPrice": "21.53",
+      "limitPrice": "419.01",
       "signalCount": 1
     }
   ]
